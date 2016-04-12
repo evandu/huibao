@@ -4,6 +4,22 @@ const Lib        = require('../lib/lib.js');
 
 const Inventory = module.exports = {};
 
+Inventory.list = function*(){
+    const sql = 'Select * From Inventory Order By CreateDate, LastUpdateDate';
+    try{
+        const result = yield GLOBAL.db.query(sql,1);
+        return result[0];
+    }catch(e){
+        Lib.logException('Inventory.insert', e);
+        return {
+            op: {
+                status: false,
+                msg:    '查询失败',
+            },
+        };
+    }
+};
+
 Inventory.add = function*(values){
     try {
         const result = yield GLOBAL.db.query('Insert Into Inventory Set ?', values);

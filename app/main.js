@@ -67,6 +67,11 @@ handlebars.registerHelper('static',function(){
     return '/static';
 });
 
+
+handlebars.registerHelper('X',function(i,j){
+    return i*j;
+});
+
 handlebars.registerHelper('ctx',function(){
     return '';
 });

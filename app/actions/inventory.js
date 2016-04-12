@@ -11,7 +11,11 @@ inventory.list =function*(){
             subName: '列表',
         },
     };
-    yield this.render('views/inventory/list',context);
+    const res = yield InventoryDao.list();
+    yield this.render('views/inventory/list',{
+        module: context.module,
+        data:   res,
+    });
 };
 
 inventory.add =function*(){
