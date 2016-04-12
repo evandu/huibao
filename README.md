@@ -25,8 +25,21 @@ create table Inventory (
   CreateDate      dateTime  not null,
   LastUpdateDate  timestamp,
   primary key       (InventoryId),
-  unique  key Email (Name)
+  unique  key Name (Name)
 ) engine=InnoDB charset=utf8 auto_increment=100001;
+
+
+create table Member (
+  MemberID         integer unsigned not null auto_increment,
+  Name             varchar(20) ,
+  Code             varchar(20) not null,
+  Amount           integer unsigned not null,
+  CreateDate       dateTime  not null,
+  LastUpdateDate   timestamp,
+  primary key       (InventoryId),
+  unique  key Code (Code)
+) engine=InnoDB charset=utf8 auto_increment=100001;
+
 
 
 
