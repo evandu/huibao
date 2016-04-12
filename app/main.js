@@ -67,6 +67,10 @@ handlebars.registerHelper('static',function(){
     return '/static';
 });
 
+handlebars.registerHelper('ctx',function(){
+    return '';
+});
+
 handlebars.registerHelper('compare', function(left, operator, right, options) {
     if (arguments.length < 3) {
         throw new Error('Handlerbars Helper "compare" needs 2 parameters');
