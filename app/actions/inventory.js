@@ -1,6 +1,6 @@
 'use strict';
 
-const Inventory       = require('../models/inventory.js');
+const InventoryDao       = require('../models/inventory.js');
 
 const inventory = module.exports = {};
 
@@ -26,12 +26,6 @@ inventory.add =function*(){
 
 
 inventory.processAdd = function*(){
-    const context = {
-        module: {
-            name:    '库存',
-            subName: '入库',
-        },
-    };
-    this.flash = yield Inventory.add(this.request.body);
-    yield this.render('views/inventory/add',context);
+    this.flash = yield InventoryDao.add(this.request.body);
+    this.redirect('/inventory/add');
 };
