@@ -17,6 +17,19 @@ create table User (
 ) engine=InnoDB charset=utf8 auto_increment=100001;
 
 
+create table Inventory (
+  InventoryId    integer unsigned not null auto_increment,
+  Name            varchar(20) not null,
+  Num             integer unsigned not null,
+  Price           integer unsigned not null,
+  CreateDate      dateTime  not null,
+  LastUpdateDate  timestamp,
+  primary key       (InventoryId),
+  unique  key Email (Name)
+) engine=InnoDB charset=utf8 auto_increment=100001;
+
+
+
 ```
 ## Test data
 

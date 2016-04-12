@@ -17,7 +17,7 @@
   <![endif]-->
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini fixed ">
   <div class="wrapper">
     <!-- Main Header -->
       <header class="main-header">
@@ -26,9 +26,12 @@
         <span class="logo-mini"><b>汇保</b></span>
         <span class="logo-lg"><b>汇保车汇</b></span>
       </a>
-      <nav class="navbar navbar-static-top" role="navigation">
+      <nav class="navbar navbar-static-top" >
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-          <span class="sr-only">Toggle navigation</span>
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
         </a>
         <div class="navbar-custom-menu">
            <ul class="nav navbar-nav">
@@ -74,12 +77,13 @@
               <li {{#compare module.subName '==' '入库'}}
                    class="active"
                   {{/compare}}>
-                  <a href="{{ctx}}/inventory/in"><i class="fa fa-download"></i>入库</a></li>
+                  <a href="{{ctx}}/inventory/add"><i class="fa fa-download"></i>入库</a></li>
               <li {{#compare module.subName '==' '出库'}}
                   class="active"
                   {{/compare}} >
                  <a href="{{ctx}}/inventory/out"><i class="fa  fa-external-link"></i>出库</a></li>
             </ul>
+
           </li>
           <li  {{#compare module.name '==' '客户'}}
                   class="treeview active"
@@ -142,6 +146,21 @@
         <!-- /Content Header (Page header) -->
        <section class="content">
          <!-- Main content -->
+         {{#if @koa.flash.op}}
+             {{#if @koa.flash.op.status}}
+             <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                  <h4><i class="icon fa fa-check"></i>操作成功</h4>
+                    {{@koa.flash.op.msg}}
+             </div>
+              {{else}}
+                <div class="alert alert-danger alert-dismissible">
+                       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                       <h4><i class="icon fa fa-ban"></i> 操作失败</h4>
+                      {{@koa.flash.op.msg}}
+               </div>
+              {{/if}}
+        {{/if}}
          {{{@body}}}
          <!-- /. Main content -->
        </section>
@@ -150,16 +169,18 @@
 
     <!-- Main Footer -->
     <footer class="main-footer">
-      <div class="pull-right hidden-xs">版本:v1.0.0 </div>
+      <div class="pull-right hidden-xs"> <b>Version:v1.0.0 </b></div>
       <strong>Copyright &copy; 2016<a href="#">汇保车汇</a>.</strong> All rights reserved.
     </footer>
     <!-- /.control-sidebar -->
-    <!-- Add the sidebar's background. This div must be placed
-         immediately after the control sidebar -->
+
+
   </div>
 <!-- ./wrapper -->
 <script src="{{static}}/plugins/jQuery/jQuery-2.2.0.min.js"></script>
 <script src="{{static}}/bootstrap/js/bootstrap.min.js"></script>
+<script src="{{static}}/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<script src="{{static}}/plugins/fastclick/fastclick.js"></script>
 <script src="{{static}}/js/app.min.js"></script>
 </body>
 </html>
