@@ -1,0 +1,9 @@
+{
+    "db": {
+        "host":     "qa.gidoor.com",
+        "port":     "3306",
+        "database": "t_sharp",
+        "user":     "sharp",
+        "password": "123456"
+    }
+}

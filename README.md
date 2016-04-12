@@ -1,0 +1,28 @@
+## Database schema
+
+```sql
+-- Schema for ‘koa-sample-web-app-api-mysql’ app
+
+DROP TABLE IF EXISTS `User`;
+
+create table User (
+  UserId          integer unsigned not null auto_increment,
+  Name            varchar(20) not null,
+  Email           varchar(32) not null,
+  Password        varchar(100),
+  CreateDate      dateTime  not null,
+  LastUpdateDate  timestamp,
+  primary key       (UserId),
+  unique  key Email (Email)
+) engine=InnoDB charset=utf8 auto_increment=100001;
+
+
+```
+## Test data
+
+```sql
+
+INSERT INTO User VALUES
+  (100002,'Admin','admin@user.com','$2a$12$jEG0N4wNwuc20WQxN1VzduijVnlzLgBNn2N6Uq1pNjN45VhUyNf4W',now(),now());
+
+```
