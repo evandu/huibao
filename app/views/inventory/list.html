@@ -24,13 +24,18 @@
                  <td>{{Num}}</td>
                  <td>{{Price}} 元</td>
                  <td> {{X Num Price }} 元</td>
-                 <td><button type="button" class="btn btn-danger btn-xs delete">删除</button></td>
+                 <td>
+                   <button type="button" class="btn btn-danger btn-sm delete">删除</button>
+                   <a href="{{ctx}}/inventory/{{InventoryId}}/edit">
+                     <button type="button" class="btn btn-primary btn-sm">编辑</button>
+                   </a>
+                 </td>
                </tr>
               {{/data}}
                </tbody>
                <tfoot>
                <tr>
-                 <th colspan="6" style="  text-align: right;color:red">总价:{{sum}} 元</th>
+                 <th colspan="6" style="text-align: right;color:red">总价:{{sum}} 元</th>
                </tr>
                </tfoot>
              </table>

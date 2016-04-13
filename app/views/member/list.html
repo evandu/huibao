@@ -12,7 +12,7 @@
                  <th>客户名称</th>
                  <th>客户代码</th>
                  <th>账户资金</th>
-                 <th>操作</th>
+                 <th colspan="2">操作</th>
                </tr>
                </thead>
                <tbody>
@@ -22,7 +22,12 @@
                  <td>{{Name}}</td>
                  <td>{{Code}}</td>
                  <td>{{Amount}} 元</td>
-                 <td><button type="button" class="btn btn-danger btn-xs delete">删除</button></td>
+                 <td>
+                   <button type="button" class="btn btn-danger btn-sm delete">删除</button>
+                   <a href="{{ctx}}/member/{{MemberId}}/edit">
+                     <button type="button" class="btn btn-primary btn-sm">编辑</button>
+                   </a>
+                 </td>
                </tr>
               {{/data}}
                </tbody>
