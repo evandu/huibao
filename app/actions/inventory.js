@@ -1,6 +1,7 @@
 'use strict';
 
 const InventoryDao       = require('../models/inventory.js');
+const MemberDao       = require('../models/member.js');
 
 const inventory = module.exports = {};
 
@@ -78,13 +79,97 @@ inventory.processEdit = function*(){
     this.redirect('/inventory/list');
 };
 
-inventory.processOut =function*(){
+inventory.processConfirm =function*(){
     const context = {
         module: {
             name:    '库存',
             subName: '出库',
         },
     };
-    console.log(this.request.body)
-    yield this.render('views/inventory/out',context);
+    const self = this;
+    const InventoryIds = this.request.body.InventoryId;
+    const Nums = this.request.body.Num;
+    if(InventoryIds || InventoryIds.length > 0){
+        const _Inventory= {};
+        for(let i=0; i<InventoryIds.length;i++){
+            if(_Inventory[InventoryIds[i]]){
+                _Inventory[InventoryIds[i]]  += parseInt(Nums[i]);
+            }else{
+                _Inventory[InventoryIds[i]] = parseInt(Nums[i]);
+            }
+        }
+        const inventories = yield InventoryDao.idIn(InventoryIds);
+        const member = yield MemberDao.get(this.request.body.MemberId);
+        context.Member=member;
+        context.inventories=inventories.map(function(o){
+            if(o.Num < _Inventory[o.InventoryId] ){
+                self.flash = {
+                    op: {  status: false,  msg: '“'+o.Name + '” 库存不足,库存为：' + o.Num +', 出库为：' + _Inventory[o.InventoryId] },
+                };
+                self.redirect('/inventory/list');
+            }else{
+                o.Num =_Inventory[o.InventoryId];
+            }
+            return o;
+        });
+
+        context.Sum = inventories.reduce(function(item, next){return item + next.Num * next.Price;
+        },0 );
+        if(context.Sum > member.Amount){
+            self.flash = {
+                op: {  status: false,  msg: member.Name +'-' +member.Code + ' 账户余额不足,余额为：' + member.Amount  + ' 元' },
+            };
+            self.redirect('/inventory/list');
+        }
+    }
+    yield self.render('views/inventory/confirm', context);
+};
+
+inventory.processOut = function*(){
+    const self = this;
+    const InventoryIds = this.request.body.InventoryId;
+    const Nums = this.request.body.Num;
+    if(InventoryIds || InventoryIds.length > 0){
+        const _Inventory= {};
+        for(let i=0; i<InventoryIds.length;i++){
+            if(_Inventory[InventoryIds[i]]){
+                _Inventory[InventoryIds[i]]  += parseInt(Nums[i]);
+            }else{
+                _Inventory[InventoryIds[i]] = parseInt(Nums[i]);
+            }
+        }
+
+        let inventories = yield InventoryDao.idIn(InventoryIds);
+        const member = yield MemberDao.get(this.request.body.MemberId);
+        let Sum = 0;
+        inventories = inventories.map(function(o){
+            if(o.Num < _Inventory[o.InventoryId] ){
+                self.flash = {
+                    op: {  status: false,  msg: '“'+o.Name + '” 库存不足,库存为：' + o.Num +', 出库为：' + _Inventory[o.InventoryId] },
+                };
+                self.redirect('/inventory/list');
+            }else{
+                o.Num = o.Num - _Inventory[o.InventoryId];
+                Sum += o.Price * _Inventory[o.InventoryId];
+            }
+            return o;
+        });
+
+        if(Sum > member.Amount){
+            self.flash = {
+                op: {  status: false,  msg: member.Name +'-' +member.Code + ' 账户余额不足,余额为：' + member.Amount  + ' 元' },
+            };
+            self.redirect('/inventory/list');
+        }
+        for( let i=0; i<inventories.length; i++ ){
+            yield InventoryDao.update(inventories[i].InventoryId, inventories[i]);
+        }
+        member.Amount  = member.Amount - Sum;
+        yield MemberDao.update(member.MemberId, member);
+        self.flash = { op: {  status: true,  msg: '出库成功' } };
+        self.redirect('/inventory/list');
+    } else{
+        self.flash = { op: {  status: false,  msg: '出库操作失败' } };
+        self.redirect('/inventory/list');
+    }
 };

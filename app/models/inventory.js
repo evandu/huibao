@@ -5,7 +5,7 @@ const Lib        = require('../lib/lib.js');
 const Inventory = module.exports = {};
 
 Inventory.suggest = function*(name) {
-    const result = yield GLOBAL.db.query('Select * From Inventory Where Name like ? limit 0,10 ', '%' + name + '%');
+    const result = yield GLOBAL.db.query('Select * From Inventory Where Num >0 and  Name like ? limit 0,10 ', '%' + name + '%');
     return  result[0].map(
       function(o){
           return { InventoryId: o.InventoryId, Name: o.Name , Price: o.Num + ' 件 * '+ o.Price +' 元' };
@@ -13,6 +13,11 @@ Inventory.suggest = function*(name) {
     );
 };
 
+
+Inventory.idIn = function*(ids) {
+    const result = yield GLOBAL.db.query('Select * From Inventory Where InventoryId in (' + ids.join(',') +')');
+    return  result[0];
+};
 
 Inventory.get = function*(id) {
     const result = yield GLOBAL.db.query('Select * From Inventory Where InventoryId = ?', id);
