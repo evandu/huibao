@@ -108,11 +108,7 @@
                     dataType: 'json',
                     timeout: 5000
                 }).done(function(result) {
-                    options.data = result;
-                    options.url = null;
-                    $(self).trigger("onDataRequestSuccess", result);
-                }).fail(function (o, err) {
-                    console.error(URL + " : " + err);
+             onSetSelectValueor(URL + " : " + err);
                 });
             }*/
 

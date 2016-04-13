@@ -77,3 +77,14 @@ inventory.processEdit = function*(){
     this.flash =  yield InventoryDao.update(this.params.id, this.request.body);
     this.redirect('/inventory/list');
 };
+
+inventory.processOut =function*(){
+    const context = {
+        module: {
+            name:    '库存',
+            subName: '出库',
+        },
+    };
+    console.log(this.request.body)
+    yield this.render('views/inventory/out',context);
+};

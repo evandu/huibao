@@ -121,7 +121,10 @@ app.use(hbsKoa({
 app.use(function* cleanPost(next) {
     if (this.request.body !== undefined) {
         for (const key in this.request.body) {
-            this.request.body[key] = this.request.body[key].trim();
+            this.request.body[key] =
+             typeof this.request.body[key] =='string' ?
+             this.request.body[key].trim:
+             this.request.body[key];
             if (this.request.body[key] == '') this.request.body[key] = null;
         }
     }
