@@ -8,7 +8,7 @@ Inventory.suggest = function*(name) {
     const result = yield GLOBAL.db.query('Select * From Inventory Where Name like ? limit 0,10 ', '%' + name + '%');
     return  result[0].map(
       function(o){
-          return { InventoryId: o.InventoryId, Name: o.Name , Price: o.Num + ' * '+ o.Price +' 元' };
+          return { InventoryId: o.InventoryId, Name: o.Name , Price: o.Num + ' 件 * '+ o.Price +' 元' };
       }
     );
 };
