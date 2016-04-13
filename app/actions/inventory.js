@@ -154,7 +154,6 @@ inventory.processOut = function*(){
             }
             return o;
         });
-
         if(Sum > member.Amount){
             self.flash = {
                 op: {  status: false,  msg: member.Name +'-' +member.Code + ' 账户余额不足,余额为：' + member.Amount  + ' 元' },
@@ -164,6 +163,15 @@ inventory.processOut = function*(){
         for( let i=0; i<inventories.length; i++ ){
             yield InventoryDao.update(inventories[i].InventoryId, inventories[i]);
         }
+        const inventoryLog = inventories.map(function(o){
+            o.Num = _Inventory[o.InventoryId];
+            o.Operator = self.passport.user.Name;
+            o.MemberId = member.MemberId;
+            return o;
+        });
+
+        yield InventoryDao.addlog(inventoryLog);
+
         member.Amount  = member.Amount - Sum;
         yield MemberDao.update(member.MemberId, member);
         self.flash = { op: {  status: true,  msg: '出库成功' } };

@@ -31,6 +31,22 @@ create table Inventory (
 ) engine=InnoDB charset=utf8 auto_increment=100001;
 
 
+
+create table InventoryLog (
+  LogId           integer unsigned not null auto_increment,
+  InventoryId     integer unsigned not null,
+  Name            varchar(20) not null,
+  Num             integer unsigned not null,
+  Price           integer unsigned not null,
+  MemberId        integer unsigned not null,
+  Operator        varchar(20) not null,
+  CreateDate      dateTime  not null DEFAULT CURRENT_TIMESTAMP,
+  LastUpdateDate  timestamp,
+  primary key       (LogId)
+) engine=InnoDB charset=utf8 auto_increment=100001;
+
+
+
 create table Member (
   MemberId         integer unsigned not null auto_increment,
   Name             varchar(20) ,

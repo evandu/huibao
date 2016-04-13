@@ -101,6 +101,11 @@ Inventory.update = function*(id,values) {
     }
 };
 
+
+Inventory.addlog = function *(values) {
+    yield GLOBAL.db.query('Insert Into InventoryLog Set ?', values);
+};
+
 Inventory.add = function*(values){
     try {
         const result = yield GLOBAL.db.query('Insert Into Inventory Set ?', values);
