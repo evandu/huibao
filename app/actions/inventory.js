@@ -41,6 +41,23 @@ inventory.list =function*(){
     });
 };
 
+
+inventory.log =function*(){
+    const context = {
+        module: {
+            name:    '库存',
+            subName: '出库日志',
+        },
+    };
+    const res = yield InventoryDao.log(this.query.InventoryId, this.query.MemberId);
+    yield this.render('views/inventory/log',{
+        module: context.module,
+        data:   res,
+    });
+};
+
+
+
 inventory.add =function*(){
     const context = {
         module: {

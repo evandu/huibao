@@ -62,6 +62,27 @@ Inventory.list = function*(){
     }
 };
 
+
+Inventory.log = function*(InventoryId, MemberId){
+    let sql = 'Select a.*, m.Code as Code, m.Name as MemberName From InventoryLog as a Left Join Member as m On m.MemberId = a.MemberId where a.InventoryId = ? Order By a.CreateDate';
+    if(MemberId){
+        sql = 'Select a.*, m.Code as Code, m.Name as MemberName From  InventoryLog as a  Left Join  Member as m  On m.MemberId = a.MemberId where m.MemberId = ? Order By a.CreateDate';
+    }
+    try{
+        const result = yield GLOBAL.db.query(sql,InventoryId?InventoryId:MemberId);
+        return result[0];
+    }catch(e){
+        Lib.logException('Inventory.log', e);
+        return {
+            op: {
+                status: false,
+                msg:    '查询失败',
+            },
+        };
+    }
+};
+
+
 Inventory.update = function*(id,values) {
     try {
         const result = yield GLOBAL.db.query('Update Inventory Set ? Where InventoryId = ?', [values, id]);

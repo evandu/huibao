@@ -6,6 +6,7 @@
 DROP TABLE IF EXISTS `User`;
 DROP TABLE IF EXISTS `Inventory`;
 DROP TABLE IF EXISTS `Member`;
+DROP TABLE IF EXISTS `InventoryLog`;
 
 create table User (
   UserId          integer unsigned not null auto_increment,
