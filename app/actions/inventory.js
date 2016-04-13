@@ -46,6 +46,18 @@ inventory.add =function*(){
 };
 
 
+
+inventory.out =function*(){
+    const context = {
+        module: {
+            name:    '库存',
+            subName: '出库',
+        },
+    };
+    yield this.render('views/inventory/out',context);
+};
+
+
 inventory.processAdd = function*(){
     this.flash = yield InventoryDao.add(this.request.body);
     this.redirect('/inventory/add');
