@@ -82,12 +82,11 @@ $(function(){
         showHeader: true,
         effectiveFieldsAlias:{ InventoryId:'ID', Name:'物品名称', Price:'数量'}
      }).on('onSetSelectValue', function (e, data) {
-         console.log(e)
-          tpl.find('input[name^="InventoryId"]').val(data.key)
+          tpl.find('input[name^="InventoryId"]').val(data.id)
      }).on('onUnsetSelectValue', function (e) {
           tpl.find(".productsName").val('')
           tpl.find('input[name^="InventoryId"]').val('')
-          tpl.find('input[name^="InventoryName"]').val('')
+
      })
     tpl.find(".delete").click(function(e){
       if($(".outInventory").size() <= 2 ){
