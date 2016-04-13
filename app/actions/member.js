@@ -4,6 +4,21 @@ const MemberDao       = require('../models/member.js');
 
 const member = module.exports = {};
 
+
+member.view =function*(){
+    const context = {
+        module: {
+            name:    '客户',
+            subName: '编辑',
+        },
+    };
+    const res = yield MemberDao.get(this.params.id);
+    yield this.render('views/member/edit',{
+        module: context.module,
+        data:   res,
+    });
+};
+
 member.list =function*(){
     const context = {
         module: {

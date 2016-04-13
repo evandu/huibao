@@ -11,7 +11,7 @@ const inventory = require('../actions/inventory.js');
 router.get('/',                        inventory.list);
 router.get('/inventory/list',          inventory.list);          // render list members page
 router.get('/inventory/add',           inventory.add);           // render add a new member page
-// router.get('/inventory/:id',           inventory.view);          // render view member details page
+router.get('/inventory/:id',           inventory.view);          // render view member details page
 // router.get('/inventory/:id/edit',      inventory.edit);          // render edit member details page
 // router.get('/inventory/:id/delete',    inventory.delete);        // render delete a member page
 //

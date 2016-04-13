@@ -4,6 +4,22 @@ const InventoryDao       = require('../models/inventory.js');
 
 const inventory = module.exports = {};
 
+
+inventory.view =function*(){
+    const context = {
+        module: {
+            name:    '库存',
+            subName: '编辑',
+        },
+    };
+    const res = yield InventoryDao.get(this.params.id);
+    yield this.render('views/inventory/edit',{
+        module: context.module,
+        data:   res,
+    });
+};
+
+
 inventory.list =function*(){
     const context = {
         module: {

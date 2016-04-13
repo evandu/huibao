@@ -4,6 +4,11 @@ const Lib        = require('../lib/lib.js');
 
 const Member = module.exports = {};
 
+Member.get = function*(id) {
+    const result = yield GLOBAL.db.query('Select * From Member Where MemberId = ?', id);
+    const member = result[0];
+    return member[0];
+};
 
 Member.delete = function*(id){
     try{

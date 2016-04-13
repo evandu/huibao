@@ -5,6 +5,13 @@ const Lib        = require('../lib/lib.js');
 const Inventory = module.exports = {};
 
 
+Inventory.get = function*(id) {
+    const result = yield GLOBAL.db.query('Select * From Inventory Where InventoryId = ?', id);
+    const member = result[0];
+    return member[0];
+};
+
+
 Inventory.delete = function*(id){
     try{
         yield GLOBAL.db.query('Delete From Inventory Where InventoryId = ?', id);

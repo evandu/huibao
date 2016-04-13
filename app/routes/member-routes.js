@@ -8,7 +8,7 @@ const member = require('../actions/member.js');
 
 router.get('/member/list',                member.list);
 router.get('/member/add',                 member.add);
-// router.get('/inventory/:id',           inventory.view);
+router.get('/member/:id',                 member.view);
 // router.get('/inventory/:id/edit',      inventory.edit);
 // router.get('/inventory/:id/delete',    inventory.delete);
 //
