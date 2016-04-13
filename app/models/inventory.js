@@ -4,7 +4,6 @@ const Lib        = require('../lib/lib.js');
 
 const Inventory = module.exports = {};
 
-
 Inventory.get = function*(id) {
     const result = yield GLOBAL.db.query('Select * From Inventory Where InventoryId = ?', id);
     const member = result[0];
@@ -48,9 +47,9 @@ Inventory.list = function*(){
     }
 };
 
-Inventory.add = function*(values){
+Inventory.update = function*(id,values) {
     try {
-        const result = yield GLOBAL.db.query('Insert Into Inventory Set ?', values);
+        const result = yield GLOBAL.db.query('Update Inventory Set ? Where InventoryId = ?', [values, id]);
         return {
             op: {
                 status: true,
@@ -81,6 +80,45 @@ Inventory.add = function*(values){
                     op: {
                         status: false,
                         msg:    '入库失败',
+                    },
+                };
+        }
+    }
+};
+
+Inventory.add = function*(values){
+    try {
+        const result = yield GLOBAL.db.query('Insert Into Inventory Set ?', values);
+        return {
+            op: {
+                status: true,
+                msg:    values.Name + '编辑成功, id=' + result[0].insertId,
+            },
+        };
+    } catch (e) {
+        Lib.logException('Inventory.insert', e);
+        switch (e.code) {
+            case 'ER_BAD_NULL_ERROR':
+            case 'ER_NO_REFERENCED_ROW_2':
+            case 'ER_NO_DEFAULT_FOR_FIELD':
+                return {
+                    op: {
+                        status: false,
+                        msg:    '请检查输入',
+                    },
+                };
+            case 'ER_DUP_ENTRY':
+                return {
+                    op: {
+                        status: false,
+                        msg:    '物品名称重复,请重新填写',
+                    },
+                };
+            default:
+                return {
+                    op: {
+                        status: false,
+                        msg:    '编辑失败',
                     },
                 };
         }

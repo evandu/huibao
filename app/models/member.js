@@ -78,7 +78,46 @@ Member.add = function*(values){
                 return {
                     op: {
                         status: false,
-                        msg:    '添加客户',
+                        msg:    '添加客户失败',
+                    },
+                };
+        }
+    }
+};
+
+Member.update = function*(id,values) {
+    try {
+        yield GLOBAL.db.query('Update Member Set ? Where MemberId = ?', [values, id]);
+        return {
+            op: {
+                status: true,
+                msg:    values.Name + '编辑成功, id=' + id,
+            },
+        };
+    } catch (e) {
+        Lib.logException('Member.update', e);
+        switch (e.code) {
+            case 'ER_BAD_NULL_ERROR':
+            case 'ER_NO_REFERENCED_ROW_2':
+            case 'ER_NO_DEFAULT_FOR_FIELD':
+                return {
+                    op: {
+                        status: false,
+                        msg:    '请检查输入',
+                    },
+                };
+            case 'ER_DUP_ENTRY':
+                return {
+                    op: {
+                        status: false,
+                        msg:    '代码重复,请重新填写',
+                    },
+                };
+            default:
+                return {
+                    op: {
+                        status: false,
+                        msg:    '编辑客户失败',
                     },
                 };
         }

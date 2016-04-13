@@ -4,8 +4,7 @@ const MemberDao       = require('../models/member.js');
 
 const member = module.exports = {};
 
-
-member.view =function*(){
+member.edit =function*(){
     const context = {
         module: {
             name:    '客户',
@@ -52,5 +51,10 @@ member.processAdd = function*(){
 
 member.processDelete = function*(){
     this.flash = yield MemberDao.delete(this.params.id);
+    this.redirect('/member/list');
+};
+
+member.processEdit = function*(){
+    this.flash =  yield MemberDao.update(this.params.id, this.request.body);
     this.redirect('/member/list');
 };

@@ -4,8 +4,7 @@ const InventoryDao       = require('../models/inventory.js');
 
 const inventory = module.exports = {};
 
-
-inventory.view =function*(){
+inventory.edit =function*(){
     const context = {
         module: {
             name:    '库存',
@@ -54,5 +53,10 @@ inventory.processAdd = function*(){
 
 inventory.processDelete = function*(){
     this.flash = yield InventoryDao.delete(this.params.id);
+    this.redirect('/inventory/list');
+};
+
+inventory.processEdit = function*(){
+    this.flash =  yield InventoryDao.update(this.params.id, this.request.body);
     this.redirect('/inventory/list');
 };
