@@ -22,7 +22,7 @@
                  <td>{{Name}}</td>
                  <td>{{Code}}</td>
                  <td>{{Amount}} 元</td>
-                 <td><button type="button" class="btn btn-danger btn-xs">删除</button></td>
+                 <td><button type="button" class="btn btn-danger btn-xs delete">删除</button></td>
                </tr>
               {{/data}}
                </tbody>
@@ -39,6 +39,12 @@
 
 <script>
   $(function () {
+    $(".delete").click(function () {
+       if(confirm("确定删除吗?")){
+          var id = $(this).parent("td").parent("tr").attr("id");
+          window.location.href='{{ctx}}/member/'+id+'/delete'
+       }
+    })
     $('#data').DataTable({
       "paging": true,
       "lengthChange": true,

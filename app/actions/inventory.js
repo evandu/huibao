@@ -15,7 +15,8 @@ inventory.list =function*(){
     yield this.render('views/inventory/list',{
         module: context.module,
         data:   res,
-        sum:    res.reduce(function(item, next){return item + next.Num * next.Price;},0 ),
+        sum:    res.reduce(function(item, next){return item + next.Num * next.Price;
+        },0 ),
     });
 };
 
@@ -33,4 +34,9 @@ inventory.add =function*(){
 inventory.processAdd = function*(){
     this.flash = yield InventoryDao.add(this.request.body);
     this.redirect('/inventory/add');
+};
+
+inventory.processDelete = function*(){
+    this.flash = yield InventoryDao.delete(this.params.id);
+    this.redirect('/inventory/list');
 };

@@ -17,7 +17,7 @@ router.get('/inventory/add',           inventory.add);           // render add a
 //
 router.post('/inventory/add',          inventory.processAdd);    // process add member
 // router.post('/inventory/:id/edit',     inventory.processEdit);   // process edit member
-// router.post('/inventory/:id/delete',   inventory.processDelete); // process delete member
+router.get('/inventory/:id/delete',   inventory.processDelete); // process delete member
 //
 
 module.exports = router.middleware();

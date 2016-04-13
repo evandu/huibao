@@ -34,3 +34,8 @@ member.processAdd = function*(){
     this.flash = yield MemberDao.add(this.request.body);
     this.redirect('/member/add');
 };
+
+member.processDelete = function*(){
+    this.flash = yield MemberDao.delete(this.params.id);
+    this.redirect('/member/list');
+};

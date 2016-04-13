@@ -4,6 +4,27 @@ const Lib        = require('../lib/lib.js');
 
 const Member = module.exports = {};
 
+
+Member.delete = function*(id){
+    try{
+        yield GLOBAL.db.query('Delete From Member Where MemberId = ?', id);
+        return {
+            op: {
+                status: true,
+                msg:    'id=' + id + ', 删除成功',
+            },
+        };
+    }catch(e) {
+        Lib.logException('Member.delete', e);
+        return {
+            op: {
+                status: false,
+                msg:    '删除失败',
+            },
+        };
+    }
+};
+
 Member.list = function*(){
     const sql = 'Select * From Member Order By CreateDate, LastUpdateDate';
     try{

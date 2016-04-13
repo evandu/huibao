@@ -4,6 +4,27 @@ const Lib        = require('../lib/lib.js');
 
 const Inventory = module.exports = {};
 
+
+Inventory.delete = function*(id){
+    try{
+        yield GLOBAL.db.query('Delete From Inventory Where InventoryId = ?', id);
+        return {
+            op: {
+                status: true,
+                msg:    'id=' + id + ', 删除成功',
+            },
+        };
+    }catch(e) {
+        Lib.logException('Inventory.delete', e);
+        return {
+            op: {
+                status: false,
+                msg:    '删除失败',
+            },
+        };
+    }
+};
+
 Inventory.list = function*(){
     const sql = 'Select * From Inventory Order By CreateDate, LastUpdateDate';
     try{
