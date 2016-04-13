@@ -4,13 +4,15 @@
 -- Schema for ‘koa-sample-web-app-api-mysql’ app
 
 DROP TABLE IF EXISTS `User`;
+DROP TABLE IF EXISTS `Inventory`;
+DROP TABLE IF EXISTS `Member`;
 
 create table User (
   UserId          integer unsigned not null auto_increment,
   Name            varchar(20) not null,
   Email           varchar(32) not null,
   Password        varchar(100),
-  CreateDate      dateTime  not null,
+  CreateDate      dateTime  not null DEFAULT CURRENT_TIMESTAMP,
   LastUpdateDate  timestamp,
   primary key       (UserId),
   unique  key Email (Email)
@@ -22,7 +24,7 @@ create table Inventory (
   Name            varchar(20) not null,
   Num             integer unsigned not null,
   Price           integer unsigned not null,
-  CreateDate      dateTime  not null,
+  CreateDate      dateTime  not null DEFAULT CURRENT_TIMESTAMP,
   LastUpdateDate  timestamp,
   primary key       (InventoryId),
   unique  key Name (Name)
@@ -30,17 +32,15 @@ create table Inventory (
 
 
 create table Member (
-  MemberID         integer unsigned not null auto_increment,
+  MemberId         integer unsigned not null auto_increment,
   Name             varchar(20) ,
   Code             varchar(20) not null,
   Amount           integer unsigned not null,
-  CreateDate       dateTime  not null,
+  CreateDate       dateTime  not null DEFAULT CURRENT_TIMESTAMP,
   LastUpdateDate   timestamp,
-  primary key       (InventoryId),
+  primary key       (MemberId),
   unique  key Code (Code)
 ) engine=InnoDB charset=utf8 auto_increment=100001;
-
-
 
 
 ```

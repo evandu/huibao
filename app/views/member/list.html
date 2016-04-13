@@ -2,35 +2,33 @@
  <div class="col-md-12">
    <div class="box box-primary">
        <div class="box-header with-border">
-         <h3 class="box-title">库存列表</h3>
+         <h3 class="box-title">客户列表</h3>
        </div>
        <div class='box-body'>
          <table id="data" class="table table-bordered table-striped">
                <thead>
                <tr>
                  <th>ID</th>
-                 <th>物品名称</th>
-                 <th>数量</th>
-                 <th>单价</th>
-                 <th>总价</th>
+                 <th>客户名称</th>
+                 <th>客户代码</th>
+                 <th>账户资金</th>
                  <th>操作</th>
                </tr>
                </thead>
                <tbody>
               {{#data}}
-               <tr id="{{InventoryId}}">
-                 <td>{{InventoryId}}</td>
+               <tr id="{{MemberId}}">
+                 <td>{{MemberId}}</td>
                  <td>{{Name}}</td>
-                 <td>{{Num}}</td>
-                 <td>{{Price}} 元</td>
-                 <td> {{X Num Price }} 元</td>
+                 <td>{{Code}}</td>
+                 <td>{{Amount}} 元</td>
                  <td><button type="button" class="btn btn-danger btn-xs">删除</button></td>
                </tr>
               {{/data}}
                </tbody>
                <tfoot>
                <tr>
-                 <th colspan="6" style="  text-align: right;color:red">总价:{{sum}} 元</th>
+                 <th colspan="5" style="  text-align: right;color:red">账户总金额:{{sum}} 元</th>
                </tr>
                </tfoot>
              </table>

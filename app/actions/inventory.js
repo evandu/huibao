@@ -15,6 +15,7 @@ inventory.list =function*(){
     yield this.render('views/inventory/list',{
         module: context.module,
         data:   res,
+        sum:    res.reduce(function(item, next){return item + next.Num * next.Price;},0 ),
     });
 };
 

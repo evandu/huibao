@@ -2,15 +2,15 @@
 
 const Lib        = require('../lib/lib.js');
 
-const Inventory = module.exports = {};
+const Member = module.exports = {};
 
-Inventory.list = function*(){
-    const sql = 'Select * From Inventory Order By CreateDate, LastUpdateDate';
+Member.list = function*(){
+    const sql = 'Select * From Member Order By CreateDate, LastUpdateDate';
     try{
         const result = yield GLOBAL.db.query(sql,1);
         return result[0];
     }catch(e){
-        Lib.logException('Inventory.list', e);
+        Lib.logException('Member.List', e);
         return {
             op: {
                 status: false,
@@ -20,17 +20,17 @@ Inventory.list = function*(){
     }
 };
 
-Inventory.add = function*(values){
+Member.add = function*(values){
     try {
-        const result = yield GLOBAL.db.query('Insert Into Inventory Set ?', values);
+        const result = yield GLOBAL.db.query('Insert Into Member Set ?', values);
         return {
             op: {
                 status: true,
-                msg:    values.Name + '入库成功, id=' + result[0].insertId,
+                msg:    values.Name + '添加客户成功, id=' + result[0].insertId,
             },
         };
     } catch (e) {
-        Lib.logException('Inventory.insert', e);
+        Lib.logException('Member.insert', e);
         switch (e.code) {
             case 'ER_BAD_NULL_ERROR':
             case 'ER_NO_REFERENCED_ROW_2':
@@ -45,14 +45,14 @@ Inventory.add = function*(values){
                 return {
                     op: {
                         status: false,
-                        msg:    '物品名称重复,请重新填写',
+                        msg:    '代码重复,请重新填写',
                     },
                 };
             default:
                 return {
                     op: {
                         status: false,
-                        msg:    '入库失败',
+                        msg:    '添加客户',
                     },
                 };
         }

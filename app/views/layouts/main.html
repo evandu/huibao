@@ -100,12 +100,12 @@
             <ul class="treeview-menu">
               <li  {{#compare module.subName '==' '添加客户'}}
                   class="active"
-                  {{/compare}}><a href="#"><i class="fa fa-male"></i>添加客户</a></li>
+                  {{/compare}}><a href="{{ctx}}/member/add"><i class="fa fa-male"></i>添加客户</a></li>
               <li
                  {{#compare module.subName '==' '客户列表'}}
                   class="active"
                   {{/compare}}>
-                  <a href="#"><i class="fa  fa-user-plus"></i>客户列表</a></li>
+                  <a href="{{ctx}}/member/list"><i class="fa  fa-user-plus"></i>客户列表</a></li>
             </ul>
           </li>
           <li   {{#compare module.name '==' '系统管理'}}
@@ -168,15 +168,12 @@
        </section>
      </div>
     <!-- /.content-wrapper -->
-
     <!-- Main Footer -->
     <footer class="main-footer">
       <div class="pull-right hidden-xs"> <b>Version:v1.0.0 </b></div>
       <strong>Copyright &copy; 2016<a href="#">汇保车汇</a>.</strong> All rights reserved.
     </footer>
     <!-- /.control-sidebar -->
-
-
   </div>
 <!-- ./wrapper -->
 
