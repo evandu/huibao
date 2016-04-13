@@ -21,6 +21,7 @@ router.get('/inventory/:id/delete',    inventory.processDelete); // process dele
 //
 
 router.get('/inventory/out',           inventory.out);
+router.get('/inventory/suggest',       inventory.suggest);
 module.exports = router.middleware();
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */

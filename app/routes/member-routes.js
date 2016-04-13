@@ -15,6 +15,7 @@ router.get('/member/:id/edit',            member.edit);
 router.post('/member/add',                member.processAdd);
 router.post('/member/:id/edit',           member.processEdit);
 router.get('/member/:id/delete',          member.processDelete);
+router.get('/member/suggest',             member.suggest);
 //
 
 module.exports = router.middleware();

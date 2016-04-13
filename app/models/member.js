@@ -4,6 +4,16 @@ const Lib        = require('../lib/lib.js');
 
 const Member = module.exports = {};
 
+Member.suggest = function*(name) {
+    const result = yield GLOBAL.db.query('Select * From Member Where Name like ? Or Code like ? limit 0,10', ['%' + name + '%', '%' + name  + '%']);
+    return  result[0].map(
+      function(o){
+          return { MemberId: o.MemberId, Name: o.Name + '-' + o.Code, Amount: o.Amount +' 元' };
+      }
+    );
+};
+
+
 Member.get = function*(id) {
     const result = yield GLOBAL.db.query('Select * From Member Where MemberId = ?', id);
     const member = result[0];
@@ -110,7 +120,7 @@ Member.update = function*(id,values) {
                 return {
                     op: {
                         status: false,
-                        msg:    '代码重复,请重新填写',
+                        msg:    '车牌重复,请重新填写',
                     },
                 };
             default:

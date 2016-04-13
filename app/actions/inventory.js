@@ -4,6 +4,11 @@ const InventoryDao       = require('../models/inventory.js');
 
 const inventory = module.exports = {};
 
+
+inventory.suggest =function*(){
+    this.body = yield InventoryDao.suggest(this.query.name);
+};
+
 inventory.edit =function*(){
     const context = {
         module: {

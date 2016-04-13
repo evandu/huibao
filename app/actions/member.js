@@ -4,6 +4,11 @@ const MemberDao       = require('../models/member.js');
 
 const member = module.exports = {};
 
+member.suggest =function*(){
+    this.body = yield MemberDao.suggest(this.query.name);
+};
+
+
 member.edit =function*(){
     const context = {
         module: {
