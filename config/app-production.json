@@ -1,6 +1,6 @@
 {
     "db": {
-        "host":     "qa.gidoor.com",
+        "host":     "192.168.1.204",
         "port":     "3306",
         "database": "t_sharp",
         "user":     "sharp",
