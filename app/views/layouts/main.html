@@ -184,6 +184,41 @@
 <script src="{{static}}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{static}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script src="{{static}}/plugins/suggest/bootstrap-suggest.js"></script>
+<script>
+$('#data').DataTable({
+  "paging": true,
+  "lengthChange": true,
+  "searching": true,
+  "ordering": true,
+  "info": true,
+  "autoWidth": true,
+  "language": {
+           sEmptyTable:     "<b>符合条件的数据为空</b>",
+           sInfo:           "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+           sInfoEmpty:      "显示第 0 至 0 项结果，共 0 项",
+           sInfoFiltered:   "(filtered from _MAX_ total entries)",
+           sInfoThousands:  ",",
+           sLengthMenu:     "显示 _MENU_ 项",
+           sLoadingRecords: "数据加载中，请稍后...",
+           sProcessing:     "加载中...",
+           sSearch:         "搜索:",
+           sZeroRecords:    "未找到匹配的元素",
+           errMode:function( settings, tn, msg) {
+              console.log(msg)
+           },
+           oPaginate: {
+               sFirst:      "首页",
+               sLast:       "尾页",
+               sNext:       "下页",
+               sPrevious:   "上页"
+          },
+          oAria: {
+            sSortAscending:  ": 以升序排列此列",
+            sSortDescending: ": 以降序排列此列"
+          }
+       }
+});
+</script>
 </body>
 </html>
 {{else}}

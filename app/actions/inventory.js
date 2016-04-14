@@ -184,6 +184,8 @@ inventory.processOut = function*(){
             o.Num = _Inventory[o.InventoryId];
             o.Operator = self.passport.user.Name;
             o.MemberId = member.MemberId;
+            delete o.CreateDate;
+            delete o.LastUpdateDate;
             return o;
         });
 
