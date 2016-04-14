@@ -9,6 +9,7 @@ const serve      = require('koa-static');     // static file serving middleware
 const bunyan     = require('bunyan');         // logging
 const koaLogger  = require('koa-bunyan');     // logging
 const handlebars = require('handlebars');
+const moment     = require('moment');
 
 const app = module.exports = koa(); // API app
 
@@ -77,7 +78,7 @@ handlebars.registerHelper('ctx',function(){
 });
 
 handlebars.registerHelper('formatterDate', function(timestamp) {
-    return new Date(timestamp).toString('yyyy-MM-dd HH:mm:ss')
+    return moment(new Date(timestamp)).format('YYYY-MM-DD HH:mm:ss')
 });
 
 handlebars.registerHelper('compare', function(left, operator, right, options) {
