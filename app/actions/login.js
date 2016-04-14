@@ -29,7 +29,7 @@ handler.getLogin = function*() {
 handler.getLogout = function*() {
     this.logout();
     this.session = null;
-    this.redirect('/');
+    this.redirect('/login');
 };
 
 

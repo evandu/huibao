@@ -158,7 +158,7 @@ app.use(function* authSecureRoutes(next) {
     if (this.isAuthenticated()) {
         yield next;
     } else {
-        this.redirect('/login'+this.url);
+        this.redirect('/login');
     }
 });
 
