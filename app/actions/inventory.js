@@ -187,7 +187,9 @@ inventory.processOut = function*(){
             return o;
         });
 
-        yield InventoryDao.addlog(inventoryLog);
+        for( let i=0; i<inventoryLog.length; i++ ){
+            yield InventoryDao.addlog(inventoryLog[i]);
+        }
 
         member.Amount  = member.Amount - Sum;
         yield MemberDao.update(member.MemberId, member);

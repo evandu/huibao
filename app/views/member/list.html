@@ -12,6 +12,8 @@
                  <th>客户名称</th>
                  <th>客户车牌</th>
                  <th>账户资金</th>
+                 <th>录入时间</th>
+                 <th>最近一次变更时时间</th>
                  <th>操作</th>
                </tr>
                </thead>
@@ -22,6 +24,8 @@
                  <td>{{Name}}</td>
                  <td>{{Code}}</td>
                  <td>{{Amount}} 元</td>
+                 <td> {{formatterDate CreateDate}}</td>
+                 <td> {{formatterDate LastUpdateDate}}</td>
                  <td>
                    <button type="button" class="btn btn-danger btn-sm delete">删除</button>
                    <a href="{{ctx}}/member/{{MemberId}}/edit">

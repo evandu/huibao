@@ -76,6 +76,10 @@ handlebars.registerHelper('ctx',function(){
     return '';
 });
 
+handlebars.registerHelper('formatterDate', function(timestamp) {
+    return new Date(timestamp).toString('yyyy-MM-dd HH:mm:ss')
+});
+
 handlebars.registerHelper('compare', function(left, operator, right, options) {
     if (arguments.length < 3) {
         throw new Error('Handlerbars Helper "compare" needs 2 parameters');
