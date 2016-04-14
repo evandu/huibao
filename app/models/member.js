@@ -5,7 +5,7 @@ const Lib        = require('../lib/lib.js');
 const Member = module.exports = {};
 
 Member.suggest = function*(name) {
-    const result = yield GLOBAL.db.query('Select * From Member Where Name like ? Or Code like ? limit 0,10', ['%' + name + '%', '%' + name  + '%']);
+    const result = yield GLOBAL.db.query('Select * From Member Where  Amount >0 And Name like ? Or Code like ? limit 0, 10', ['%' + name + '%', '%' + name  + '%']);
     return  result[0].map(
       function(o){
           return { MemberId: o.MemberId, Name: o.Name + '-' + o.Code, Amount: o.Amount +' 元' };
