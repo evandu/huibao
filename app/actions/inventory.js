@@ -1,6 +1,6 @@
 'use strict';
 
-const InventoryDao       = require('../models/inventory.js');
+const InventoryDao    = require('../models/inventory.js');
 const MemberDao       = require('../models/member.js');
 
 const inventory = module.exports = {};
