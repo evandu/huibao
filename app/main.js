@@ -164,6 +164,7 @@ app.use(function* authSecureRoutes(next) {
 
 app.use(require('./routes/inventory-routes.js'));
 app.use(require('./routes/member-routes.js'));
+app.use(require('./routes/user-routes.js'));
 
 // end of the line: 404 status for any resource not found
 app.use(function* notFound(next) {

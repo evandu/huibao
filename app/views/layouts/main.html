@@ -20,12 +20,12 @@
   <![endif]-->
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini fixed ">
+<body class="hold-transition skin-blue sidebar-mini">
   <div class="wrapper">
     <!-- Main Header -->
       <header class="main-header">
       <!-- Logo -->
-      <a href="/" class="logo">
+      <a href="{{ctx}}" class="logo">
         <span class="logo-mini"><b>汇保</b></span>
         <span class="logo-lg"><b>汇保车汇</b></span>
       </a>
@@ -39,13 +39,13 @@
         <div class="navbar-custom-menu">
            <ul class="nav navbar-nav">
              <li class="dropdown user user-menu">
-              <a class="dropdown-toggle userInfoLoading" data-toggle="dropdown" style="" aria-expanded="false">
+              <a href="{{ctx}}/modify" class="dropdown-toggle userInfoLoading" data-toggle="dropdown" style="" aria-expanded="false">
                   <img src="/static/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                  <span class="hidden-xs ng-binding"> {{@koa.passport.user.Name}} </span>
+                  <span class="hidden-xs ng-binding">{{@koa.passport.user.Name}} </span>
               </a>
-            </li>
+             </li>
             <li>
-              <a href="/logout"><i class="glyphicon glyphicon-log-out"></i>
+              <a href="{{ctx}}/logout"><i class="glyphicon glyphicon-log-out"></i>
                   <span class="hidden-xs">退出</span>
               </a>
             </li>
@@ -61,7 +61,6 @@
         <ul class="sidebar-menu">
           <li class="header">菜单</li>
           <!-- Optionally, you can add icons to the links -->
-
           <li {{#compare module.name '==' '库存'}}
                   class="treeview active"
               {{else}}
@@ -108,7 +107,6 @@
                   <a href="{{ctx}}/member/list"><i class="fa  fa-user-plus"></i>客户列表</a></li>
             </ul>
           </li>
-            <!--
           <li   {{#compare module.name '==' '系统管理'}}
                   class="treeview active"
               {{else}}
@@ -120,16 +118,15 @@
             </a>
             <ul class="treeview-menu">
               <li
-                {{#compare module.subName '==' '添加用户'}}
+                {{#compare module.subName '==' '添加账号'}}
                 class="active"
-                {{/compare}} > <a href="#"><i class="fa  fa-user-md"></i>添加用户</a></li>
-              <li  {{#compare module.subName '==' '用户列表'}}
+                {{/compare}} > <a href="{{ctx}}/user/add"><i class="fa  fa-user-md"></i>添加账号</a></li>
+              <li  {{#compare module.subName '==' '账号列表'}}
                 class="active"
-                {{/compare}} ><a href="#"><i class="fa   fa-user-plus"></i>用户列表</a></li>
+                {{/compare}} ><a href="{{ctx}}/user/list"><i class="fa   fa-user-plus"></i>账号列表</a></li>
             </ul>
           </li>
         </ul>
-         -->
         <!-- /.sidebar-menu -->
       </section>
       <!-- /.sidebar -->
@@ -152,11 +149,11 @@
          <!-- Main content -->
          {{#if @koa.flash.op}}
              {{#if @koa.flash.op.status}}
-             <div class="alert alert-success alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                  <h4><i class="icon fa fa-check"></i>操作成功</h4>
-                    {{@koa.flash.op.msg}}
-             </div>
+                 <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                      <h4><i class="icon fa fa-check"></i>操作成功</h4>
+                        {{@koa.flash.op.msg}}
+                 </div>
               {{else}}
                 <div class="alert alert-danger alert-dismissible">
                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
