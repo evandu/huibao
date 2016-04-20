@@ -1,3 +1,11 @@
+{{#if tips.status}}
+  <div class="alert alert-warning alert-dismissible">
+         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+         <h4><i class="icon fa fa-ban"></i>操作警告：</h4>
+        {{{tips.msg}}}
+ </div>
+{{/if}}
+
 <div class="row">
  <div class="col-md-12">
    <div class="box box-primary">
@@ -11,6 +19,12 @@
                 <div class="form-group col-sm-4 ">
                   <p>{{Member.Name}}</p>
                   <p><input type="hidden"  name ='MemberId' value="{{Member.MemberId}}"/></p>
+                </div>
+              </div>
+              <div class="col-md-10">
+                <label for="memberName" class="col-sm-2 control-label">账号金额: </label>
+                <div class="form-group col-sm-4 ">
+                  <p>{{Member.Amount}}</p>
                 </div>
               </div>
            </div>
@@ -37,7 +51,11 @@
           </div>
          <div class="box-footer">
              <div class="col-md-6">
-               <button type="submit" class="btn btn-primary">确认出库</button>
+               {{#if tips.status}}
+                 <button type="submit" class="btn btn-warning">补差价（{{- Sum  Member.Amount}} 元）确认出库</button>
+               {{else}}
+                  <button type="submit" class="btn btn-primary">确认出库</button>
+               {{/if}}
             </div>
          </div>
        </form>

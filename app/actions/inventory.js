@@ -133,10 +133,14 @@ inventory.processConfirm =function*(){
         context.Sum = inventories.reduce(function(item, next){return item + next.Num * next.Price;
         },0 );
         if(context.Sum > member.Amount){
-            self.flash = {
-                op: {  status: false,  msg: member.Name +'-' +member.Code + ' 账户余额不足,余额为：' + member.Amount  + ' 元' },
+            // self.flash = {
+            //     op: {  status: false,  msg: member.Name +'-' +member.Code + ' 账户余额不足。 <br/> 账户余额为：' + member.Amount  + ' 元 <br/> 出库金额为：' + context.Sum + ' 元'  },
+            // };
+            // self.redirect('/inventory/list');
+            context.tips = {
+                status: true ,
+                msg:    member.Name + '-' + member.Code + ' 账号金额不足。<br/>账号金额为：' + member.Amount  + ' 元 <br/> 出库金额为：' + context.Sum + ' 元。<br/> 差价：' + (context.Sum - member.Amount) + ' 元',
             };
-            self.redirect('/inventory/list');
         }
     }
     yield self.render('views/inventory/confirm', context);
@@ -171,12 +175,12 @@ inventory.processOut = function*(){
             }
             return o;
         });
-        if(Sum > member.Amount){
-            self.flash = {
-                op: {  status: false,  msg: member.Name +'-' +member.Code + ' 账户余额不足,余额为：' + member.Amount  + ' 元' },
-            };
-            self.redirect('/inventory/list');
-        }
+        // if(Sum > member.Amount){
+        //     self.flash = {
+        //         op: {  status: false,  msg: member.Name +'-' +member.Code + ' 账户余额不足,余额为：' + member.Amount  + ' 元' },
+        //     };
+        //     self.redirect('/inventory/list');
+        // }
         for( let i=0; i<inventories.length; i++ ){
             yield InventoryDao.update(inventories[i].InventoryId, inventories[i]);
         }
