@@ -53,7 +53,7 @@
 
 <script>
   $(function () {
-    $(".delete").click(function () {
+    $('table').on('click','.delete', function (){
        if(confirm("确定删除吗?")){
           var id = $(this).parent("td").parent("tr").attr("id");
           window.location.href='{{ctx}}/inventory/'+id+'/delete'
