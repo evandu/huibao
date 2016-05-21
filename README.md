@@ -1,7 +1,7 @@
+Koa(1.2) handlebars templating RESTful API using MySQL, on Node.js
 ## Database schema
 
 ```sql
--- Schema for ‘koa-sample-web-app-api-mysql’ app
 
 DROP TABLE IF EXISTS `User`;
 DROP TABLE IF EXISTS `Inventory`;
