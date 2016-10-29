@@ -25,7 +25,7 @@ app.use(session(app));
 
 // MySQL connection pool TODO: how to catch connection exception eg invalid password?
 const config = require('./config/app-'+app.env+'.json');
-GLOBAL.connectionPool = mysql.createPool(config.db); // put in GLOBAL to pass to sub-apps
+global.connectionPool = mysql.createPool(config.db); // put in GLOBAL to pass to sub-apps
 
 app.use(function* subApp(next) {
     yield compose(require('./app/main.js').middleware);

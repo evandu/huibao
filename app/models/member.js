@@ -5,7 +5,7 @@ const Lib        = require('../lib/lib.js');
 const Member = module.exports = {};
 
 Member.suggest = function*(name) {
-    const result = yield GLOBAL.db.query('Select * From Member Where  Amount >0 And Name like ? Or Code like ? limit 0, 10', ['%' + name + '%', '%' + name  + '%']);
+    const result = yield global.db.query('Select * From Member Where  Amount >0 And Name like ? Or Code like ? limit 0, 10', ['%' + name + '%', '%' + name  + '%']);
     return  result[0].map(
       function(o){
           return { MemberId: o.MemberId, Name: o.Name + '-' + o.Code, Amount: o.Amount +' 元' };
@@ -15,14 +15,14 @@ Member.suggest = function*(name) {
 
 
 Member.get = function*(id) {
-    const result = yield GLOBAL.db.query('Select * From Member Where MemberId = ?', id);
+    const result = yield global.db.query('Select * From Member Where MemberId = ?', id);
     const member = result[0];
     return member[0];
 };
 
 Member.delete = function*(id){
     try{
-        yield GLOBAL.db.query('Delete From Member Where MemberId = ?', id);
+        yield global.db.query('Delete From Member Where MemberId = ?', id);
         return {
             op: {
                 status: true,
@@ -43,7 +43,7 @@ Member.delete = function*(id){
 Member.list = function*(){
     const sql = 'Select * From Member Order By CreateDate, LastUpdateDate';
     try{
-        const result = yield GLOBAL.db.query(sql,1);
+        const result = yield global.db.query(sql,1);
         return result[0];
     }catch(e){
         Lib.logException('Member.List', e);
@@ -58,7 +58,7 @@ Member.list = function*(){
 
 Member.add = function*(values){
     try {
-        const result = yield GLOBAL.db.query('Insert Into Member Set ?', values);
+        const result = yield global.db.query('Insert Into Member Set ?', values);
         return {
             op: {
                 status: true,
@@ -97,7 +97,7 @@ Member.add = function*(values){
 
 Member.update = function*(id,values) {
     try {
-        yield GLOBAL.db.query('Update Member Set ? Where MemberId = ?', [values, id]);
+        yield global.db.query('Update Member Set ? Where MemberId = ?', [values, id]);
         return {
             op: {
                 status: true,

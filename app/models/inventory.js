@@ -5,7 +5,7 @@ const Lib        = require('../lib/lib.js');
 const Inventory = module.exports = {};
 
 Inventory.suggest = function*(name) {
-    const result = yield GLOBAL.db.query('Select * From Inventory Where Num >0 and  Name like ? limit 0,10 ', '%' + name + '%');
+    const result = yield global.db.query('Select * From Inventory Where Num >0 and  Name like ? limit 0,10 ', '%' + name + '%');
     return  result[0].map(
       function(o){
           return { InventoryId: o.InventoryId, Name: o.Name , Price: o.Num + ' 件 * '+ o.Price +' 元' };
@@ -15,12 +15,12 @@ Inventory.suggest = function*(name) {
 
 
 Inventory.idIn = function*(ids) {
-    const result = yield GLOBAL.db.query('Select * From Inventory Where InventoryId in (' + ids.join(',') +')');
+    const result = yield global.db.query('Select * From Inventory Where InventoryId in (' + ids.join(',') +')');
     return  result[0];
 };
 
 Inventory.get = function*(id) {
-    const result = yield GLOBAL.db.query('Select * From Inventory Where InventoryId = ?', id);
+    const result = yield global.db.query('Select * From Inventory Where InventoryId = ?', id);
     const member = result[0];
     return member[0];
 };
@@ -28,7 +28,7 @@ Inventory.get = function*(id) {
 
 Inventory.delete = function*(id){
     try{
-        yield GLOBAL.db.query('Delete From Inventory Where InventoryId = ?', id);
+        yield global.db.query('Delete From Inventory Where InventoryId = ?', id);
         return {
             op: {
                 status: true,
@@ -49,7 +49,7 @@ Inventory.delete = function*(id){
 Inventory.list = function*(){
     const sql = 'Select * From Inventory Order By CreateDate, LastUpdateDate';
     try{
-        const result = yield GLOBAL.db.query(sql,1);
+        const result = yield global.db.query(sql,1);
         return result[0];
     }catch(e){
         Lib.logException('Inventory.list', e);
@@ -69,7 +69,7 @@ Inventory.log = function*(InventoryId, MemberId){
         sql = 'Select a.*, m.Code as Code, m.Name as MemberName From  InventoryLog as a  Left Join  Member as m  On m.MemberId = a.MemberId where m.MemberId = ? Order By a.CreateDate';
     }
     try{
-        const result = yield GLOBAL.db.query(sql,InventoryId?InventoryId:MemberId);
+        const result = yield global.db.query(sql,InventoryId?InventoryId:MemberId);
         return result[0];
     }catch(e){
         Lib.logException('Inventory.log', e);
@@ -85,7 +85,7 @@ Inventory.log = function*(InventoryId, MemberId){
 
 Inventory.update = function*(id,values) {
     try {
-        const result = yield GLOBAL.db.query('Update Inventory Set ? Where InventoryId = ?', [values, id]);
+        const result = yield global.db.query('Update Inventory Set ? Where InventoryId = ?', [values, id]);
         return {
             op: {
                 status: true,
@@ -124,12 +124,12 @@ Inventory.update = function*(id,values) {
 
 
 Inventory.addlog = function *(values) {
-    yield GLOBAL.db.query('Insert Into InventoryLog Set ?', values);
+    yield global.db.query('Insert Into InventoryLog Set ?', values);
 };
 
 Inventory.add = function*(values){
     try {
-        const result = yield GLOBAL.db.query('Insert Into Inventory Set ?', values);
+        const result = yield global.db.query('Insert Into Inventory Set ?', values);
         return {
             op: {
                 status: true,
