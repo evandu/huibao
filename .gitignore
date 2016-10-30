@@ -5,3 +5,4 @@ dist
 coverage
 build
 npm-debug.log
+*.sql

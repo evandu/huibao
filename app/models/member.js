@@ -79,6 +79,7 @@ Member.add = function*(values){
             delete values['Email']
             const userAddResult = yield global.db.query('Insert Into User Set ?', User);
             values['UserId'] = userAddResult[0]['insertId']
+            values['FeatureCode'] =  values['FeatureCode'] + Lib.FeatureCode(values['UserId'])
         }
         const result = yield global.db.query('Insert Into Member Set ?', values);
         return {

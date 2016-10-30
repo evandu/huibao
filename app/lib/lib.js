@@ -22,7 +22,7 @@ Lib.logException = function(method, e) {
 };
 
 Lib.FeatureCode =  function (UserId) {
-    return `@${UserId}@`
+    return `${UserId}@`
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */

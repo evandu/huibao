@@ -2,6 +2,8 @@
 
 const MemberDao       = require('../models/member.js');
 const Lib        = require('../lib/lib.js');
+const _ = require('lodash');
+
 const member = module.exports = {};
 
 member.suggest =function*(){
@@ -38,20 +40,35 @@ member.detail =function*(){
     });
 };
 
-
 member.list =function*(){
-    const context = {
+    yield this.render('views/member/list',{
         module: {
             name:    '客户',
             subName: '客户列表',
-        },
-    };
-    const res = yield MemberDao.list(2);
-    yield this.render('views/member/list',{
-        module: context.module,
-        data:   res,
-        sum:    res.reduce(function(item, next){return item + next.Amount;},0 ),
+        }
     });
+};
+
+member.ajaxQuery =function*(){
+    const res = yield MemberDao.list(this.query);
+
+    const data = _.map(orders.orders, order=> {
+        order.Deposit = order.Deposit / 100.0
+        order.PayServiceAmount = order.PayServiceAmount / 100.0
+        order.PromotePrice = order.PromotePrice / 100.0
+        //order.PayDepositAmount = order.PayDepositAmount / 100.0
+        order.ServicePrice = order.ServicePrice / 100.0
+        order.Status = Order.Status[order.Status]
+        //  order.RefundDepositStatus = Order.RefundDepositStatus[order.RefundDepositStatus]
+        order.UserInfo = `${order.Name} ${order.Gender == '1' ? '男' : '女'} ${order.Age}岁 ${order.Height} cm ${order.Weight} kg`
+        order.AddressInfo = `${order.Area} ${order.Address}`
+        order.CreateDate = moment(order.CreateDate).format('YYYY-MM-DD HH:mm:ss')
+        order.UseDate = moment(order.UseDate).format('YYYY-MM-DD')
+        order.LastUpdateDate = moment(order.LastUpdateDate).format('YYYY-MM-DD HH:mm:ss')
+        return order
+    })
+    this.body = {data: orders}
+
 };
 
 member.add =function*(){
@@ -66,7 +83,7 @@ member.add =function*(){
 
 
 member.processAdd = function*(){
-    this.request.body['FeatureCode'] = Lib.FeatureCode(this.session.passport.user)
+    this.request.body['FeatureCode'] = this.passport.user.FeatureCode
     this.flash = yield MemberDao.add(this.request.body);
     this.redirect('/member/add');
 };
