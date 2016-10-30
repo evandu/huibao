@@ -3,6 +3,24 @@
    <div class="box box-primary">
        <div class="box-header with-border">
          <h3 class="box-title">客户列表</h3>
+           <form class="form-horizontal">
+               <label for="memberName" class="col-sm-2 control-label">选择客户：</label>
+               <div class="form-group col-sm-4 ">
+                   <div class="input-group">
+                       <input type="text" class="form-control" id="memberName"  placeholder="名称 或者 车牌" required>
+                       <div class="input-group-btn">
+                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                               <span class="caret"></span>
+                           </button>
+                           <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                       </div>
+                   </div>
+               </div>
+               <label class="col-sm-2 control-label"></label>
+               <div class="form-group  col-sm-4 ">
+                   <button type="submit" class="btn btn-primary"><i class="fa   fa-search "></i>  查询 </button>
+               </div>
+           </form>
        </div>
        <div class='box-body'>
          <table id="data" class="table table-bordered table-striped">
@@ -24,8 +42,8 @@
                  <td>{{Name}}</td>
                  <td>{{Code}}</td>
                  <td>{{Amount}} 元</td>
-                 <td> {{formatterDate CreateDate}}</td>
-                 <td> {{formatterDate LastUpdateDate}}</td>
+                 <td>{{formatterDate CreateDate}}</td>
+                 <td>{{formatterDate LastUpdateDate}}</td>
                  <td>
                    <button type="button" class="btn btn-danger btn-sm delete">删除</button>
                    <a href="{{ctx}}/member/{{MemberId}}/edit">
@@ -51,10 +69,36 @@
 <script>
   $(function () {
       $('table').on('click','.delete', function (){
-       if(confirm("确定删除吗?")){
-          var id = $(this).parent("td").parent("tr").attr("id");
+        if(confirm("确定删除吗?")){
+           var id = $(this).parent("td").parent("tr").attr("id");
           window.location.href='{{ctx}}/member/'+id+'/delete'
-       }
-    })
+        }
+      })
+
+      $("#memberName").bsSuggest({
+          url: "{{ctx}}/member/suggest?name=",
+          showBtn: true,
+          idField: "MemberId",
+          keyField: "Name",
+          allowNoKeyword: true,
+          getDataMethod: "url",
+          processData: function (res){
+              return {value: $.map(res,function (d) {
+                  return{
+                      "MemberId":d.MemberId,
+                      "Name":d.Name
+                  }
+              })}
+          },
+          showHeader: true,
+          effectiveFieldsAlias:{MemberId: 'ID', Name:'名称/车牌'}
+      }).on('onSetSelectValue', function (e, data) {
+          $("#memberName").next('input[type="hidden"]').remove()
+          $("#memberName").after('<input type="hidden" name="MemberId" value="'+ data.id+'"/>')
+      }).on('onUnsetSelectValue', function (e) {
+          $("#memberName").val('')
+          $("#memberName").next('input[type="hidden"]').remove()
+      })
+
   });
 </script>

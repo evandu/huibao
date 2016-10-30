@@ -10,7 +10,7 @@
                 <label for="memberName" class="col-sm-2 control-label">客户(车牌): </label>
                 <div class="form-group col-sm-4 ">
                     <div class="input-group">
-                       <input type="text" class="form-control" id="memberName"  placeholder="姓名 或者 车牌" required>
+                       <input type="text" class="form-control" id="memberName"  placeholder="名称 或者 车牌" required>
                        <div class="input-group-btn">
                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                <span class="caret"></span>
@@ -110,7 +110,7 @@ $(function(){
        getDataMethod: "url",
        processData: function (res){return {value:res}},
        showHeader: true,
-       effectiveFieldsAlias:{MemberId: 'ID', Name:'姓名/车牌', Amount:'账号金额'}
+       effectiveFieldsAlias:{MemberId: 'ID', Name:'名称/车牌', Amount:'账号金额'}
     }).on('onSetSelectValue', function (e, data) {
         $("#memberName").next('input[type="hidden"]').remove()
         $("#memberName").after('<input type="hidden" name="MemberId" value="'+ data.id+'"/>')

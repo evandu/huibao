@@ -10,6 +10,7 @@ router.get('/member/list',                member.list);
 router.get('/member/add',                 member.add);
 // router.get('/member/:id',              member.view);
 router.get('/member/:id/edit',            member.edit);
+router.get('/member/:id/detail',            member.detail);
 // router.get('/inventory/:id/delete',    inventory.delete);
 
 router.post('/member/add',                member.processAdd);

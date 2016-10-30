@@ -1,11 +1,11 @@
 'use strict';
 
 const Lib        = require('../lib/lib.js');
-
+const bcrypt        = require('co-bcrypt');
 const Member = module.exports = {};
 
 Member.suggest = function*(name) {
-    const result = yield global.db.query('Select * From Member Where  Amount >0 And Name like ? Or Code like ? limit 0, 10', ['%' + name + '%', '%' + name  + '%']);
+    const result = yield global.db.query('Select * From Member Where  Name like ? Or Code like ? limit 0, 10', ['%' + name + '%', '%' + name  + '%']);
     return  result[0].map(
       function(o){
           return { MemberId: o.MemberId, Name: o.Name + '-' + o.Code, Amount: o.Amount +' 元' };
@@ -16,8 +16,15 @@ Member.suggest = function*(name) {
 
 Member.get = function*(id) {
     const result = yield global.db.query('Select * From Member Where MemberId = ?', id);
-    const member = result[0];
-    return member[0];
+    const member = result[0][0];
+    const GroupType = member.GroupType
+    if(GroupType == 2){
+        const UserId = member.UserId
+        const UserResult = yield global.db.query('Select * From User Where UserId = ?', UserId);
+        member['Email'] = UserResult[0][0]['Email']
+    }
+    console.log(member)
+    return member;
 };
 
 Member.delete = function*(id){
@@ -40,10 +47,10 @@ Member.delete = function*(id){
     }
 };
 
-Member.list = function*(){
-    const sql = 'Select * From Member Order By CreateDate, LastUpdateDate';
+Member.list = function*(GroupType){
+    const sql = 'Select * From Member Where GroupType = ? Order By CreateDate, LastUpdateDate';
     try{
-        const result = yield global.db.query(sql,1);
+        const result = yield global.db.query(sql, [GroupType]);
         return result[0];
     }catch(e){
         Lib.logException('Member.List', e);
@@ -58,6 +65,21 @@ Member.list = function*(){
 
 Member.add = function*(values){
     try {
+        if(values['GroupType'] == '2'){
+            values['Code'] = values['Email']
+            const salt = yield bcrypt.genSalt(10)
+            values['Password']  = yield bcrypt.hash(values['Password'],salt);
+            const User = {
+                Password:values['Password'],
+                Email:values['Email'],
+                Name:values['Name'],
+                FeatureCode:values['FeatureCode']
+            }
+            delete values['Password']
+            delete values['Email']
+            const userAddResult = yield global.db.query('Insert Into User Set ?', User);
+            values['UserId'] = userAddResult[0]['insertId']
+        }
         const result = yield global.db.query('Insert Into Member Set ?', values);
         return {
             op: {
@@ -78,12 +100,21 @@ Member.add = function*(values){
                     },
                 };
             case 'ER_DUP_ENTRY':
-                return {
-                    op: {
-                        status: false,
-                        msg:    '代码重复,请重新填写',
-                    },
-                };
+                if(values['GroupType'] == '2'){
+                    return {
+                        op: {
+                            status: false,
+                            msg:    '企业账号重复,请重新填写',
+                        },
+                    };
+                }else{
+                    return {
+                        op: {
+                            status: false,
+                            msg:    '车牌重复,请重新填写',
+                        },
+                    };
+                }
             default:
                 return {
                     op: {

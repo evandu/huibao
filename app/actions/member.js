@@ -1,7 +1,7 @@
 'use strict';
 
 const MemberDao       = require('../models/member.js');
-
+const Lib        = require('../lib/lib.js');
 const member = module.exports = {};
 
 member.suggest =function*(){
@@ -23,6 +23,22 @@ member.edit =function*(){
     });
 };
 
+
+member.detail =function*(){
+    const context = {
+        module: {
+            name:    '客户',
+            subName: '客户详情',
+        },
+    };
+    const res = yield MemberDao.get(this.params.id);
+    yield this.render('views/member/detail',{
+        module: context.module,
+        data:   res,
+    });
+};
+
+
 member.list =function*(){
     const context = {
         module: {
@@ -30,7 +46,7 @@ member.list =function*(){
             subName: '客户列表',
         },
     };
-    const res = yield MemberDao.list();
+    const res = yield MemberDao.list(2);
     yield this.render('views/member/list',{
         module: context.module,
         data:   res,
@@ -50,6 +66,7 @@ member.add =function*(){
 
 
 member.processAdd = function*(){
+    this.request.body['FeatureCode'] = Lib.FeatureCode(this.session.passport.user)
     this.flash = yield MemberDao.add(this.request.body);
     this.redirect('/member/add');
 };

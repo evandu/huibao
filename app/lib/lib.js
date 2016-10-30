@@ -21,4 +21,8 @@ Lib.logException = function(method, e) {
     console.log('UNHANDLED EXCEPTION', method, e.stack===undefined?e.message:e.stack);
 };
 
+Lib.FeatureCode =  function (UserId) {
+    return `@${UserId}@`
+}
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */

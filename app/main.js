@@ -40,9 +40,7 @@ app.use(passport.session());
 // handle thrown or uncaught exceptions anywhere down the line
 app.use(function* handleErrors(next) {
     try {
-
         yield next;
-
     } catch (e) {
         let context = null;
         this.status = e.status || 500;

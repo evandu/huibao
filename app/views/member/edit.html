@@ -2,7 +2,7 @@
  <div class="col-md-12">
    <div class="box box-primary">
        <div class="box-header with-border">
-         <h3 class="box-title">编辑用户操作</h3>
+         <h3 class="box-title">编辑客户操作</h3>
        </div>
        <form role="form" method="post">
            <div class="box-body ">
@@ -11,10 +11,41 @@
                 <label for="name">名称：</label>
                 <input type="text" class="form-control" id="name" value= "{{data.Name}}" name="Name" placeholder="输入名称" required  >
               </div>
-              <div class="form-group">
-                <label for="num">车牌：</label>
-                <input type="text" class="form-control" id="num"  value= "{{data.Code}}" name="Code" placeholder="输入车牌" required >
-              </div>
+                {{#compare data.GroupType '==' 2}}
+                    <div class="form-group">
+                        <label for="Email">企业登录账号（电子邮件）：</label>
+                        <input type="email" class="form-control"  value="{{data.Email}}" id="Email"  autocomplete="off" name="Email" placeholder="企业登录账号（电子邮件）" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Password">企业登录密码：</label>
+                        <input type="password" class="form-control" value="{{data.Password}}"  id="Password"  autocomplete="off" name="Password" placeholder="企业登录密码（为空表示不修改密码）" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Address">企业地址：</label>
+                        <input type="text" class="form-control" value="{{data.Address}}" id="Address" autocomplete="off" name="Address" placeholder="企业地址" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Mobile">企业联系电话：</label>
+                        <input type="text" class="form-control" value="{{data.Mobile}}"  id="Mobile"autocomplete="off"  name="Mobile" placeholder="企业电话" required>
+                    </div>
+                {{else}}
+                    <div class="form-group">
+                        <label for="num">车牌：</label>
+                        <input type="text" class="form-control" id="num"  value= "{{data.Code}}" name="Code" placeholder="输入车牌" required >
+                    </div>
+                    <div class="form-group">
+                        <label for="num">身份证照片：</label>
+                        <input type="file" name="IDPic">
+                    </div>
+                    <div class="form-group">
+                        <label for="num">行驶证照片：</label>
+                        <input type="file" name="DrivingPic">
+                    </div>
+                    <div class="form-group">
+                        <label for="num">保单照片：</label>
+                        <input type="file" name="PolicyPic">
+                    </div>
+                {{/compare}}
               <div class="form-group">
                 <label for="price">账号金额（单位元）：</label>
                  <input type="number" class="form-control" id="price" value= "{{data.Amount}}" name="Amount" placeholder="输入账号金额（单位元）" required min="0">

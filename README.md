@@ -10,8 +10,9 @@ DROP TABLE IF EXISTS `InventoryLog`;
 
 create table User (
   UserId          integer unsigned not null auto_increment,
-  Name            varchar(20) not null,
-  Email           varchar(32) not null,
+  Name            varchar(64) not null,
+  Email           varchar(64) not null,
+  FeatureCode     varchar(512),
   Password        varchar(100),
   CreateDate      dateTime  not null DEFAULT CURRENT_TIMESTAMP,
   LastUpdateDate  timestamp,
@@ -50,9 +51,17 @@ create table InventoryLog (
 
 create table Member (
   MemberId         integer unsigned not null auto_increment,
-  Name             varchar(20) ,
-  Code             varchar(20) not null,
+  Name             varchar(64) not null,
+  Code             varchar(64) not null,
   Amount           integer unsigned not null,
+  GroupType        tinyint unsigned not null,
+  UserId           integer unsigned,
+  Address          varchar(100),
+  Mobile           varchar(20),
+  DrivingPic       varchar(512),
+  IDPic            varchar(512),
+  PolicyPic        varchar(512),
+  FeatureCode      varchar(512),
   CreateDate       dateTime  not null DEFAULT CURRENT_TIMESTAMP,
   LastUpdateDate   timestamp,
   primary key       (MemberId),
