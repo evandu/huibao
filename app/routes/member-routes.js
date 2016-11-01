@@ -7,15 +7,15 @@ const member = require('../actions/member.js');
 
 
 router.get('/member/list',                member.list);
+router.get('/member/ajaxQuery',           member.ajaxQuery);
 router.get('/member/add',                 member.add);
 // router.get('/member/:id',              member.view);
 router.get('/member/:id/edit',            member.edit);
 router.get('/member/:id/detail',            member.detail);
-// router.get('/inventory/:id/delete',    inventory.delete);
 
 router.post('/member/add',                member.processAdd);
 router.post('/member/:id/edit',           member.processEdit);
-router.get('/member/:id/delete',          member.processDelete);
+router.post('/member/ajaxDelete',          member.processDelete);
 router.get('/member/suggest',             member.suggest);
 //
 

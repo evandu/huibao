@@ -3,7 +3,7 @@
 const MemberDao       = require('../models/member.js');
 const Lib        = require('../lib/lib.js');
 const _ = require('lodash');
-
+const bcrypt        = require('co-bcrypt');    // bcrypt library
 const member = module.exports = {};
 
 member.suggest =function*(){
@@ -50,25 +50,19 @@ member.list =function*(){
 };
 
 member.ajaxQuery =function*(){
-    const res = yield MemberDao.list(this.query);
-
-    const data = _.map(orders.orders, order=> {
-        order.Deposit = order.Deposit / 100.0
-        order.PayServiceAmount = order.PayServiceAmount / 100.0
-        order.PromotePrice = order.PromotePrice / 100.0
-        //order.PayDepositAmount = order.PayDepositAmount / 100.0
-        order.ServicePrice = order.ServicePrice / 100.0
-        order.Status = Order.Status[order.Status]
-        //  order.RefundDepositStatus = Order.RefundDepositStatus[order.RefundDepositStatus]
-        order.UserInfo = `${order.Name} ${order.Gender == '1' ? '男' : '女'} ${order.Age}岁 ${order.Height} cm ${order.Weight} kg`
-        order.AddressInfo = `${order.Area} ${order.Address}`
-        order.CreateDate = moment(order.CreateDate).format('YYYY-MM-DD HH:mm:ss')
-        order.UseDate = moment(order.UseDate).format('YYYY-MM-DD')
-        order.LastUpdateDate = moment(order.LastUpdateDate).format('YYYY-MM-DD HH:mm:ss')
-        return order
-    })
-    this.body = {data: orders}
-
+    const query = this.query
+    const FeatureCode =  this.passport.user.FeatureCode
+    let inputFeatureCode = query['FeatureCode']
+    if(!inputFeatureCode || !_.startsWith(inputFeatureCode,FeatureCode)){
+        inputFeatureCode = FeatureCode
+    }
+    delete query['FeatureCode']
+    const res = yield MemberDao.list(query,{'FeatureCode':inputFeatureCode + '%'});
+    if(res.op){
+        this.status = 500
+        this.body = {msg:res.op.msg}
+    }
+    this.body = {data: res}
 };
 
 member.add =function*(){
@@ -89,11 +83,20 @@ member.processAdd = function*(){
 };
 
 member.processDelete = function*(){
-    this.flash = yield MemberDao.delete(this.params.id);
-    this.redirect('/member/list');
+    const res = yield MemberDao.delete(_.values(this.request.body));
+    if(!res.op.status){
+        this.status =500
+    }
+    this.body = {data: res}
 };
 
 member.processEdit = function*(){
+    if(!this.request.body.Password || this.request.body.Password == ''){
+        delete this.request.body.Password;
+    }else{
+        const salt = yield bcrypt.genSalt(10)
+        this.request.body.Password  = yield bcrypt.hash(this.request.body.Password,salt);
+    }
     this.flash =  yield MemberDao.update(this.params.id, this.request.body);
     this.redirect('/member/list');
 };
