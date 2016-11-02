@@ -36,9 +36,11 @@ Member.get = function*(id) {
 
 Member.delete = function*(ids) {
     try {
+        console.log(ids)
         const [UserIds] =  yield global.db.query(`Select UserId From Member Where MemberId in (${ids.join(",")})`)
-        if (UserIds.length > 0) {
-            yield global.db.query(`Delete From User Where UserId in (${_.map(UserIds, d=>d.UserId).join(",")})`);
+        const deleteUserId = _.filter(_.map(UserIds, d=>d.UserId), d=>d && d!='')
+        if (deleteUserId.length > 0) {
+            yield global.db.query(`Delete From User Where UserId in (${deleteUserId.join(",")})`);
         }
         yield global.db.query(`Delete From Member Where MemberId in (${ids.join(",")})`);
         return {

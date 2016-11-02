@@ -4,9 +4,9 @@
        <div class="box-header with-border">
          <h3 class="box-title">编辑客户操作</h3>
        </div>
-       <form role="form" method="post">
+       <form role="form" method="post"  enctype="multipart/form-data">
            <div class="box-body ">
-            <div class="col-md-6">
+            <div class="col-md-8">
               <div class="form-group">
                 <label for="name">名称：</label>
                 <input type="text" class="form-control" id="name" value= "{{data.Name}}" name="Name" placeholder="输入名称" required  >
@@ -33,17 +33,20 @@
                         <label for="num">车牌：</label>
                         <input type="text" class="form-control" id="num"  value= "{{data.Code}}" name="Code" placeholder="输入车牌" required >
                     </div>
-                    <div class="form-group">
+                   <a href="{{static}}/img/bg.jpg"><img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo"></a>
+                   <div class="form-group">
                         <label for="num">身份证照片：</label>
-                        <input type="file" name="IDPic">
+                        <input class="form-control"  type="file" name="IDPic">
                     </div>
+                   <a href="{{static}}/img/bg.jpg">  <img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo"></a>
                     <div class="form-group">
                         <label for="num">行驶证照片：</label>
-                        <input type="file" name="DrivingPic">
+                        <input class="form-control"  type="file" name="DrivingPic">
                     </div>
+                    <a href="{{static}}/img/bg.jpg"><img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo"></a>
                     <div class="form-group">
                         <label for="num">保单照片：</label>
-                        <input type="file" name="PolicyPic">
+                        <input class="form-control" type="file" name="PolicyPic">
                     </div>
                 {{/compare}}
               <div class="form-group">

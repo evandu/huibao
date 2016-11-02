@@ -5,5 +5,6 @@
         "database": "huibao",
         "user":     "sharp",
         "password": "123456"
-    }
+    },
+    "upload":"e:\\"
 }

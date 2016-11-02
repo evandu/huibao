@@ -28,6 +28,7 @@ const config = require('./config/app-'+app.env+'.json');
 global.connectionPool = mysql.createPool(config.db); // put in GLOBAL to pass to sub-apps
 
 app.use(function* subApp(next) {
+    this.envConfig = config
     yield compose(require('./app/main.js').middleware);
 });
 

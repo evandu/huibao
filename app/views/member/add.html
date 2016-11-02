@@ -4,7 +4,7 @@
        <div class="box-header with-border">
          <h3 class="box-title">客户操作</h3>
        </div>
-       <form role="form" method="post">
+       <form role="form" method="post" enctype="multipart/form-data">
            <div class="box-body ">
             <div class="col-md-6">
               <div class="form-group">
@@ -62,15 +62,15 @@
     </div>
     <div class="form-group">
         <label for="num">身份证照片：</label>
-        <input type="file" name="IDPic">
+        <input type="file" class="form-control"  name="IDPic" required>
     </div>
     <div class="form-group">
         <label for="num">行驶证照片：</label>
-        <input type="file" name="DrivingPic">
+        <input type="file" class="form-control"  name="DrivingPic" required>
     </div>
     <div class="form-group">
         <label for="num">保单照片：</label>
-        <input type="file" name="PolicyPic">
+        <input type="file" class="form-control"  name="PolicyPic" required>
     </div>
 </div>
 
