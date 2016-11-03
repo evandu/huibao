@@ -42,7 +42,8 @@ Lib.randomString = function (length) {
 Lib.FeatureCode = function (UserId) {
     return `${UserId}@`
 }
-//querySql, countSql,sumAmountSql
+
+
 Lib.paging = function*(values, likeValues, sqlArray, formater) {
     values = _.merge({size: 10, cur: 1}, values);
 

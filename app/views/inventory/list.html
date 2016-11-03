@@ -3,6 +3,25 @@
    <div class="box box-primary">
        <div class="box-header with-border">
          <h3 class="box-title">库存列表</h3>
+           <form class="form-horizontal">
+               <label for="memberName" class="col-sm-2 control-label">选择客户：</label>
+               <div class="form-group col-sm-4 ">
+                   <div class="input-group">
+                       <input type="text" class="form-control" id="memberName" placeholder="名称 或者 车牌">
+                       <div class="input-group-btn">
+                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                               <span class="caret"></span>
+                           </button>
+                           <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                       </div>
+                   </div>
+               </div>
+
+               <label class="col-sm-2 control-label"></label>
+               <div class="form-group  col-sm-4 ">
+                   <button type="submit" class="btn btn-primary"><i class="fa   fa-search "></i> 查询</button>
+               </div>
+           </form>
        </div>
        <div class='box-body'>
          <table id="data" class="table table-bordered table-striped">
@@ -18,46 +37,96 @@
                  <th>操作</th>
                </tr>
                </thead>
-               <tbody>
-              {{#data}}
-               <tr id="{{InventoryId}}">
-                 <td>{{InventoryId}}</td>
-                 <td>{{Name}}</td>
-                 <td>{{Num}}</td>
-                 <td>{{Price}} 元</td>
-                 <td> {{X Num Price }} 元</td>
-                 <td> {{formatterDate CreateDate}}</td>
-                 <td> {{formatterDate LastUpdateDate}}</td>
-                 <td>
-                   <button type="button" class="btn btn-danger btn-sm delete">删除</button>
-                   <a href="{{ctx}}/inventory/{{InventoryId}}/edit">
-                     <button type="button" class="btn btn-primary btn-sm">编辑</button>
-                   </a>
-                   <a href="{{ctx}}/inventory/log?InventoryId={{InventoryId}}">
-                     <button type="button" class="btn btn-success btn-sm">出库日志</button>
-                   </a>
-                 </td>
-               </tr>
-              {{/data}}
-               </tbody>
-               <tfoot>
-               <tr>
-                 <th colspan="8" style="text-align: right;color:red">总计:{{sum}} 元</th>
-               </tr>
-               </tfoot>
              </table>
+           <p style="  text-align: right;color:red" id="sumAmount">总计:? 元</p>
+           <button type="button" id="deleteData" class="btn  btn-danger"><i class="fa fa-minus "></i>删除选择库存记录
+           </button>
        </div>
+       <div class='overlay tableLoading'><i class='fa fa-refresh fa-spin'></i></div>
    </div>
  </div>
 </div>
 
 <script>
   $(function () {
-    $('table').on('click','.delete', function (){
-       if(confirm("确定删除吗?")){
-          var id = $(this).parent("td").parent("tr").attr("id");
-          window.location.href='{{ctx}}/inventory/'+id+'/delete'
-       }
-    })
+      $.fn.DataTables({
+          target: "#data",
+          url: "ajaxQuery",
+          deleteDataUrl: "delete",
+          renderCallback:function(items){
+              $("#sumAmount").text("总计:" +items.data.sumAmount + "元")
+          },
+          columnDefs: [
+              {
+                  "render": function (data, type, row) {
+                      return  '<a href="{{ctx}}/inventory/'+data+'/edit">' +
+                              '   <button type="button" class="btn btn-primary btn-sm">编辑</button>' +
+                              '</a>' +
+                              '<a href="{{ctx}}/inventory/log?InventoryId='+data+'">' +
+                              '   <button type="button" class="btn btn-success btn-sm">出库日志</button>' +
+                              '</a>'
+                  },
+                  "targets": -1
+              }
+          ],
+          columns: [
+              {"data": "InventoryId"},
+              {"data": "Name"},
+              {"data": "Num"},
+              {"data": "Price"},
+              {"data": "SumPrice"},
+              {"data": "CreateDate"},
+              {"data": "LastUpdateDate"},
+              {"data": "InventoryId"}
+          ], params: function () {
+              var obj = new Object();
+              $.each($('form').serializeArray(), function (index, param) {
+                  if (!(param.name in obj)) {
+                      obj[param.name] = param.value;
+                  }
+              });
+              obj.size = 10;
+              obj.cur = 1
+              return obj;
+          }
+      })
+
+
+      $("#memberName").bsSuggest({
+          url: "{{ctx}}/member/suggest?name=",
+          showBtn: true,
+          idField: "FeatureCode",
+          keyField: "Name",
+          allowNoKeyword: true,
+          getDataMethod: "url",
+          effectiveFields: ["Name"],
+          processData: function (res) {
+              return {
+                  value: $.map(res, function (d) {
+                      return {
+                          "Name": d.Name,
+                          "FeatureCode": d.FeatureCode
+                      }
+                  })
+              }
+          },
+          showHeader: true,
+          effectiveFieldsAlias: {Name: '名称/车牌'}
+      }).on('onSetSelectValue', function (e, data) {
+          $("#memberName").next('input[type="hidden"]').remove()
+          $("#memberName").after('<input type="hidden" name="FeatureCode" value="' + data.id + '"/>')
+      }).on('onUnsetSelectValue', function (e) {
+          $("#memberName").val('')
+          $("#memberName").next('input[type="hidden"]').remove()
+      })
+
+
+      $('table').on('click','.delete', function (){
+           if(confirm("确定删除吗?")){
+              var id = $(this).parent("td").parent("tr").attr("id");
+              window.location.href='{{ctx}}/inventory/'+id+'/delete'
+           }
+      })
+
   });
 </script>

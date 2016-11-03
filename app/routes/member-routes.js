@@ -9,7 +9,9 @@ const member = require('../actions/member.js');
 
 router.get('/member/list',                member.list);
 router.get('/member/ajaxQuery',           member.ajaxQuery);
+router.get('/member/amountLogQuery',      member.amountLogQuery);
 router.get('/member/add',                 member.add);
+router.post('/member/addAmount',          member.processAddAmount);
 // router.get('/member/:id',              member.view);
 router.get('/member/:id/edit',            member.edit);
 router.get('/member/:id/detail',            member.detail);

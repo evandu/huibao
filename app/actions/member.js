@@ -49,6 +49,15 @@ member.list = function*() {
     });
 };
 
+member.amountLogQuery = function*(){
+    const res = yield MemberDao.amountLogQuery(this.query);
+    if (res.op) {
+        this.status = 500
+        this.body = {msg: res.op.msg}
+    }
+    this.body = {data: res}
+}
+
 member.ajaxQuery = function*() {
     const query = this.query
     const FeatureCode = this.passport.user.FeatureCode
@@ -57,7 +66,7 @@ member.ajaxQuery = function*() {
         inputFeatureCode = FeatureCode
     }
     delete query['FeatureCode']
-    const res = yield MemberDao.list(query, {'FeatureCode': inputFeatureCode + '%'});
+    const res = yield MemberDao.list(query, {'FeatureCode': '%' + inputFeatureCode + '%'});
     if (res.op) {
         this.status = 500
         this.body = {msg: res.op.msg}
@@ -81,9 +90,9 @@ member.processAdd = function*() {
     const {GroupType} = values
     if (GroupType == '1') {
         const {IDPic, DrivingPic, PolicyPic} = this.request.body.files
-        values['IDPic'] = yield Lib.upload(IDPic,this.envConfig.upload)
-        values['DrivingPic'] = yield Lib.upload(DrivingPic,this.envConfig.upload)
-        values['PolicyPic'] = yield Lib.upload(PolicyPic,this.envConfig.upload)
+        values['IDPic'] = yield Lib.upload(IDPic, this.envConfig.upload)
+        values['DrivingPic'] = yield Lib.upload(DrivingPic, this.envConfig.upload)
+        values['PolicyPic'] = yield Lib.upload(PolicyPic, this.envConfig.upload)
     } else {
         delete values['IDPic'];
         delete values['DrivingPic'];
@@ -102,11 +111,20 @@ member.processDelete = function*() {
     this.body = {data: res}
 };
 
-member.processEdit = function*() {
+member.processAddAmount = function*() {
+    const {AddAmount, MemberId} = this.request.body
+    const res = yield MemberDao.addAmount(AddAmount,MemberId,this.passport.user);
+    if(res <= 0){
+        this.status = 500
+    }
+    this.body = {data: res}
+}
 
+member.processEdit = function*() {
     const values = this.request.body.fields
+    delete values['Amount']
     const {GroupType} = values
-    if(GroupType == '2'){
+    if (GroupType == '2') {
         if (!values.Password || values.Password == '') {
             delete values['Password'];
         } else {
@@ -116,23 +134,23 @@ member.processEdit = function*() {
         delete values['IDPic'];
         delete values['DrivingPic'];
         delete values['PolicyPic'];
-    }else {
+    } else {
         delete values['Password'];
         if (GroupType == 1) {
             const {IDPic, DrivingPic, PolicyPic} = this.request.body.files
-            if(IDPic){
-                values['IDPic'] = yield Lib.upload(IDPic,this.envConfig.upload)
-            }else{
+            if (IDPic) {
+                values['IDPic'] = yield Lib.upload(IDPic, this.envConfig.upload)
+            } else {
                 delete values['IDPic'];
             }
-            if(DrivingPic){
-                values['DrivingPic'] = yield Lib.upload(DrivingPic,this.envConfig.upload)
-            }else{
+            if (DrivingPic) {
+                values['DrivingPic'] = yield Lib.upload(DrivingPic, this.envConfig.upload)
+            } else {
                 delete values['DrivingPic'];
             }
-            if(PolicyPic){
-                values['PolicyPic'] = yield Lib.upload(PolicyPic,this.envConfig.upload)
-            }else{
+            if (PolicyPic) {
+                values['PolicyPic'] = yield Lib.upload(PolicyPic, this.envConfig.upload)
+            } else {
                 delete values['PolicyPic'];
             }
         }

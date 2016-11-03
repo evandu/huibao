@@ -36,9 +36,8 @@ Member.get = function*(id) {
 
 Member.delete = function*(ids) {
     try {
-        console.log(ids)
         const [UserIds] =  yield global.db.query(`Select UserId From Member Where MemberId in (${ids.join(",")})`)
-        const deleteUserId = _.filter(_.map(UserIds, d=>d.UserId), d=>d && d!='')
+        const deleteUserId = _.filter(_.map(UserIds, d=>d.UserId), d=>d && d != '')
         if (deleteUserId.length > 0) {
             yield global.db.query(`Delete From User Where UserId in (${deleteUserId.join(",")})`);
         }
@@ -59,6 +58,51 @@ Member.delete = function*(ids) {
         };
     }
 };
+
+Member.addAmount = function*(AddAmount, MemberId, User) {
+    const AddResult =  yield global.db.query('Insert Into MemberAmountLog Set ?',
+        {
+            MemberId: MemberId,
+            Amount: AddAmount,
+            Operator: User.Name,
+            OperatorId: User.UserId
+        }
+    );
+    const LogId =   AddResult[0]['insertId']
+    try {
+        const result = yield global.db.query('Update Member Set Amount = Amount + ? Where MemberId = ? and FeatureCode like ? ',
+            [AddAmount, MemberId, '%' + User.FeatureCode + '%']);
+        return result[0]['affectedRows']
+    } catch (e) {
+        yield global.db.query('Delete From MemberAmountLog Where LogId = ?', LogId);
+    }
+}
+
+Member.amountLogQuery = function* (values) {
+    const QuerySql = 'Select * From MemberAmountLog $filter Order By CreateDate desc';
+    const CountSql = 'Select count(*) as count From MemberAmountLog $filter ';
+    const SumAmountSql = 'Select sum(Amount) as sumAmount From MemberAmountLog $filter ';
+
+    try {
+        return yield Lib.paging(values, {}, [QuerySql, CountSql, SumAmountSql], function (data) {
+            return _.map(data, d=> {
+                d.CreateDate = Moment(d.CreateDate).format('YYYY-MM-DD HH:mm:ss')
+                d.Operator = d.Operator + '(' + d.OperatorId + ')'
+                d.Amount = d.Amount + ' 元'
+                return d;
+            });
+        });
+    } catch (e) {
+        Lib.logException('Member.Amount.Log', e);
+        return {
+            op: {
+                status: false,
+                msg: '数据查询失败',
+            },
+        };
+    }
+}
+
 
 Member.list = function*(values, likeValues) {
     const QuerySql = 'Select * From Member $filter Order By CreateDate, LastUpdateDate';
@@ -159,7 +203,7 @@ Member.update = function*(id, values) {
         const Password = values.Password
         delete values['Password']
         yield global.db.query('Update Member Set ? Where MemberId = ?', [values, id]);
-        if(Password || member.Code != values.Code){
+        if (Password || member.Code != values.Code) {
             if (member.GroupType == 2) {
                 let updateUser = {'Email': values.Code}
                 if (Password) {

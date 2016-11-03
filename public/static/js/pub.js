@@ -115,23 +115,26 @@
 
     $.fn.extend({
         DataTables: function (opts) {
-            renderTable(opts, dataTable)
-            if (!opts.columnDefs || opts.columnDefs.length == 0) {
-                opts.columnDefs =  [{
-                    "render": function (data, type, row) {
-                        return '<input type="checkbox" class="DeleteDatas" value="' + data + '">'
-                    },
-                    "targets": 0
-                }]
-            }else {
-                opts.columnDefs.push({
-                    "render": function (data, type, row) {
-                        return '<input type="checkbox" class="DeleteDatas" value="' + data + '">'
-                    },
-                    "targets": 0
-                })
+            if(opts.hiddenCheckbox){
 
+            }else{
+                if ( (!opts.columnDefs || opts.columnDefs.length == 0)) {
+                    opts.columnDefs =  [{
+                        "render": function (data, type, row) {
+                            return '<input type="checkbox" class="DeleteDatas" value="' + data + '">'
+                        },
+                        "targets": 0
+                    }]
+                }else {
+                    opts.columnDefs.push({
+                        "render": function (data, type, row) {
+                            return '<input type="checkbox" class="DeleteDatas" value="' + data + '">'
+                        },
+                        "targets": 0
+                    })
+                }
             }
+            renderTable(opts, dataTable)
             $("form").on("submit", function (event) {
                 event.preventDefault();
                 jdatatables.ajax.reload();

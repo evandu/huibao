@@ -86,7 +86,6 @@ $(function(){
      }).on('onUnsetSelectValue', function (e) {
           tpl.find(".productsName").val('')
           tpl.find('input[name^="InventoryId"]').val('')
-
      })
     tpl.find(".delete").click(function(e){
       if($(".outInventory").size() <= 2 ){
@@ -118,5 +117,6 @@ $(function(){
           $("#memberName").val('')
           $("#memberName").next('input[type="hidden"]').remove()
     })
+
 })
 </script>

@@ -2,12 +2,13 @@
 
 const InventoryDao    = require('../models/inventory.js');
 const MemberDao       = require('../models/member.js');
-
+const _ = require('lodash');
 const inventory = module.exports = {};
 
 
 inventory.suggest =function*(){
-    this.body = yield InventoryDao.suggest(this.query.name);
+    const FeatureCode = this.passport.user.FeatureCode
+    this.body = yield InventoryDao.suggest(this.query.name,FeatureCode);
 };
 
 inventory.edit =function*(){
@@ -17,7 +18,8 @@ inventory.edit =function*(){
             subName: '编辑',
         },
     };
-    const res = yield InventoryDao.get(this.params.id);
+    const FeatureCode = this.passport.user.FeatureCode
+    const res = yield InventoryDao.get(this.params.id,FeatureCode);
     yield this.render('views/inventory/edit',{
         module: context.module,
         data:   res,
@@ -26,19 +28,29 @@ inventory.edit =function*(){
 
 
 inventory.list =function*(){
-    const context = {
+    yield this.render('views/inventory/list',{
         module: {
             name:    '库存',
             subName: '列表',
-        },
-    };
-    const res = yield InventoryDao.list();
-    yield this.render('views/inventory/list',{
-        module: context.module,
-        data:   res,
-        sum:    res.reduce(function(item, next){return item + next.Num * next.Price;
-        },0 ),
+        }
     });
+};
+
+
+inventory.ajaxQuery = function*() {
+    const query = this.query
+    const FeatureCode = this.passport.user.FeatureCode
+    let inputFeatureCode = query['FeatureCode']
+    if (!inputFeatureCode || !_.startsWith(inputFeatureCode, FeatureCode)) {
+        inputFeatureCode = FeatureCode
+    }
+    delete query['FeatureCode']
+    const res = yield InventoryDao.list(query, {'FeatureCode':  '%' + inputFeatureCode + '%'});
+    if (res.op) {
+        this.status = 500
+        this.body = {msg: res.op.msg}
+    }
+    this.body = {data: res}
 };
 
 
@@ -82,17 +94,26 @@ inventory.out =function*(){
 
 
 inventory.processAdd = function*(){
+    this.request.body['FeatureCode']  = this.passport.user.FeatureCode
+    this.request.body['UserId']  = this.passport.user.UserId
     this.flash = yield InventoryDao.add(this.request.body);
     this.redirect('/inventory/add');
 };
 
 inventory.processDelete = function*(){
-    this.flash = yield InventoryDao.delete(this.params.id);
-    this.redirect('/inventory/list');
+    const FeatureCode = this.passport.user.FeatureCode
+    const UserId = this.passport.user.UserId
+    const res = yield InventoryDao.delete(_.values(this.request.body), FeatureCode,UserId);
+    if (!res.op.status) {
+        this.status = 500
+    }
+    this.body = {data: res}
 };
 
 inventory.processEdit = function*(){
-    this.flash =  yield InventoryDao.update(this.params.id, this.request.body);
+    const FeatureCode = this.passport.user.FeatureCode
+    const UserId = this.passport.user.UserId
+    this.flash =  yield InventoryDao.update(this.params.id, this.request.body,FeatureCode,UserId);
     this.redirect('/inventory/list');
 };
 

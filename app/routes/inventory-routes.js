@@ -9,22 +9,27 @@ const router = require('koa-router')(); // router middleware for koa
 const inventory = require('../actions/inventory.js');
 
 router.get('/',                        inventory.list);
-router.get('/inventory/list',          inventory.list);          // render list members page
-router.get('/inventory/add',           inventory.add);           // render add a new member page
-router.get('/inventory/log',           inventory.log);           // render add a new member page
-// router.get('/inventory/:id',        inventory.view);          // render view member details page
-router.get('/inventory/:id/edit',      inventory.edit);          // render edit member details page
-// router.get('/inventory/:id/delete', inventory.delete);        // render delete a member page
+router.get('/inventory/list',          inventory.list);
+router.get('/ajaxQuery',               inventory.ajaxQuery);
+router.get('/inventory/ajaxQuery',     inventory.ajaxQuery);
+router.get('/inventory/suggest',       inventory.suggest);
+router.get('/inventory/add',           inventory.add);
+
+// router.get('/inventory/:id',        inventory.view);
+router.get('/inventory/:id/edit',      inventory.edit);
+// router.get('/inventory/:id/delete', inventory.delete);
 //
-router.post('/inventory/add',          inventory.processAdd);    // process add member
-router.post('/inventory/:id/edit',     inventory.processEdit);   // process edit member
-router.get('/inventory/:id/delete',    inventory.processDelete); // process delete member
+router.post('/inventory/add',          inventory.processAdd);
+router.post('/inventory/:id/edit',     inventory.processEdit);
+router.post('/inventory/ajaxDelete',    inventory.processDelete);
 //
 
+router.get('/inventory/log',           inventory.log);
 router.get('/inventory/out',           inventory.out);
 router.post('/inventory/confirm',      inventory.processConfirm);
 router.post('/inventory/out',          inventory.processOut);
-router.get('/inventory/suggest',       inventory.suggest);
+
+
 module.exports = router.middleware();
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
