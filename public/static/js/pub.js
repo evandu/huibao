@@ -135,10 +135,12 @@
                 }
             }
             renderTable(opts, dataTable)
-            $("form").on("submit", function (event) {
-                event.preventDefault();
-                jdatatables.ajax.reload();
-            })
+            if(!opts.hiddenForm){
+                $("form").on("submit", function (event) {
+                    event.preventDefault();
+                    jdatatables.ajax.reload();
+                })
+            }
         }
     })
 })(jQuery)

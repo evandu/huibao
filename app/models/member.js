@@ -5,6 +5,9 @@ const bcrypt = require('co-bcrypt');
 const Sequence = require('./sequence.js');
 const Moment = require('moment');
 const _ = require('lodash');
+
+const ModelError = require('./modelerror.js');
+
 const Member = module.exports = {};
 
 Member.suggest = function*(name) {
@@ -20,7 +23,6 @@ Member.suggest = function*(name) {
         }
     );
 };
-
 
 Member.get = function*(id) {
     const result = yield global.db.query('Select * From Member Where MemberId = ?', id);
@@ -72,7 +74,11 @@ Member.addAmount = function*(AddAmount, MemberId, User) {
     try {
         const result = yield global.db.query('Update Member Set Amount = Amount + ? Where MemberId = ? and FeatureCode like ? ',
             [AddAmount, MemberId, '%' + User.FeatureCode + '%']);
-        return result[0]['affectedRows']
+        const row = result[0]['affectedRows']
+        if(row == 0){
+            throw ModelError(404,"");
+        }
+        return row
     } catch (e) {
         yield global.db.query('Delete From MemberAmountLog Where LogId = ?', LogId);
     }
