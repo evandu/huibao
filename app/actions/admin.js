@@ -5,6 +5,10 @@ const MemberDao = require('../models/member.js');
 const _ = require('lodash');
 const bcrypt = require('co-bcrypt');    // bcrypt library
 
+
+const InventoryDao    = require('../models/inventory.js');
+
+
 const admin = module.exports = {};
 
 admin.list = function*() {
@@ -92,3 +96,21 @@ admin.processEdit = function*() {
     this.flash = {op: {status: true, msg: '编辑成功'}};
     this.redirect('/admin/list');
 };
+
+
+admin.inventoryAdd =function*(){
+    const context = {
+        module: {
+            name:    '系统管理',
+            subName: '添加库存',
+        },
+    };
+    yield this.render('views/admin/inventory/add',context);
+};
+
+admin.inventoryProcessAdd = function*(){
+    this.request.body['UserId']  = this.passport.user.UserId
+    this.flash = yield InventoryDao.add(this.request.body);
+    this.redirect('/admin/inventory/add');
+};
+

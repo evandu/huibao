@@ -15,5 +15,9 @@ router.post('/admin/ajaxDelete',         admin.processDelete);
 router.get('/admin/edit/:id',            admin.edit);
 router.post('/admin/edit/:id',           admin.processEdit);
 
+router.get('/admin/inventory/add',       admin.inventoryAdd);
+router.post('/admin/inventory/add',       admin.inventoryProcessAdd);
+
+
 
 module.exports = router.middleware();
