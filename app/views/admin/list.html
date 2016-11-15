@@ -1,0 +1,83 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">公司列表</h3>
+                <form class="form-horizontal">
+                    <label for="Name" class="col-sm-2 control-label">公司客户：</label>
+                    <div class="form-group col-sm-4 ">
+                        <input type="text" class="form-control" id="Name" name="Name" placeholder="公司名称">
+                    </div>
+                    <label class="col-sm-2 control-label"></label>
+                    <div class="form-group  col-sm-4 ">
+                        <button type="submit" class="btn btn-primary"><i class="fa   fa-search "></i> 查询</button>
+                    </div>
+                </form>
+            </div>
+            <div class='box-body'>
+                <table id="data" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>选择</th>
+                        <th>名称</th>
+                        <th>账户</th>
+                        <th>状态</th>
+                        <th>账户资金</th>
+                        <th>电话</th>
+                        <th>最近一次变更时时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                </table>
+                <p style="text-align: right;color:red" id="sumAmount">总计:? 元</p>
+                <button type="button" id="deleteData" class="btn  btn-danger"><i class="fa fa-minus "></i>删除选择会员
+                </button>
+            </div>
+            <div class='overlay tableLoading'><i class='fa fa-refresh fa-spin'></i></div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $.fn.DataTables({
+            target: "#data",
+            url: "ajaxQuery",
+            deleteDataUrl: "ajaxDelete",
+            renderCallback: function (items) {
+                $("#sumAmount").text("总计:" + items.data.sumAmount + "元")
+            },
+            columnDefs: [
+                {
+                    "render": function (data, type, row) {
+                        return '<a href="{{ctx}}/admin/edit/' + data + '">' +
+                                '   <button type="button" class="btn btn-primary btn-sm">编辑</button>' +
+                                '</a>'
+                    },
+                    "targets": -1
+                }
+            ],
+            columns: [
+                {"data": "UserId"},
+                {"data": "Name"},
+                {"data": "Email"},
+                {"data": "Active"},
+                {"data": "Amount"},
+                {"data": "Mobile"},
+                {"data": "LastUpdateDate"},
+                {"data": "UserId"}
+            ], params: function () {
+                var obj = new Object();
+                $.each($('form').serializeArray(), function (index, param) {
+                    if (!(param.name in obj)) {
+                        if ('请选择客户类型' != param.value) {
+                            obj[param.name] = param.value;
+                        }
+                    }
+                });
+                obj.size = 10;
+                obj.cur = 1
+                return obj;
+            }
+        })
+    });
+</script>

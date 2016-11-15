@@ -25,9 +25,7 @@ app.use(function* mysqlConnection(next) {
     this.db = global.db = yield global.connectionPool.getConnection();
     // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
     yield this.db.query('SET SESSION sql_mode = "TRADITIONAL"');
-
     yield next;
-
     this.db.release();
 });
 
@@ -166,7 +164,7 @@ app.use(function* authSecureRoutes(next) {
 
 app.use(require('./routes/inventory-routes.js'));
 app.use(require('./routes/member-routes.js'));
-app.use(require('./routes/user-routes.js'));
+app.use(require('./routes/admin-routes.js'));
 
 // end of the line: 404 status for any resource not found
 app.use(function* notFound(next) {

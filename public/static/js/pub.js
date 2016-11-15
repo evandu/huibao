@@ -5,22 +5,24 @@
         if (jdatatables) {
             var data = $(".DeleteDatas").filter(":checked");
             if (data.length <= 0) return;
-            var params = {};
-            for (var i = 0; i < data.length; i++) {
-                params['o_' + i] = $(data[i]).val();
+            if(confirm("确定删除选择数据")){
+                var params = {};
+                for (var i = 0; i < data.length; i++) {
+                    params['o_' + i] = $(data[i]).val();
+                }
+                $(".tableLoading").show();
+                $.ajax({
+                    type: "POST",
+                    url: 'ajaxDelete',
+                    data: params,
+                    dataType: 'json'
+                }).success(function (items) {
+                    jdatatables.ajax.reload();
+                }).fail(function () {
+                    jdatatables.ajax.reload();
+                    alert("删除数据报错")
+                })
             }
-            $(".tableLoading").show();
-            $.ajax({
-                type: "POST",
-                url: 'ajaxDelete',
-                data: params,
-                dataType: 'json'
-            }).success(function (items) {
-                jdatatables.ajax.reload();
-            }).fail(function () {
-                jdatatables.ajax.reload();
-                alert("删除数据报错")
-            })
         }
     })
 

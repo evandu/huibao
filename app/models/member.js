@@ -2,7 +2,6 @@
 
 const Lib = require('../lib/lib.js');
 const bcrypt = require('co-bcrypt');
-const Sequence = require('./sequence.js');
 const Moment = require('moment');
 const _ = require('lodash');
 
@@ -24,26 +23,24 @@ Member.suggest = function*(name) {
     );
 };
 
-Member.get = function*(id) {
-    const result = yield global.db.query('Select * From Member Where MemberId = ?', id);
-    const member = result[0][0];
-    const GroupType = member.GroupType
-    if (GroupType == 2) {
-        const UserId = member.UserId
-        const UserResult = yield global.db.query('Select * From User Where UserId = ?', UserId);
-        member['Email'] = UserResult[0][0]['Email']
+Member.get = function*(id, User) {
+    let result;
+    if (User.Role == 'admin') {
+        result = yield global.db.query('Select * From Member Where MemberId = ?', id)
+    } else {
+        result = yield global.db.query('Select * From Member Where MemberId = ? And UserId = ?', [id, User.UserId]);
     }
+    const member = result[0][0];
     return member;
 };
 
-Member.delete = function*(ids) {
+Member.delete = function*(ids, User) {
     try {
-        const [UserIds] =  yield global.db.query(`Select UserId From Member Where MemberId in (${ids.join(",")})`)
-        const deleteUserId = _.filter(_.map(UserIds, d=>d.UserId), d=>d && d != '')
-        if (deleteUserId.length > 0) {
-            yield global.db.query(`Delete From User Where UserId in (${deleteUserId.join(",")})`);
+        if (User.Role == 'admin') {
+            yield global.db.query(`Delete From Member Where MemberId in (${ids.join(",")})`);
+        } else {
+            yield global.db.query(`Delete From Member Where UserId = ? And MemberId in (${ids.join(",")})`, User.UserId);
         }
-        yield global.db.query(`Delete From Member Where MemberId in (${ids.join(",")})`);
         return {
             op: {
                 status: true,
@@ -61,22 +58,33 @@ Member.delete = function*(ids) {
     }
 };
 
+
 Member.addAmount = function*(AddAmount, MemberId, User) {
-    const AddResult =  yield global.db.query('Insert Into MemberAmountLog Set ?',
+    const AddResult = yield global.db.query('Insert Into MemberAmountLog Set ?',
         {
             MemberId: MemberId,
             Amount: AddAmount,
             Operator: User.Name,
+            UserId: User.UserId,
             OperatorId: User.UserId
         }
     );
-    const LogId =   AddResult[0]['insertId']
+    const LogId = AddResult[0]['insertId']
     try {
-        const result = yield global.db.query('Update Member Set Amount = Amount + ? Where MemberId = ? and FeatureCode like ? ',
-            [AddAmount, MemberId, '%' + User.FeatureCode + '%']);
+        let result;
+        if (User.Role == 'admin') {
+            result = yield global.db.query(
+                'Update Member Set Amount = Amount + ?, Active = 0 Where MemberId = ? ',
+                [AddAmount, MemberId])
+        } else {
+            result = yield global.db.query(
+                'Update Member Set Amount = Amount + ?, Active = 0 Where UserId = ? And MemberId = ? ',
+                [AddAmount, User.UserId, MemberId])
+        }
+
         const row = result[0]['affectedRows']
-        if(row == 0){
-            throw ModelError(404,"");
+        if (row == 0) {
+            throw ModelError(404, "");
         }
         return row
     } catch (e) {
@@ -84,11 +92,11 @@ Member.addAmount = function*(AddAmount, MemberId, User) {
     }
 }
 
-Member.amountLogQuery = function* (values) {
+
+Member.amountLogQuery = function*(values) {
     const QuerySql = 'Select * From MemberAmountLog $filter Order By CreateDate desc';
     const CountSql = 'Select count(*) as count From MemberAmountLog $filter ';
     const SumAmountSql = 'Select sum(Amount) as sumAmount From MemberAmountLog $filter ';
-
     try {
         return yield Lib.paging(values, {}, [QuerySql, CountSql, SumAmountSql], function (data) {
             return _.map(data, d=> {
@@ -109,6 +117,9 @@ Member.amountLogQuery = function* (values) {
     }
 }
 
+Member.audit =  function* (MemberId,Active) {
+    yield global.db.query('Update Member Set Active=? Where MemberId = ?', [Active, MemberId]);
+}
 
 Member.list = function*(values, likeValues) {
     const QuerySql = 'Select * From Member $filter Order By CreateDate, LastUpdateDate';
@@ -118,6 +129,7 @@ Member.list = function*(values, likeValues) {
         return yield Lib.paging(values, likeValues, [QuerySql, CountSql, SumAmountSql], function (data) {
             return _.map(data, d=> {
                 d.CreateDate = Moment(d.CreateDate).format('YYYY-MM-DD HH:mm:ss')
+                d.Active = d.Active == 1 ? "已审核" : "未审核"
                 d.LastUpdateDate = Moment(d.LastUpdateDate).format('YYYY-MM-DD HH:mm:ss')
                 return d;
             });
@@ -135,35 +147,12 @@ Member.list = function*(values, likeValues) {
 
 Member.add = function*(values) {
     try {
-        if (values['GroupType'] == '2') {
-            values['Code'] = values['Email']
-            const salt = yield bcrypt.genSalt(10)
-            values['Password'] = yield bcrypt.hash(values['Password'], salt);
-            const FeatureCode = yield Sequence.nextVal()
-            values['FeatureCode'] = values['FeatureCode'] + Lib.FeatureCode(FeatureCode)
-            const User = {
-                Password: values['Password'],
-                Email: values['Email'],
-                Name: values['Name'],
-                FeatureCode: values['FeatureCode']
-            }
-            delete values['Password']
-            delete values['Email']
-            const userAddResult = yield global.db.query('Insert Into User Set ?', User);
-            values['UserId'] = userAddResult[0]['insertId']
-        }
         const result = yield global.db.query('Insert Into Member Set ?', values);
         return {
-            op: {
-                status: true,
-                msg: values.Name + '添加客户成功, id=' + result[0].insertId,
-            },
+            op: {status: true, msg: values.Name + '添加客户成功, id=' + result[0].insertId},
         };
     } catch (e) {
         Lib.logException('Member.insert', e);
-        if (values['UserId']) {
-            yield global.db.query('Delete From User Where UserId = ?', values['UserId']);
-        }
         switch (e.code) {
             case 'ER_BAD_NULL_ERROR':
             case 'ER_NO_REFERENCED_ROW_2':
@@ -175,21 +164,12 @@ Member.add = function*(values) {
                     },
                 };
             case 'ER_DUP_ENTRY':
-                if (values['GroupType'] == '2') {
-                    return {
-                        op: {
-                            status: false,
-                            msg: '企业账号重复,请重新填写',
-                        },
-                    };
-                } else {
-                    return {
-                        op: {
-                            status: false,
-                            msg: '车牌重复,请重新填写',
-                        },
-                    };
-                }
+                return {
+                    op: {
+                        status: false,
+                        msg: '车牌重复,请重新填写',
+                    },
+                };
             default:
                 return {
                     op: {
@@ -201,22 +181,12 @@ Member.add = function*(values) {
     }
 };
 
-Member.update = function*(id, values) {
+Member.update = function*(id, User, values) {
     try {
-        delete values['GroupType']
-        const result = yield global.db.query('Select * From Member Where MemberId = ?', id);
-        const member = result[0][0];
-        const Password = values.Password
-        delete values['Password']
-        yield global.db.query('Update Member Set ? Where MemberId = ?', [values, id]);
-        if (Password || member.Code != values.Code) {
-            if (member.GroupType == 2) {
-                let updateUser = {'Email': values.Code}
-                if (Password) {
-                    updateUser = _.merge(updateUser, {"Password": Password})
-                }
-                yield global.db.query('Update User Set ? Where UserId = ?', [updateUser, member.UserId]);
-            }
+        if (User.Role == 'admin') {
+            yield global.db.query('Update Member Set ? Where MemberId = ?', [values, id]);
+        } else {
+            yield global.db.query('Update Member Set ? Where UserId =? And MemberId = ?', [values, User.UserId, id]);
         }
         return {
             op: {

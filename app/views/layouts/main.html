@@ -60,73 +60,37 @@
         <ul class="sidebar-menu">
           <li class="header">菜单</li>
           <!-- Optionally, you can add icons to the links -->
-          <li {{#compare module.name '==' '库存'}}
-                  class="treeview active"
-              {{else}}
-                  class="treeview"
-              {{/compare}} >
-            <a><i class="fa fa-database"></i>
-              <span>库存</span>
-              <i class="fa fa-angle-left pull-right"></i>
-            </a>
-            <ul class="treeview-menu">
-              <li
-                {{#compare module.subName '==' '列表'}}
-                   class="active"
-                {{/compare}} >
-                <a href="{{ctx}}/inventory/list" ><i class="fa fa-table"></i>列表</a></li>
-              <li {{#compare module.subName '==' '入库'}}
-                   class="active"
-                  {{/compare}}>
-                  <a href="{{ctx}}/inventory/add"><i class="fa fa-download"></i>入库</a></li>
-              <li {{#compare module.subName '==' '出库'}}
-                  class="active"
-                  {{/compare}} >
-                 <a href="{{ctx}}/inventory/out"><i class="fa  fa-external-link"></i>出库</a></li>
-            </ul>
-          </li>
-          <li  {{#compare module.name '==' '客户'}}
-                  class="treeview active"
-              {{else}}
-                  class="treeview"
-              {{/compare}} >
+            <li  {{#compare module.name '==' '客户'}} class="treeview active" {{else}} class="treeview" {{/compare}} >
             <a>
-              <i class="fa fa-users"></i>
-              <span>客户</span>
-              <i class="fa fa-angle-left pull-right"></i>
+                <i class="fa fa-users"></i>
+                <span>客户</span>
+                <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
-              <li  {{#compare module.subName '==' '添加客户'}}
-                  class="active"
-                  {{/compare}}><a href="{{ctx}}/member/add"><i class="fa fa-user-plus"></i>添加客户</a></li>
-              <li
-                 {{#compare module.subName '==' '客户列表'}}
-                  class="active"
-                  {{/compare}}>
-                  <a href="{{ctx}}/member/list"><i class="fa  fa-male "></i>客户列表</a></li>
+                <li  {{#compare module.subName '==' '添加客户'}} class="active" {{/compare}}>
+                 <a href="{{ctx}}/member/add"><i class="fa fa-user-plus"></i>添加客户</a>
+                </li>
+                <li  {{#compare module.subName '==' '客户列表'}} class="active" {{/compare}}>
+                  <a href="{{ctx}}/member/list"><i class="fa  fa-male "></i>客户列表</a>
+                </li>
             </ul>
-          </li>
-          <!--
-          <li   {{#compare module.name '==' '系统管理'}}
-                  class="treeview active"
-              {{else}}
-                  class="treeview"
-              {{/compare}} >
-            <a><i class="fa  fa-gears"></i>
-              <span>系统管理</span>
-              <i class="fa fa-angle-left pull-right"></i>
-            </a>
-            <ul class="treeview-menu">
-              <li
-                {{#compare module.subName '==' '添加账号'}}
-                class="active"
-                {{/compare}} > <a href="{{ctx}}/user/add"><i class="fa  fa-user-md"></i>添加账号</a></li>
-              <li  {{#compare module.subName '==' '账号列表'}}
-                class="active"
-                {{/compare}} ><a href="{{ctx}}/user/list"><i class="fa   fa-user-plus"></i>账号列表</a></li>
-            </ul>
-          </li>
-        -->
+            </li>
+          {{#compare @koa.passport.user.Role '==' 'admin'}}
+              <li {{#compare module.name '==' '系统管理'}} class="treeview active" {{else}} class="treeview" {{/compare}} >
+                 <a><i class="fa  fa-gears"></i>
+                  <span>系统管理</span>
+                   <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                     <li {{#compare module.subName '==' '添加公司'}} class="active" {{/compare}} >
+                       <a href="{{ctx}}/admin/add"><i class="fa  fa-user-md"></i>添加公司</a>
+                     </li>
+                     <li  {{#compare module.subName '==' '公司列表'}} class="active"  {{/compare}} >
+                       <a href="{{ctx}}/admin/list"><i class="fa   fa-user-plus"></i>公司列表</a>
+                     </li>
+                </ul>
+              </li>
+        {{/compare}}
         </ul>
         <!-- /.sidebar-menu -->
       </section>

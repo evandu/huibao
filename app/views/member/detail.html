@@ -1,0 +1,160 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">审核客户操作</h3>
+            </div>
+            <form role="form" method="post" class="form-horizontal" action="{{ctx}}/admin/memberAudit">
+                <input type="hidden" value="{{data.MemberId}}" name="MemberId">
+                <div class="box-body ">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">名称：</label>
+                            <div class="col-sm-4"> {{data.Name}}</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">车牌：</label>
+                            <div class="col-sm-4"> {{data.Code}}</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">身份证照片：</label>
+                            <div class="col-sm-8">
+                                <a href="{{static}}/img/bg.jpg">
+                                    <img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo">
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">行驶证照片：</label>
+                            <div class="col-sm-8">
+                                <a href="{{static}}/img/bg.jpg">
+                                    <img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo">
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">保单照片：</label>
+                            <div class="col-sm-8"><a href="{{static}}/img/bg.jpg">
+                                <img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo"></a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">账号资金：</label>
+                            <div class="col-sm-8"><h3 style="color: red">{{data.Amount}} 元</h3></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="select3"  class="col-sm-3 control-label">客户状态：</label>
+                            <select  id="select3" class="col-sm-3 form-control" name="Active" style="width: 30%;">
+                                <option value="0" {{#compare module.subName '==' '未审核'}} selected="selected" {{/compare}} >未审核</option>
+                                <option value="1"   {{#compare module.subName '==' '已审核'}} selected="selected" {{/compare}}>已审核</option>
+                            </select>
+                         </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary">确认审核</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#msgDialog"><i
+                                class="fa  fa-plus "></i> 账户增加资金
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">账户资金变动记录</h3>
+            </div>
+            <div class='box-body'>
+                <table id="data" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>操作人</th>
+                        <th>变动资金</th>
+                        <th>操作时间</th>
+                    </tr>
+                    </thead>
+                </table>
+                <p style="  text-align: right;color:red" id="sumAmount">总计:? 元</p>
+            </div>
+            <div class='overlay tableLoading'><i class='fa fa-refresh fa-spin'></i></div>
+        </div>
+    </div>
+</div>
+-->
+
+<div class="modal fade" id="msgDialog" role="dialog" aria-labelledby="MsgDialogLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">增加账户资金</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <input type="number" class="form-control" id="AddAmount"
+                           name="AddAmount" placeholder="输入账号资金（单位元）" required min="1">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"> 关闭</button>
+                <button type="button" class="btn btn-danger btn-AddAmount">
+                    <i class="fa fa-credit-card"></i>
+                    增加账号资金
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<script>
+    $(function () {
+//        $.fn.DataTables({
+//            target: "#data",
+//            url: "{{ctx}}/member/amountLogQuery",
+//            hiddenCheckbox: true,
+//            hiddenForm: true,
+//            columns: [
+//                {"data": "Operator"},
+//                {"data": "Amount"},
+//                {"data": "CreateDate"}
+//            ],
+//            params: function () {
+//                var obj = new Object();
+//                obj.MemberId = '{{data.MemberId}}'
+//                obj.size = 10;
+//                obj.cur = 1
+//                return obj;
+//            }
+//        })
+
+        function refresh() {
+            window.location.href = window.location.href;
+        }
+
+        $(".btn-AddAmount").click(function (e) {
+            var AddAmount = $("#AddAmount").val();
+            $.ajax({
+                type: "post",
+                url: "{{ctx}}/member/addAmount",
+                data: {MemberId: '{{data.MemberId}}', AddAmount: AddAmount},
+                dataType: 'json'
+            }).success(function (items) {
+                refresh();
+            }).fail(function () {
+                alert("更新账号资金失败")
+                refresh();
+            })
+        })
+    })
+</script>

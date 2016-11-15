@@ -11,16 +11,22 @@
                 <label for="name">名称：</label>
                 <input type="text" class="form-control" id="name" name="Name" placeholder="输入名称" required  >
               </div>
-             <div class="form-group">
-                 <label for="name">客户类型：</label>
-                 <div>
-                     <input type="radio" name="GroupType" value="1" checked="checked">
-                     个人
-                     <input type="radio" name="GroupType"  value="2">
-                     企业
-                 </div>
-              </div>
-              <div id="GroupType" class="form-group"></div>
+                <div class="form-group">
+                    <label for="num">车牌：</label>
+                    <input type="text" class="form-control" id="num"  name="Code" placeholder="输入车牌" required>
+                </div>
+                <div class="form-group">
+                    <label for="num">身份证照片：</label>
+                    <input type="file" class="form-control"  name="IDPic" required>
+                </div>
+                <div class="form-group">
+                    <label for="num">行驶证照片：</label>
+                    <input type="file" class="form-control"  name="DrivingPic" required>
+                </div>
+                <div class="form-group">
+                    <label for="num">保单照片：</label>
+                    <input type="file" class="form-control"  name="PolicyPic" required>
+                </div>
               <div class="form-group">
                 <label for="price">账号金额（单位元）：</label>
                  <input type="number" class="form-control" id="price" name="Amount" placeholder="输入账号金额（单位元）" required min="0">
@@ -37,53 +43,5 @@
  </div>
 </div>
 
-<div id="GroupType2" style="display: none">
-    <div class="form-group">
-        <label for="Email">企业登录账号（电子邮件）：</label>
-        <input type="email" class="form-control" id="Email"  autocomplete="off" name="Email" placeholder="企业登录账号（电子邮件）" required>
-    </div>
-    <div class="form-group">
-        <label for="Password">企业登录密码：</label>
-        <input type="password" class="form-control"  id="Password"  autocomplete="off" name="Password" placeholder="企业登录密码" required>
-    </div>
-    <div class="form-group">
-        <label for="Address">企业地址：</label>
-        <input type="text" class="form-control"  id="Address" autocomplete="off" name="Address" placeholder="企业地址" required>
-    </div>
-    <div class="form-group">
-        <label for="Mobile">企业联系电话：</label>
-        <input type="text" class="form-control"  id="Mobile"autocomplete="off"  name="Mobile" placeholder="企业电话" required>
-    </div>
-</div>
-<div id="GroupType1" style="display: none">
-    <div class="form-group">
-        <label for="num">车牌：</label>
-        <input type="text" class="form-control" id="num"  name="Code" placeholder="输入车牌" required>
-    </div>
-    <div class="form-group">
-        <label for="num">身份证照片：</label>
-        <input type="file" class="form-control"  name="IDPic" required>
-    </div>
-    <div class="form-group">
-        <label for="num">行驶证照片：</label>
-        <input type="file" class="form-control"  name="DrivingPic" required>
-    </div>
-    <div class="form-group">
-        <label for="num">保单照片：</label>
-        <input type="file" class="form-control"  name="PolicyPic" required>
-    </div>
-</div>
 
-<script>
-    $(function () {
-        $("#GroupType").html($("#GroupType1").html())
-        $("input[name='GroupType']").click(function (e) {
-            var GroupType  = $(this).val();
-            if(GroupType == "2"){
-                $("#GroupType").html($("#GroupType2").html())
-            }else {
-                $("#GroupType").html($("#GroupType1").html())
-            }
-        })
-    })
-</script>
+

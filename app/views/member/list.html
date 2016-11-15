@@ -4,25 +4,21 @@
             <div class="box-header with-border">
                 <h3 class="box-title">客户列表</h3>
                 <form class="form-horizontal">
-                    <label for="memberName" class="col-sm-2 control-label">选择客户：</label>
+                    <label for="Name" class="col-sm-2 control-label">客户名称：</label>
                     <div class="form-group col-sm-4 ">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="memberName" placeholder="名称 或者 车牌">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
-                            </div>
-                        </div>
+                        <input type="text" class="form-control" id="Name" name="Name" placeholder="名称">
+                    </div>
+                    <label for="Code" class="col-sm-2 control-label">客户车牌：</label>
+                    <div class="form-group col-sm-4 ">
+                        <input type="text" class="form-control" id="Code" name="Code" placeholder="车牌">
                     </div>
 
-                    <label for="select3" class="col-sm-2 control-label">客户类型：</label>
+                    <label for="select3"  class="col-sm-2 control-label">客户状态：</label>
                     <div class="form-group col-sm-4 ">
-                        <select id="select3" class="form-control" name="GroupType">
-                            <option>请选择客户类型</option>
-                            <option value="1">个人</option>
-                            <option value="2">企业</option>
+                        <select  id="select3" class="form-control" name="Active">
+                            <option>请选择状态</option>
+                            <option value="0">未审核</option>
+                            <option value="1">已审核</option>
                         </select>
                     </div>
 
@@ -38,8 +34,9 @@
                     <tr>
                         <th>ID</th>
                         <th>客户名称</th>
-                        <th>客户车牌/账户</th>
+                        <th>客户车牌</th>
                         <th>账户资金</th>
+                        <th>状态</th>
                         <th>录入时间</th>
                         <th>最近一次变更时时间</th>
                         <th>操作</th>
@@ -47,8 +44,7 @@
                     </thead>
                 </table>
                 <p style="  text-align: right;color:red" id="sumAmount">总计:? 元</p>
-                <button type="button" id="deleteData" class="btn  btn-danger"><i class="fa fa-minus "></i>删除选择会员
-                </button>
+                 <button type="button" id="deleteData" class="btn  btn-danger"><i class="fa fa-minus "></i> 删除选择会员</button>
             </div>
             <div class='overlay tableLoading'><i class='fa fa-refresh fa-spin'></i></div>
         </div>
@@ -64,9 +60,9 @@
                 $("#sumAmount").text("总计:" +items.data.sumAmount + "元")
             },
             columnDefs: [
-                {
+                 {
                     "render": function (data, type, row) {
-                        return  '<a href="{{ctx}}/member/'+data+'/edit">' +
+                        return  '<a href="{{ctx}}/member/edit/'+data+'">' +
                                 '   <button type="button" class="btn btn-primary btn-sm">编辑</button>' +
                                 '</a>' +
                                 '<a href="{{ctx}}/inventory/log?MemberId='+data+'">' +
@@ -74,6 +70,13 @@
                                 '</a>'
                     },
                     "targets": -1
+                },
+
+                {
+                    "render": function (data, type, row) {
+                        return  '<a href="{{ctx}}/member/detail/'+row['MemberId']+'">' + data +'</a>'
+                    },
+                    "targets": 1
                 }
             ],
             columns: [
@@ -81,6 +84,7 @@
                 {"data": "Name"},
                 {"data": "Code"},
                 {"data": "Amount"},
+                {"data": "Active"},
                 {"data": "CreateDate"},
                 {"data": "LastUpdateDate"},
                 {"data": "MemberId"}
@@ -88,7 +92,7 @@
                 var obj = new Object();
                 $.each($('form').serializeArray(), function (index, param) {
                     if (!(param.name in obj)) {
-                        if ('请选择客户类型' != param.value) {
+                        if ('请选择状态' != param.value) {
                             obj[param.name] = param.value;
                         }
                     }
@@ -97,34 +101,6 @@
                 obj.cur = 1
                 return obj;
             }
-        })
-
-        $("#memberName").bsSuggest({
-            url: "{{ctx}}/member/suggest?name=",
-            showBtn: true,
-            idField: "FeatureCode",
-            keyField: "Name",
-            allowNoKeyword: true,
-            getDataMethod: "url",
-            effectiveFields: ["Name"],
-            processData: function (res) {
-                return {
-                    value: $.map(res, function (d) {
-                        return {
-                            "Name": d.Name,
-                            "FeatureCode": d.FeatureCode
-                        }
-                    })
-                }
-            },
-            showHeader: true,
-            effectiveFieldsAlias: {Name: '名称/车牌'}
-        }).on('onSetSelectValue', function (e, data) {
-            $("#memberName").next('input[type="hidden"]').remove()
-            $("#memberName").after('<input type="hidden" name="FeatureCode" value="' + data.id + '"/>')
-        }).on('onUnsetSelectValue', function (e) {
-            $("#memberName").val('')
-            $("#memberName").next('input[type="hidden"]').remove()
         })
     });
 </script>

@@ -96,10 +96,13 @@ Lib.paging = function*(values, likeValues, sqlArray, formater) {
     } else {
         sqlArray = _.map(sqlArray, sql=> sql.replace("$filter", ''))
     }
+
+
     const [dataList] =  yield global.db.query({
         sql: sqlArray[0] + ' Limit :pageStart, :pageSize',
         namedPlaceholders: true
     }, values);
+
 
     const [[total]] =  yield global.db.query({sql: sqlArray[1], namedPlaceholders: true}, values);
     let sumAmount = {'sumAmount': 0}
