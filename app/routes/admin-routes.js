@@ -7,6 +7,7 @@ const admin = require('../actions/admin.js');
 
 router.get('/admin/list',                admin.list);
 router.get('/admin/ajaxQuery',           admin.ajaxQuery);
+router.get('/admin/userSuggest',         admin.userSuggest);
 
 router.get('/admin/add',                 admin.add);
 router.post('/admin/add',                admin.processAdd);
@@ -17,6 +18,14 @@ router.post('/admin/edit/:id',           admin.processEdit);
 
 router.get('/admin/inventory/add',       admin.inventoryAdd);
 router.post('/admin/inventory/add',       admin.inventoryProcessAdd);
+
+
+router.get('/admin/inventory/out',       admin.inventoryOut);
+router.post('/admin/inventory/out',      admin.inventoryProcessAdd);
+
+
+
+
 
 
 

@@ -114,3 +114,16 @@ admin.inventoryProcessAdd = function*(){
     this.redirect('/admin/inventory/add');
 };
 
+admin.inventoryOut =function*(){
+    const context = {
+        module: {
+            name:    '系统管理',
+            subName: '出库到公司',
+        },
+    };
+    yield this.render('views/admin/inventory/out',context);
+};
+
+admin.userSuggest = function*() {
+    this.body = yield UserDao.suggest(this.query.name);
+};

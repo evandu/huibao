@@ -4,19 +4,24 @@
        <div class="box-header with-border">
          <h3 class="box-title">库存列表</h3>
            <form class="form-horizontal">
-               <label for="memberName" class="col-sm-2 control-label">选择客户：</label>
+               <label for="Name" class="col-sm-2 control-label">物品：</label>
                <div class="form-group col-sm-4 ">
-                   <div class="input-group">
-                       <input type="text" class="form-control" id="memberName" placeholder="名称 或者 车牌">
-                       <div class="input-group-btn">
-                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                               <span class="caret"></span>
-                           </button>
-                           <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                   <input type="text" class="form-control" id="Name" name="Name" placeholder="名称">
+               </div>
+               {{#compare @koa.passport.user.Role '==' 'admin'}}
+                   <label for="UserName" class="col-sm-1 control-label">公司: </label>
+                   <div class="form-group col-sm-5 ">
+                       <div class="input-group">
+                           <input type="text" class="form-control" id="UserName"  placeholder="公司名称">
+                           <div class="input-group-btn">
+                               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                   <span class="caret"></span>
+                               </button>
+                               <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                           </div>
                        </div>
                    </div>
-               </div>
-
+              {{/compare}}
                <label class="col-sm-2 control-label"></label>
                <div class="form-group  col-sm-4 ">
                    <button type="submit" class="btn btn-primary"><i class="fa   fa-search "></i> 查询</button>
@@ -92,32 +97,23 @@
       })
 
 
-      $("#memberName").bsSuggest({
-          url: "{{ctx}}/member/suggest?name=",
+      $("#UserName").bsSuggest({
+          url: "{{ctx}}/admin/userSuggest?name=",
           showBtn: true,
-          idField: "FeatureCode",
+          idField: "UserId",
           keyField: "Name",
           allowNoKeyword: true,
           getDataMethod: "url",
           effectiveFields: ["Name"],
-          processData: function (res) {
-              return {
-                  value: $.map(res, function (d) {
-                      return {
-                          "Name": d.Name,
-                          "FeatureCode": d.FeatureCode
-                      }
-                  })
-              }
-          },
+          processData: function (res){return {value:res}},
           showHeader: true,
-          effectiveFieldsAlias: {Name: '名称/车牌'}
+          effectiveFieldsAlias: {Name: ' 公司名称'}
       }).on('onSetSelectValue', function (e, data) {
-          $("#memberName").next('input[type="hidden"]').remove()
-          $("#memberName").after('<input type="hidden" name="FeatureCode" value="' + data.id + '"/>')
+          $("#UserName").next('input[type="hidden"]').remove()
+          $("#UserName").after('<input type="hidden" name="UserId" value="' + data.id + '"/>')
       }).on('onUnsetSelectValue', function (e) {
-          $("#memberName").val('')
-          $("#memberName").next('input[type="hidden"]').remove()
+          $("#UserName").val('')
+          $("#UserName").next('input[type="hidden"]').remove()
       })
 
 

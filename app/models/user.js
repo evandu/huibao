@@ -19,6 +19,20 @@ User.get = function*(id) {
 };
 
 
+User.suggest = function*(name) {
+    const result = yield global.db.query('Select * From User Where Active =1 And Name like ?  limit 0, 10', '%' + name + '%');
+    return result[0].map(
+        function (o) {
+            return {
+                UserId: o.UserId,
+                Name: o.Name,
+                Amount: o.Amount + ' 元'
+            };
+        }
+    );
+};
+
+
 /**
  * Returns Users with given field matching given value.
  *

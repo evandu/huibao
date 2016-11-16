@@ -97,7 +97,6 @@ Lib.paging = function*(values, likeValues, sqlArray, formater) {
         sqlArray = _.map(sqlArray, sql=> sql.replace("$filter", ''))
     }
 
-
     const [dataList] =  yield global.db.query({
         sql: sqlArray[0] + ' Limit :pageStart, :pageSize',
         namedPlaceholders: true

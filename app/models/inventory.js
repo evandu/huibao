@@ -5,8 +5,8 @@ const Moment = require('moment');
 const _ = require('lodash');
 const Inventory = module.exports = {};
 
-Inventory.suggest = function*(name, FeatureCode) {
-    const result = yield global.db.query('Select * From Inventory Where FeatureCode like ? and Num >0 and  Name like ? limit 0,10 ', ['%' + FeatureCode + '%', '%' + name + '%']);
+Inventory.suggest = function*(name,User) {
+    const result = yield global.db.query('Select * From Inventory Where UserId = ? And Name like ? limit 0,10 ', [User.UserId, '%' + name + '%']);
     return result[0].map(
         function (o) {
             return {InventoryId: o.InventoryId, Name: o.Name, Price: o.Num + ' 件 * ' + o.Price + ' 元'};
@@ -20,16 +20,25 @@ Inventory.idIn = function*(ids) {
     return result[0];
 };
 
-Inventory.get = function*(id,FeatureCode) {
-    const result = yield global.db.query('Select * From Inventory Where InventoryId = ? and FeatureCode like ?', [id,'%' + FeatureCode + '%']);
+Inventory.get = function*(id,User) {
+    let result
+    if(User.Role == 'admin'){
+        result = yield global.db.query('Select * From Inventory Where InventoryId = ?', id);
+    }else{
+        result = yield global.db.query('Select * From Inventory Where InventoryId = ? and UserId = ?', [id,User.UserId]);
+    }
     const member = result[0];
     return member[0];
 };
 
 
-Inventory.delete = function*(ids,FeatureCode,UserId) {
+Inventory.delete = function*(ids,User) {
     try {
-        yield global.db.query(`Delete From Inventory Where UserId = ? and FeatureCode like ? and InventoryId in (${ids.join(',')})`,[UserId,'%' + FeatureCode + '%']);
+        if(User.Role == 'admin'){
+            yield global.db.query(`Delete From Inventory Where InventoryId in (${ids.join(',')})`);
+        }else{
+            yield global.db.query(`Delete From Inventory Where UserId = ? and InventoryId in (${ids.join(',')})`,User.UserId);
+        }
         return {
             op: {
                 status: true,
@@ -93,9 +102,14 @@ Inventory.log = function*(InventoryId, MemberId) {
 };
 
 
-Inventory.update = function*(id, values,FeatureCode,UserId) {
+Inventory.update = function*(id, values,User) {
     try {
-        const result = yield global.db.query('Update Inventory Set ? Where UserId = ? and  InventoryId = ? and FeatureCode like ? ', [UserId, values, id,'%' + FeatureCode + '%']);
+        let result;
+        if(User.Role == 'admin'){
+           result = yield global.db.query('Update Inventory Set ? Where InventoryId = ?', [values, id]);
+        }else{
+            result = yield global.db.query('Update Inventory Set ? Where UserId = ? and  InventoryId = ?', [values,User.UserId, id]);
+        }
         return {
             op: {
                 status: true,

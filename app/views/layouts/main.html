@@ -60,6 +60,28 @@
         <ul class="sidebar-menu">
           <li class="header">菜单</li>
           <!-- Optionally, you can add icons to the links -->
+
+            <li {{#compare module.name '==' '库存'}}
+            class="treeview active"
+            {{else}}
+            class="treeview"
+            {{/compare}} >
+            <a><i class="fa fa-database"></i>
+                <span>库存</span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li {{#compare module.subName '==' '列表'}} class="active" {{/compare}} >
+                  <a href="{{ctx}}/inventory/list" ><i class="fa fa-table"></i>列表</a>
+                </li>
+                <li {{#compare module.subName '==' '入库'}} class="active" {{/compare}}>
+                   <a href="{{ctx}}/inventory/add"><i class="fa fa-download"></i>入库</a>
+                </li>
+                <li {{#compare module.subName '==' '出库'}} class="active" {{/compare}} >
+                   <a href="{{ctx}}/inventory/out"><i class="fa  fa-external-link"></i>出库</a>
+                </li>
+            </ul>
+            </li>
             <li  {{#compare module.name '==' '客户'}} class="treeview active" {{else}} class="treeview" {{/compare}} >
             <a>
                 <i class="fa fa-users"></i>
@@ -89,8 +111,11 @@
                        <a href="{{ctx}}/admin/list"><i class="fa   fa-user-plus"></i>公司列表</a>
                      </li>
                       <li {{#compare module.subName '==' '添加库存'}} class="active"  {{/compare}} >
-                         <a href="{{ctx}}/admin/inventory/add"><i class="fa   fa-user-plus"></i>添加库存</a>
+                         <a href="{{ctx}}/admin/inventory/add"><i class="fa   fa-plus"></i>添加库存</a>
                       </li>
+                     <li {{#compare module.subName '==' '出库到公司'}} class="active"  {{/compare}} >
+                       <a href="{{ctx}}/admin/inventory/out"><i class="fa   fa-minus"></i>出库到公司</a>
+                    </li>
                 </ul>
               </li>
         {{/compare}}

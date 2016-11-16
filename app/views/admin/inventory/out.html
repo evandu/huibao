@@ -1,0 +1,124 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">出库操作</h3>
+            </div>
+            <form role="form" method="post" action="confirm">
+                <div class="box-body">
+                    <div class="col-md-10">
+                        <label for="UserName" class="col-sm-2 control-label">公司名称: </label>
+                        <div class="form-group col-sm-8 ">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="UserName"  placeholder="公司名称" required>
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="box-body" id="addCon"></div>
+                <div class="box-body">
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-success add">继续添加出库物品</button>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary">确认出库</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="template" style="display:none">
+    <div class="col-md-10 outInventory">
+        <label class="col-sm-2 control-label title ">出库物品：</label>
+        <div class="form-group col-sm-4 ">
+            <div class="input-group">
+                <input type="text" class="form-control productsName "  placeholder="出库物品称" required>
+                <input type="hidden" name="InventoryId" >
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-2">
+            <input type="number" class="form-control" name="Num" placeholder="出库件数" required min="1">
+        </div>
+        <div class="form-group col-sm-2">
+            <button type="button" class="btn  btn-danger delete">删除</button>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        var count = 0;
+        create(1);
+        function create(){
+            count +=1
+            var tpl = $("#template").children().clone().show();
+            tpl.find('input[name="Num"]').attr('name','Num[' + count +']')
+            tpl.find('input[name="InventoryId"]').attr('name','InventoryId[' + count +']')
+            $("#addCon").append(tpl);
+            tpl.find(".productsName").bsSuggest({
+                url: "{{ctx}}/inventory/suggest?name=",
+                showBtn: true,
+                idField: "InventoryId：",
+                keyField: "Name",
+                allowNoKeyword: true,
+                getDataMethod: "url",
+                effectiveFields:["Name","Price"],
+                processData: function (res){return {value:res}},
+                showHeader: true,
+                effectiveFieldsAlias:{ Name:'物品名称', Price:'数量'}
+            }).on('onSetSelectValue', function (e, data) {
+                tpl.find('input[name^="InventoryId"]').val(data.id)
+            }).on('onUnsetSelectValue', function (e) {
+                tpl.find(".productsName").val('')
+                tpl.find('input[name^="InventoryId"]').val('')
+            })
+            tpl.find(".delete").click(function(e){
+                if($(".outInventory").size() <= 2 ){
+                    alert("至少保留一个出货物品")
+                    return ;
+                }
+                $(this).parent("div").parent("div").remove();
+            });
+        }
+
+        $(".add").click(function(){
+            create();
+        });
+
+        $("#UserName").bsSuggest({
+            url: "{{ctx}}/admin/userSuggest?name=",
+            showBtn: true,
+            idField: "UserId",
+            keyField: "Name",
+            allowNoKeyword: true,
+            getDataMethod: "url",
+            processData: function (res){return {value:res}},
+            showHeader: true,
+            effectiveFields:["Name","Amount"],
+            effectiveFieldsAlias:{Name:'公司名称', Amount:'账号金额'}
+        }).on('onSetSelectValue', function (e, data) {
+            $("#UserName").next('input[type="hidden"]').remove()
+            $("#UserName").after('<input type="hidden" name="UserId" value="'+ data.id+'"/>')
+        }).on('onUnsetSelectValue', function (e) {
+            $("#UserName").val('')
+            $("#UserName").next('input[type="hidden"]').remove()
+        })
+
+    })
+</script>

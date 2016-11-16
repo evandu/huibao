@@ -46,18 +46,28 @@
                             <label class="col-sm-3 control-label">账号资金：</label>
                             <div class="col-sm-8"><h3 style="color: red">{{data.Amount}} 元</h3></div>
                         </div>
-                        <div class="form-group">
+                        {{#compare @koa.passport.user.Role '==' 'admin'}}
+                          <div class="form-group">
                             <label for="select3"  class="col-sm-3 control-label">客户状态：</label>
                             <select  id="select3" class="col-sm-3 form-control" name="Active" style="width: 30%;">
-                                <option value="0" {{#compare module.subName '==' '未审核'}} selected="selected" {{/compare}} >未审核</option>
-                                <option value="1"   {{#compare module.subName '==' '已审核'}} selected="selected" {{/compare}}>已审核</option>
+                                <option value="0" {{#compare data.Active '==' '未审核'}} selected="selected" {{/compare}} >未审核</option>
+                                <option value="1"   {{#compare data.Active '==' '已审核'}} selected="selected" {{/compare}}>已审核</option>
                             </select>
+                           </div>
+                        {{else}}
+                         <div class="form-group">
+                            <label class="col-sm-3 control-label">客户状态：</label>
+                            <div class="col-sm-8">{{data.Active}}</div>
                          </div>
+                        {{/compare}}
+
                     </div>
                 </div>
                 <div class="box-footer">
                     {{#compare @koa.passport.user.Role '==' 'admin'}}
-                  <q></q>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary">确认审核</button>
+                        </div>
                     {{/compare}}
                     <div class="col-md-3">
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#msgDialog"><i
