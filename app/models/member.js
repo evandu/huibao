@@ -129,7 +129,13 @@ Member.list = function*(values, likeValues) {
         return yield Lib.paging(values, likeValues, [QuerySql, CountSql, SumAmountSql], function (data) {
             return _.map(data, d=> {
                 d.CreateDate = Moment(d.CreateDate).format('YYYY-MM-DD HH:mm:ss')
-                d.Active = d.Active == 1 ? "已审核" : "未审核"
+                if( d.Active == 1){
+                    d.Active='已审核'
+                }else if(d.Active == 2){
+                    d.Active='审核不通过'
+                }else{
+                    d.Active='未审核'
+                }
                 d.Amount = d.Amount + " 元"
                 d.LastUpdateDate = Moment(d.LastUpdateDate).format('YYYY-MM-DD HH:mm:ss')
                 return d;

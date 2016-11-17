@@ -34,7 +34,6 @@ member.detail = function*() {
         },
     };
     const res = yield MemberDao.get(this.params.id,this.passport.user);
-    res.Active = res.Active == 1 ? "已审核" : "未审核"
     yield this.render('views/member/detail', {
         module: context.module,
         data: res,

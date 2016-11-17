@@ -4,9 +4,9 @@
             <div class="box-header with-border">
                 <h3 class="box-title">客户列表</h3>
                 <form class="form-horizontal">
-                    <label for="Name" class="col-sm-2 control-label">客户名称：</label>
+                    <label for="Name" class="col-sm-2 control-label">客户姓名：</label>
                     <div class="form-group col-sm-4 ">
-                        <input type="text" class="form-control" id="Name" name="Name" placeholder="名称">
+                        <input type="text" class="form-control" id="Name" name="Name" placeholder="客户姓名">
                     </div>
                     <label for="Code" class="col-sm-2 control-label">客户车牌：</label>
                     <div class="form-group col-sm-4 ">
@@ -19,9 +19,9 @@
                             <option>请选择状态</option>
                             <option value="0">未审核</option>
                             <option value="1">已审核</option>
+                            <option value="2">审核未通过</option>
                         </select>
                     </div>
-
                     <label class="col-sm-2 control-label"></label>
                     <div class="form-group  col-sm-4 ">
                         <button type="submit" class="btn btn-primary"><i class="fa   fa-search "></i> 查询</button>
@@ -33,7 +33,7 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>客户名称</th>
+                        <th>客户姓名</th>
                         <th>客户车牌</th>
                         <th>账户资金</th>
                         <th>状态</th>

@@ -9,7 +9,7 @@
                 <div class="box-body ">
                     <div class="col-md-8">
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">名称：</label>
+                            <label class="col-sm-3 control-label">姓名：</label>
                             <div class="col-sm-4"> {{data.Name}}</div>
                         </div>
 
@@ -50,14 +50,17 @@
                           <div class="form-group">
                             <label for="select3"  class="col-sm-3 control-label">客户状态：</label>
                             <select  id="select3" class="col-sm-3 form-control" name="Active" style="width: 30%;">
-                                <option value="0" {{#compare data.Active '==' '未审核'}} selected="selected" {{/compare}} >未审核</option>
-                                <option value="1"   {{#compare data.Active '==' '已审核'}} selected="selected" {{/compare}}>已审核</option>
+                                <option value="0" {{#compare data.Active '==' '0'}} selected="selected" {{/compare}} >未审核</option>
+                                <option value="1" {{#compare data.Active '==' '1'}} selected="selected" {{/compare}}>已审核</option>
+                                <option value="2" {{#compare data.Active '==' '2'}} selected="selected" {{/compare}}>审核未通过</option>
                             </select>
                            </div>
                         {{else}}
                          <div class="form-group">
                             <label class="col-sm-3 control-label">客户状态：</label>
-                            <div class="col-sm-8">{{data.Active}}</div>
+                             {{#compare data.Active '==' '0'}}   <div class="col-sm-4"> 未审核 </div>{{/compare}}
+                             {{#compare data.Active '==' '1'}}   <div class="col-sm-4"> 已审核 </div>{{/compare}}
+                             {{#compare data.Active '==' '2'}}   <div class="col-sm-4"> 审核未通过 </div>{{/compare}}
                          </div>
                         {{/compare}}
 
