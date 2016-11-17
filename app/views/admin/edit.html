@@ -25,6 +25,13 @@
                     <input type="text" class="form-control" value="{{data.Address}}" id="Address" name="Address" placeholder="请输入公司地址">
                 </div>
 
+                <div class="form-group">
+                    <label for="select3"  class="control-label">状态：</label>
+                    <select  id="select3" class="form-control" name="Active" >
+                        <option value="0" {{#compare data.Active '==' '0'}} selected="selected" {{/compare}}>禁用</option>
+                        <option value="1" {{#compare data.Active '==' '1'}} selected="selected" {{/compare}}>启用</option>
+                    </select>
+                </div>
 
                 <div class="form-group">
                     <label for="Mobile">公司联系电话：</label>
@@ -32,8 +39,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="Amount">账号金额（单位元）：</label>
-                    <input type="number" class="form-control" value="{{data.Amount}}"  id="Amount" name="Amount" placeholder="输入账号金额（单位元）" required min="0">
+                    <label >账号金额（单位元）：</label>
+                    <h3 style="color: red">{{data.Amount}}</h3>
+                   <!-- <input type="number" class="form-control" value="{{data.Amount}}"  id="Amount" name="Amount" placeholder="输入账号金额（单位元）" required min="0">-->
                 </div>
 
             </div>

@@ -130,6 +130,7 @@ Member.list = function*(values, likeValues) {
             return _.map(data, d=> {
                 d.CreateDate = Moment(d.CreateDate).format('YYYY-MM-DD HH:mm:ss')
                 d.Active = d.Active == 1 ? "已审核" : "未审核"
+                d.Amount = d.Amount + " 元"
                 d.LastUpdateDate = Moment(d.LastUpdateDate).format('YYYY-MM-DD HH:mm:ss')
                 return d;
             });

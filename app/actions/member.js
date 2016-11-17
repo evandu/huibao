@@ -108,7 +108,7 @@ member.processAdd = function*() {
     values['IDPic'] = yield Lib.upload(IDPic, path)
     values['DrivingPic'] = yield Lib.upload(DrivingPic, path)
     values['PolicyPic'] = yield Lib.upload(PolicyPic, path)
-    delete values['Active']
+    values['Active'] = '0'
     values['UserId'] = this.passport.user.UserId
     this.flash = yield MemberDao.add(values);
     this.redirect('/member/add');

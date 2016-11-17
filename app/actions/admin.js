@@ -5,9 +5,7 @@ const MemberDao = require('../models/member.js');
 const _ = require('lodash');
 const bcrypt = require('co-bcrypt');    // bcrypt library
 
-
 const InventoryDao    = require('../models/inventory.js');
-
 
 const admin = module.exports = {};
 
@@ -47,6 +45,7 @@ admin.processAdd = function*() {
     const values = this.request.body
     const salt = yield bcrypt.genSalt(10)
     values.Password = yield bcrypt.hash(values.Password, salt);
+    delete values['Amount'];
     yield UserDao.insert(values);
     this.flash = {op: {status: true, msg: '添加成功'}};
     this.redirect('/admin/add');
@@ -92,6 +91,7 @@ admin.processEdit = function*() {
         const salt = yield bcrypt.genSalt(10)
         this.request.body.Password = yield bcrypt.hash(this.request.body.Password, salt);
     }
+    delete this.request.body['Amount'];
     this.flash = yield UserDao.update(this.params.id || this.passport.user.UserId, this.request.body);
     this.flash = {op: {status: true, msg: '编辑成功'}};
     this.redirect('/admin/list');
