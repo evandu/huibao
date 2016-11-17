@@ -9,31 +9,35 @@
                     <div class="col-md-8">
                         <div class="form-group">
                             <label for="name">客户姓名：</label>
-                            <input type="text" class="form-control" id="name" value="{{data.Name}}" name="Name" placeholder="输入姓名" required>
+                            <input type="text" class="form-control" id="name" value="{{data.Name}}" name="Name"
+                                   placeholder="输入姓名" required>
                         </div>
                         <div class="form-group">
                             <label for="num">车牌：</label>
-                            <input type="text" class="form-control" id="num" value="{{data.Code}}" name="Code" placeholder="输入车牌" required>
+                            <input type="text" class="form-control" id="num" value="{{data.Code}}" name="Code"
+                                   placeholder="输入车牌" required>
                         </div>
-                        <a href="{{static}}/img/bg.jpg"><img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo"></a>
+                        <a href="{{static}}/img/bg.jpg">
+                            <img class="img-responsive" src="{{static}}/img/bg.jpg"  alt="Photo"></a>
                         <div class="form-group">
                             <label for="num">身份证照片：</label>
                             <input class="form-control" type="file" name="IDPic">
                         </div>
-                        <a href="{{static}}/img/bg.jpg"> <img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo"></a>
+                        <a href="{{static}}/img/bg.jpg">
+                            <img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo"></a>
                         <div class="form-group">
                             <label for="num">行驶证照片：</label>
                             <input class="form-control" type="file" name="DrivingPic">
                         </div>
-                        <a href="{{static}}/img/bg.jpg"><img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo"></a>
+                        <a href="{{static}}/img/bg.jpg">
+                            <img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo"></a>
                         <div class="form-group">
                             <label for="num">保单照片：</label>
                             <input class="form-control" type="file" name="PolicyPic">
                         </div>
                         <div class="form-group">
-                            <label for="price">账号资金（单位元）：</label>
-                            <p id="price">
-                            <h3 style="color: red">{{data.Amount}} 元</h3></p>
+                             <label for="Amount">账号资金（单位元）：</label>
+                             <input id="Amount" class="form-control" name="Amount" type="number" value="{{data.Amount}}" required>
                         </div>
                     </div>
                 </div>
@@ -41,101 +45,9 @@
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-primary">修改确认提交</button>
                     </div>
-                    <div class="col-md-3">
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#msgDialog">
-                            <i class="fa  fa-plus "></i> 账户增加资金
-                        </button>
-                    </div>
                 </div>
             </form>
         </div>
+    </div>
+</div>
 
-        <!--
-             <div class="box box-primary">
-                 <div class="box-header with-border">
-                     <h3 class="box-title">账户资金变动记录</h3>
-                 </div>
-                 <div class='box-body'>
-                     <table id="data" class="table table-bordered table-striped">
-                         <thead>
-                         <tr>
-                             <th>操作人</th>
-                             <th>变动资金</th>
-                             <th>操作时间</th>
-                         </tr>
-                         </thead>
-                     </table>
-                     <p style="  text-align: right;color:red" id="sumAmount">总计:? 元</p>
-                 </div>
-                 <div class='overlay tableLoading'><i class='fa fa-refresh fa-spin'></i></div>
-             </div>
-         </div>
-        </div>
-        -->
-        <div class="modal fade" id="msgDialog" role="dialog" aria-labelledby="MsgDialogLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title">增加账户资金</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            <input type="number" class="form-control" id="AddAmount"  name="AddAmount" placeholder="输入账号资金（单位元）" required min="1">
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal"> 关闭</button>
-                        <button type="button" class="btn btn-danger btn-AddAmount">
-                            <i class="fa fa-credit-card"></i>
-                            增加账号资金
-                        </button>
-                    </div>
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
-
-        <script>
-            $(function () {
-                /* $.fn.DataTables({
-                 target: "#data",
-                 url: "{{ctx}}/member/amountLogQuery",
-                 hiddenCheckbox:true,
-                 hiddenForm:true,
-                 columns: [
-                 {"data": "Operator"},
-                 {"data": "Amount"},
-                 {"data": "CreateDate"}
-                 ],
-                 params: function () {
-                 var obj = new Object();
-                 obj.MemberId='{{data.MemberId}}'
-                 obj.size = 10;
-                 obj.cur = 1
-                 return obj;
-                 }
-                 })*/
-
-                function refresh() {
-                    window.location.href = window.location.href;
-                }
-
-                $(".btn-AddAmount").click(function (e) {
-                    var AddAmount = $("#AddAmount").val();
-                    $.ajax({
-                        type: "post",
-                        url: "{{ctx}}/member/addAmount",
-                        data: {MemberId: '{{data.MemberId}}', AddAmount: AddAmount},
-                        dataType: 'json'
-                    }).success(function (items) {
-                        refresh();
-                    }).fail(function () {
-                        alert("更新账号资金失败")
-                        refresh();
-                    })
-                })
-            })
-        </script>

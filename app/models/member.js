@@ -92,7 +92,6 @@ Member.addAmount = function*(AddAmount, MemberId, User) {
     }
 }
 
-
 Member.amountLogQuery = function*(values) {
     const QuerySql = 'Select * From MemberAmountLog $filter Order By CreateDate desc';
     const CountSql = 'Select count(*) as count From MemberAmountLog $filter ';
@@ -119,6 +118,8 @@ Member.amountLogQuery = function*(values) {
 
 Member.audit =  function* (MemberId,Active) {
     yield global.db.query('Update Member Set Active=? Where MemberId = ?', [Active, MemberId]);
+    const [[member]] = yield global.db.query('Select * From Member Where MemberId = ?', MemberId)
+    yield global.db.query('Update User Set Amount = Amount + ? Where UserId = ?', [member.Amount, member.UserId]);
 }
 
 Member.list = function*(values, likeValues) {

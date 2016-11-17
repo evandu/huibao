@@ -62,10 +62,15 @@
             columnDefs: [
                  {
                     "render": function (data, type, row) {
-                        return  '<a href="{{ctx}}/member/edit/'+data+'">' +
-                                '   <button type="button" class="btn btn-primary btn-sm">编辑</button>' +
-                                '</a>' +
-                                '<a href="{{ctx}}/inventory/log?MemberId='+data+'">' +
+                        var str;
+                        if(row.Active == '已审核'){
+                            str = ""
+                        }else{
+                            str='<a href="{{ctx}}/member/edit/'+data+'">' +
+                                    '   <button type="button" class="btn btn-primary btn-sm">编辑</button>' +
+                                    '</a>'
+                        }
+                        return  str + '<a href="{{ctx}}/inventory/log?MemberId='+data+'">' +
                                 '   <button type="button" class="btn btn-success btn-sm">出库日志</button>' +
                                 '</a>'
                     },
@@ -74,7 +79,7 @@
 
                 {
                     "render": function (data, type, row) {
-                        return  '<a href="{{ctx}}/member/detail/'+row['MemberId']+'">' + data +'</a>'
+                        return  '<a href="{{ctx}}/member/detail/' + row['MemberId']+'">' + data +'</a>'
                     },
                     "targets": 1
                 }

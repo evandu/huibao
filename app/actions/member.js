@@ -19,10 +19,14 @@ member.edit = function*() {
         },
     };
     const res = yield MemberDao.get(this.params.id, this.passport.user);
-    yield this.render('views/member/edit', {
-        module: context.module,
-        data: res,
-    });
+    if(res.Active == 1){
+        yield this.render('views/500-internal-server-error',{'message':"已审核的客户资料无法修改"});
+    }else{
+        yield this.render('views/member/edit', {
+            module: context.module,
+            data: res,
+        });
+    }
 };
 
 
@@ -132,24 +136,34 @@ member.processAddAmount = function*() {
 
 member.processEdit = function*() {
     const values = this.request.body.fields
-    delete values['Amount']
     delete values['Active']
-    const {IDPic, DrivingPic, PolicyPic} = this.request.body.files
-    if (IDPic) {
-        values['IDPic'] = yield Lib.upload(IDPic, this.envConfig.upload)
-    } else {
-        delete values['IDPic'];
+    const res = yield MemberDao.get(this.params.id,this.passport.user);
+    if(res.Active == 1){
+        this.flash = {
+            op: {
+                status: false,
+                msg: values.Name + '已审核的客户资料无法修改, id=' + this.params.id,
+            }
+        }
+        this.redirect('/member/list');
+    } else{
+        const {IDPic, DrivingPic, PolicyPic} = this.request.body.files
+        if (IDPic) {
+            values['IDPic'] = yield Lib.upload(IDPic, this.envConfig.upload)
+        } else {
+            delete values['IDPic'];
+        }
+        if (DrivingPic) {
+            values['DrivingPic'] = yield Lib.upload(DrivingPic, this.envConfig.upload)
+        } else {
+            delete values['DrivingPic'];
+        }
+        if (PolicyPic) {
+            values['PolicyPic'] = yield Lib.upload(PolicyPic, this.envConfig.upload)
+        } else {
+            delete values['PolicyPic'];
+        }
+        this.flash = yield MemberDao.update(this.params.id,this.passport.user, values);
+        this.redirect('/member/list');
     }
-    if (DrivingPic) {
-        values['DrivingPic'] = yield Lib.upload(DrivingPic, this.envConfig.upload)
-    } else {
-        delete values['DrivingPic'];
-    }
-    if (PolicyPic) {
-        values['PolicyPic'] = yield Lib.upload(PolicyPic, this.envConfig.upload)
-    } else {
-        delete values['PolicyPic'];
-    }
-    this.flash = yield MemberDao.update(this.params.id,this.passport.user, values);
-    this.redirect('/member/list');
 };
