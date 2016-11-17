@@ -60,12 +60,7 @@
         <ul class="sidebar-menu">
           <li class="header">菜单</li>
           <!-- Optionally, you can add icons to the links -->
-
-            <li {{#compare module.name '==' '库存'}}
-            class="treeview active"
-            {{else}}
-            class="treeview"
-            {{/compare}} >
+            <li {{#compare module.name '==' '库存'}} class="treeview active" {{else}} class="treeview" {{/compare}} >
             <a><i class="fa fa-database"></i>
                 <span>库存</span>
                 <i class="fa fa-angle-left pull-right"></i>

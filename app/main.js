@@ -164,6 +164,16 @@ app.use(function* authSecureRoutes(next) {
 
 app.use(require('./routes/inventory-routes.js'));
 app.use(require('./routes/member-routes.js'));
+
+app.use(function* authSecureRoutes(next) {
+    const User = this.passport.user
+    if (User.Role == 'admin') {
+        yield next;
+    } else {
+        yield this.render('views/403',{'message':"你无权操作"});
+    }
+});
+
 app.use(require('./routes/admin-routes.js'));
 
 // end of the line: 404 status for any resource not found

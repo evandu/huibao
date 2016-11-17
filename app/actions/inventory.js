@@ -5,26 +5,9 @@ const MemberDao       = require('../models/member.js');
 const _ = require('lodash');
 const inventory = module.exports = {};
 
-
 inventory.suggest =function*(){
     this.body = yield InventoryDao.suggest(this.query.name,this.passport.user);
 };
-
-inventory.edit =function*(){
-    const context = {
-        module: {
-            name:    '库存',
-            subName: '编辑',
-        },
-    };
-    const User = this.passport.user
-    const res = yield InventoryDao.get(this.params.id,User);
-    yield this.render('views/inventory/edit',{
-        module: context.module,
-        data:   res,
-    });
-};
-
 
 inventory.list =function*(){
     yield this.render('views/inventory/list',{
@@ -34,7 +17,6 @@ inventory.list =function*(){
         }
     });
 };
-
 
 inventory.ajaxQuery = function*() {
     const query = this.query
@@ -60,7 +42,6 @@ inventory.ajaxQuery = function*() {
     this.body = {data: res}
 };
 
-
 inventory.log =function*(){
     const context = {
         module: {
@@ -75,20 +56,6 @@ inventory.log =function*(){
     });
 };
 
-
-
-inventory.add =function*(){
-    const context = {
-        module: {
-            name:    '库存',
-            subName: '入库',
-        },
-    };
-    yield this.render('views/inventory/add',context);
-};
-
-
-
 inventory.out =function*(){
     const context = {
         module: {
@@ -97,28 +64,6 @@ inventory.out =function*(){
         },
     };
     yield this.render('views/inventory/out',context);
-};
-
-
-inventory.processAdd = function*(){
-    this.request.body['UserId']  = this.passport.user.UserId
-    this.flash = yield InventoryDao.add(this.request.body);
-    this.redirect('/inventory/add');
-};
-
-inventory.processDelete = function*(){
-    const User = this.passport.user
-    const res = yield InventoryDao.delete(_.values(this.request.body), User);
-    if (!res.op.status) {
-        this.status = 500
-    }
-    this.body = {data: res}
-};
-
-inventory.processEdit = function*(){
-    const User = this.passport.user
-    this.flash =  yield InventoryDao.update(this.params.id, this.request.body,User);
-    this.redirect('/inventory/list');
 };
 
 inventory.processConfirm =function*(){
@@ -231,3 +176,53 @@ inventory.processOut = function*(){
         self.redirect('/inventory/list');
     }
 };
+
+
+
+/*
+inventory.add =function*(){
+    const context = {
+        module: {
+            name:    '库存',
+            subName: '入库',
+        },
+    };
+    yield this.render('views/inventory/add',context);
+};
+inventory.edit =function*(){
+    const context = {
+        module: {
+            name:    '库存',
+            subName: '编辑',
+        },
+    };
+    const User = this.passport.user
+    const res = yield InventoryDao.get(this.params.id,User);
+    yield this.render('views/inventory/edit',{
+        module: context.module,
+        data:   res,
+    });
+};
+
+
+inventory.processAdd = function*(){
+    this.request.body['UserId']  = this.passport.user.UserId
+    this.flash = yield InventoryDao.add(this.request.body);
+    this.redirect('/inventory/add');
+};
+
+inventory.processDelete = function*(){
+    const User = this.passport.user
+    const res = yield InventoryDao.delete(_.values(this.request.body), User);
+    if (!res.op.status) {
+        this.status = 500
+    }
+    this.body = {data: res}
+};
+
+inventory.processEdit = function*(){
+    const User = this.passport.user
+    this.flash =  yield InventoryDao.update(this.params.id, this.request.body,User);
+    this.redirect('/inventory/list');
+};
+*/
