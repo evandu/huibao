@@ -14,9 +14,13 @@ Inventory.suggest = function*(name,User) {
     );
 };
 
+Inventory.idIn = function*(ids,User) {
+    const result = yield global.db.query(`Select * From Inventory Where UserId = ? And InventoryId in (${ids.join(',')})`, User.UserId);
+    return result[0];
+};
 
-Inventory.idIn = function*(ids) {
-    const result = yield global.db.query('Select * From Inventory Where InventoryId in (' + ids.join(',') + ')');
+Inventory.idIn = function*(ids,User) {
+    const result = yield global.db.query(`Select * From Inventory Where UserId = ? And InventoryId in (${ids.join(',')})`, User.UserId);
     return result[0];
 };
 
@@ -37,7 +41,7 @@ Inventory.delete = function*(ids,User) {
         if(User.Role == 'admin'){
             yield global.db.query(`Delete From Inventory Where InventoryId in (${ids.join(',')})`);
         }else{
-            yield global.db.query(`Delete From Inventory Where UserId = ? and InventoryId in (${ids.join(',')})`,User.UserId);
+            yield global.db.query(`Delete From Inventory Where UserId = ? and InventoryId in (${ids.join(',')})`, User.UserId);
         }
         return {
             op: {
@@ -102,7 +106,7 @@ Inventory.log = function*(InventoryId, MemberId) {
 };
 
 
-Inventory.update = function*(id, values,User) {
+Inventory.update = function*(id, values, User) {
     try {
         let result;
         if(User.Role == 'admin'){
@@ -146,8 +150,23 @@ Inventory.update = function*(id, values,User) {
     }
 };
 
+Inventory.out = function*(values, User) {
+    const data =  _.map(_.keys(values),  o=> {
+        return "WHEN " + o + " THEN Num - " + Math.abs(values[o])
+    })
+  yield global.db.query(`Update Inventory Set Num  = Case InventoryId  \n ${data.join("\n")}  \n End Where UserId = ? and InventoryId in( ${_.keys(values).join(",")} )`, User.UserId);
+};
 
-Inventory.addlog = function *(values) {
+Inventory.in = function*(values, User) {
+    const data =  _.map(_.keys(values),  o=> {
+        "WHEN " + o + "THEN Num + " + Math.abs(values[o])
+    })
+    yield global.db.query(`Update Inventory Set Num  =  Case InventoryId \n ${data.join("\n")} \n End  Where UserId = ? and InventoryId in(${_.keys(values).join(",")})`, User.UserId);
+};
+
+
+
+Inventory.addLog = function *(values) {
     yield global.db.query('Insert Into InventoryLog Set ?', values);
 };
 

@@ -9,6 +9,12 @@ const InventoryDao    = require('../models/inventory.js');
 
 const admin = module.exports = {};
 
+
+
+admin.userSuggest = function*() {
+    this.body = yield UserDao.suggest(this.query.name);
+};
+
 admin.list = function*() {
     const context = {
         module: {
@@ -110,6 +116,7 @@ admin.inventoryAdd =function*(){
 
 admin.inventoryProcessAdd = function*(){
     this.request.body['UserId']  = this.passport.user.UserId
+    this.request.body['Active']  = '1';
     this.flash = yield InventoryDao.add(this.request.body);
     this.redirect('/admin/inventory/add');
 };
@@ -124,6 +131,114 @@ admin.inventoryOut =function*(){
     yield this.render('views/admin/inventory/out',context);
 };
 
-admin.userSuggest = function*() {
-    this.body = yield UserDao.suggest(this.query.name);
+
+
+admin.processConfirm =function*(){
+    const context = {
+        module: {
+            name:    '系统管理',
+            subName: '出库到公司',
+        },
+    };
+    const self = this;
+    const InventoryIds = this.request.body.InventoryId;
+    const Nums = this.request.body.Num;
+    if(InventoryIds || InventoryIds.length > 0){
+        const _Inventory= {};
+        for(let i=0; i<InventoryIds.length;i++){
+            if(_Inventory[InventoryIds[i]]){
+                _Inventory[InventoryIds[i]]  += parseInt(Nums[i]);
+            }else{
+                _Inventory[InventoryIds[i]] = parseInt(Nums[i]);
+            }
+        }
+
+        const inventories = yield InventoryDao.idIn(InventoryIds, this.passport.user);
+        const User = yield UserDao.get(this.request.body.UserId);
+        context.User=User;
+        context.inventories=inventories.map(function(o){
+            if(o.Num < _Inventory[o.InventoryId] ){
+                self.flash = {
+                    op: {  status: false,  msg: '“'+o.Name + '” 库存不足,库存为：' + o.Num +', 出库为：' + _Inventory[o.InventoryId] },
+                };
+                self.redirect('/admin/inventory/out');
+            }else{
+                o.Num =_Inventory[o.InventoryId];
+            }
+            return o;
+        });
+
+        context.Sum = inventories.reduce(function(item, next){return item + next.Num * next.Price;
+        },0 );
+        if(context.Sum > User.Amount){
+            context.tips = {
+                status: true ,
+                msg:    User.Name + ' 账号金额不足。<br/>账号金额为：' + User.Amount  + ' 元 <br/> 出库金额为：' + context.Sum + ' 元。<br/> 差价：' + (context.Sum - User.Amount) + ' 元',
+            };
+        }
+    }
+    yield self.render('views/admin/inventory/confirm', context);
+};
+
+
+
+admin.processOut = function*(){
+    const context = {
+        module: {
+            name:    '系统管理',
+            subName: '出库到公司',
+        },
+    };
+
+    const self = this;
+    const InventoryIds = this.request.body.InventoryId;
+    const Nums = this.request.body.Num;
+
+    if(InventoryIds || InventoryIds.length > 0){
+        const _Inventory= {};
+        for(let i=0; i<InventoryIds.length;i++){
+            if(_Inventory[InventoryIds[i]]){
+                _Inventory[InventoryIds[i]]  += parseInt(Nums[i]);
+            }else{
+                _Inventory[InventoryIds[i]] = parseInt(Nums[i]);
+            }
+        }
+        const User = yield UserDao.get(this.request.body.UserId);
+        context.User = User;
+        let inventories = yield InventoryDao.idIn(InventoryIds, this.passport.user);
+        let Sum = 0;
+        _.forEach(inventories, function(o){
+            if(o.Num < _Inventory[o.InventoryId] ){
+                self.flash = {
+                    op: {  status: false,  msg: '“'+o.Name + '” 库存不足,库存为：' + o.Num +', 出库为：' + _Inventory[o.InventoryId] },
+                };
+                self.redirect('/admin/inventory/out');
+            }
+            Sum += o.Price * _Inventory[o.InventoryId];
+        });
+
+        yield InventoryDao.out(_Inventory, this.passport.user)
+
+        yield UserDao.minusAmount(User.UserId, Math.abs(Sum));
+
+        const inventoryLog = inventories.map(function(o){
+            o.Num = _Inventory[o.InventoryId];
+            o.Operator = self.passport.user.Name;
+            o.TargetId = User.UserId;
+            o.Active   = 0;
+            delete o.CreateDate;
+            delete o.LastUpdateDate;
+            return o;
+        });
+
+        for( let i=0; i<inventoryLog.length; i++ ){
+            yield InventoryDao.addLog(inventoryLog[i]);
+        }
+
+        self.flash = { op: {  status: true,  msg: '出库成功' } };
+        self.redirect('/admin/inventory/out',context);
+    } else{
+        self.flash = { op: {  status: false,  msg: '出库操作失败' } };
+        self.redirect('/admin/inventory/out',context);
+    }
 };

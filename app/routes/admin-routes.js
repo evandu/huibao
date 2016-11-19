@@ -21,7 +21,8 @@ router.post('/admin/inventory/add',       admin.inventoryProcessAdd);
 
 
 router.get('/admin/inventory/out',       admin.inventoryOut);
-router.post('/admin/inventory/out',      admin.inventoryProcessAdd);
+router.post('/admin/inventory/out',      admin.processOut);
+router.post('/admin/inventory/confirm',  admin.processConfirm);
 
 
 
