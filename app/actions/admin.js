@@ -242,3 +242,26 @@ admin.processOut = function*(){
         self.redirect('/admin/inventory/out',context);
     }
 };
+
+admin.inventoryLogAjaxQuery = function*(){
+    const values = this.query
+    values["UserId"] = this.passport.user.UserId
+    const res = yield InventoryDao.log(values);
+    if (res.op) {
+        this.status = 500
+        this.body = {msg: res.op.msg}
+    }
+    this.body = {data: res}
+};
+
+
+admin.inventoryLog = function*(){
+    const context = {
+        module: {
+            name:    '系统管理',
+            subName: '出库日志'
+        }
+    };
+    context.Target =  this.params.id
+    yield this.render('views/admin/inventory/log', context);
+};

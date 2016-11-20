@@ -86,20 +86,34 @@ Inventory.list = function*(values, likeValues) {
 };
 
 
-Inventory.log = function*(InventoryId, MemberId) {
-    let sql = 'Select a.*, m.Code as Code, m.Name as MemberName From InventoryLog as a Left Join Member as m On m.MemberId = a.MemberId where a.InventoryId = ? Order By a.CreateDate';
-    if (MemberId) {
-        sql = 'Select a.*, m.Code as Code, m.Name as MemberName From  InventoryLog as a  Left Join  Member as m  On m.MemberId = a.MemberId where m.MemberId = ? Order By a.CreateDate';
-    }
+Inventory.log = function*(values) {
+    const QuerySql = `Select a.*, b.Name UserName From InventoryLog a Left Join User b on a.TargetId = b.UserId Where a.TargetId=${values['TargetId']} And a.UserId = ${values['UserId']} Order By a.CreateDate, a.LastUpdateDate`;
+    const CountSql = `Select count(*) as count From InventoryLog Where TargetId=${values['TargetId']} And UserId = ${values['UserId']}`;
+    const SumAmountSql = `Select sum(Price) as sumAmount From InventoryLog Where TargetId=${values['TargetId']} And UserId = ${values['UserId']}`;
     try {
-        const result = yield global.db.query(sql, InventoryId ? InventoryId : MemberId);
-        return result[0];
+        return yield Lib.paging({}, {}, [QuerySql, CountSql, SumAmountSql], function (data) {
+            return _.map(data, d=> {
+                d.CreateDate = Moment(d.CreateDate).format('YYYY-MM-DD HH:mm:ss')
+                d.LastUpdateDate = Moment(d.LastUpdateDate).format('YYYY-MM-DD HH:mm:ss')
+                d.Price = d.Price + " 元"
+
+                if( d.Active == 0){
+                    d.Active='出库中'
+                }else if(d.Active == 1){
+                    d.Active='已出库'
+                }else{
+                    d.Active='出库失败'
+                }
+
+                return d;
+            });
+        });
     } catch (e) {
-        Lib.logException('Inventory.log', e);
+        Lib.logException('InventoryLog.log', e);
         return {
             op: {
                 status: false,
-                msg: '查询失败',
+                msg: '库存查询失败',
             },
         };
     }

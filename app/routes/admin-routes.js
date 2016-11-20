@@ -16,13 +16,13 @@ router.post('/admin/ajaxDelete',         admin.processDelete);
 router.get('/admin/edit/:id',            admin.edit);
 router.post('/admin/edit/:id',           admin.processEdit);
 
-router.get('/admin/inventory/add',       admin.inventoryAdd);
-router.post('/admin/inventory/add',       admin.inventoryProcessAdd);
-
-
-router.get('/admin/inventory/out',       admin.inventoryOut);
-router.post('/admin/inventory/out',      admin.processOut);
-router.post('/admin/inventory/confirm',  admin.processConfirm);
+router.get('/admin/inventory/add',              admin.inventoryAdd);
+router.post('/admin/inventory/add',             admin.inventoryProcessAdd);
+router.get('/admin/inventory/out',              admin.inventoryOut);
+router.post('/admin/inventory/out',             admin.processOut);
+router.post('/admin/inventory/confirm',         admin.processConfirm);
+router.get('/admin/inventory/log/ajaxQuery',   admin.inventoryLogAjaxQuery);
+router.get('/admin/inventory/log/:id',          admin.inventoryLog);
 
 
 

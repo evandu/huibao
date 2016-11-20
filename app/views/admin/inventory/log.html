@@ -1,0 +1,53 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">出库日志</h3>
+            </div>
+            <div class='box-body'>
+                <table id="data" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>物品名称</th>
+                        <th>出库数量</th>
+                        <th>出库单价</th>
+                        <th>出库状态</th>
+                        <th>出库到公司</th>
+                        <th>出库人员</th>
+                        <th>出库时间</th>
+                    </tr>
+                    </thead>
+                </table>
+                <p style="text-align: right;color:red" id="sumAmount">总计:? 元</p>
+            </div>
+            <div class='overlay tableLoading'><i class='fa fa-refresh fa-spin'></i></div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $.fn.DataTables({
+            target: "#data",
+            url: "ajaxQuery?TargetId={{Target}}",
+            deleteDataUrl: "ajaxDelete",
+            hiddenCheckbox: true,
+            renderCallback: function (items) {
+                $("#sumAmount").text("总计:" + items.data.sumAmount + "元")
+            },
+            columns: [
+                {"data": "Name"},
+                {"data": "Num"},
+                {"data": "Price"},
+                {"data": "Active"},
+                {"data": "UserName"},
+                {"data": "Operator"},
+                {"data": "LastUpdateDate"}
+            ], params: function () {
+                var obj = new Object();
+                obj.size = 10;
+                obj.cur = 1
+                return obj;
+            }
+        })
+    });
+</script>
