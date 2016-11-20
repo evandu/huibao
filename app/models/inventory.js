@@ -87,11 +87,45 @@ Inventory.list = function*(values, likeValues) {
 
 
 Inventory.log = function*(values) {
-    const QuerySql = `Select a.*, b.Name UserName From InventoryLog a Left Join User b on a.TargetId = b.UserId Where a.TargetId=${values['TargetId']} And a.UserId = ${values['UserId']} Order By a.CreateDate, a.LastUpdateDate`;
-    const CountSql = `Select count(*) as count From InventoryLog Where TargetId=${values['TargetId']} And UserId = ${values['UserId']}`;
-    const SumAmountSql = `Select sum(Price) as sumAmount From InventoryLog Where TargetId=${values['TargetId']} And UserId = ${values['UserId']}`;
+    const QuerySql = `Select a.*, b.Name UserName From InventoryLog a Left Join User b on a.TargetId = b.UserId $filter Order By a.CreateDate, a.LastUpdateDate`;
+    const CountSql = `Select count(*) as count From InventoryLog a $filter`;
+    const SumAmountSql = `Select sum(Price) as sumAmount From InventoryLog a $filter`;
     try {
-        return yield Lib.paging({}, {}, [QuerySql, CountSql, SumAmountSql], function (data) {
+        return yield Lib.paging(values, {}, [QuerySql, CountSql, SumAmountSql], function (data) {
+            return _.map(data, d=> {
+                d.CreateDate = Moment(d.CreateDate).format('YYYY-MM-DD HH:mm:ss')
+                d.LastUpdateDate = Moment(d.LastUpdateDate).format('YYYY-MM-DD HH:mm:ss')
+                d.Price = d.Price + " 元"
+                if( d.Active == 0){
+                    d.Active='出库中'
+                }else if(d.Active == 1){
+                    d.Active='已出库'
+                }else{
+                    d.Active='出库失败'
+                }
+                return d;
+            });
+        });
+    } catch (e) {
+        Lib.logException('InventoryLog.log', e);
+        return {
+            op: {
+                status: false,
+                msg: '库存查询失败',
+            },
+        };
+    }
+};
+
+
+Inventory.memberLog = function*(values) {
+
+    const QuerySql = `Select a.*, b.Name MemberName From InventoryLog a Left Join Member b on a.TargetId = b.MemberId $filter Order By a.CreateDate, a.LastUpdateDate`;
+    const CountSql = `Select count(*) as count From InventoryLog a $filter`;
+    const SumAmountSql = `Select sum(Price) as sumAmount From InventoryLog a $filter`;
+
+    try {
+        return yield Lib.paging(values, {}, [QuerySql, CountSql, SumAmountSql], function (data) {
             return _.map(data, d=> {
                 d.CreateDate = Moment(d.CreateDate).format('YYYY-MM-DD HH:mm:ss')
                 d.LastUpdateDate = Moment(d.LastUpdateDate).format('YYYY-MM-DD HH:mm:ss')
@@ -118,6 +152,7 @@ Inventory.log = function*(values) {
         };
     }
 };
+
 
 
 Inventory.update = function*(id, values, User) {

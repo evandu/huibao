@@ -245,7 +245,10 @@ admin.processOut = function*(){
 
 admin.inventoryLogAjaxQuery = function*(){
     const values = this.query
-    values["UserId"] = this.passport.user.UserId
+    values["a.UserId"] = this.passport.user.UserId
+    values["a.TargetId"] = values["TargetId"]
+    delete values["TargetId"]
+
     const res = yield InventoryDao.log(values);
     if (res.op) {
         this.status = 500

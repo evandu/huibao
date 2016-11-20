@@ -18,6 +18,71 @@ inventory.list =function*(){
     });
 };
 
+
+inventory.inAjaxQuery = function*(){
+    const values = this.query
+    values["a.TargetId"] = this.passport.user.UserId
+    values["a.Active"] = 0
+    delete values["TargetId"]
+
+    const res = yield InventoryDao.log(values);
+    if (res.op) {
+        this.status = 500
+        this.body = {msg: res.op.msg}
+    }
+    this.body = {data: res}
+};
+
+
+inventory.in = function*(){
+    const context = {
+        module: {
+            name:    '库存',
+            subName: '入库'
+        }
+    };
+    yield this.render('views/inventory/in', context);
+};
+
+
+inventory.processIn = function*(){
+    const context = {
+        module: {
+            name:    '库存',
+            subName: '入库'
+        }
+    };
+    yield this.render('views/inventory/in', context);
+};
+
+
+inventory.inventoryLogAjaxQuery = function*(){
+    const values = this.query
+    values["a.UserId"] = this.passport.user.UserId
+    values["a.TargetId"] = values['TargetId']
+    delete values['TargetId']
+    const res = yield InventoryDao.memberLog(values);
+    if (res.op) {
+        this.status = 500
+        this.body = {msg: res.op.msg}
+    }
+    this.body = {data: res}
+};
+
+
+inventory.inventoryLog = function*(){
+    const context = {
+        module: {
+            name:    '库存',
+            subName: '出库日志'
+        }
+    };
+    context.Target =  this.params.id
+    yield this.render('views/inventory/log', context);
+};
+
+
+
 inventory.ajaxQuery = function*() {
     const query = this.query
     const{ Name} = query
@@ -42,19 +107,6 @@ inventory.ajaxQuery = function*() {
     this.body = {data: res}
 };
 
-inventory.log =function*(){
-    const context = {
-        module: {
-            name:    '库存',
-            subName: '出库日志',
-        },
-    };
-    const res = yield InventoryDao.log(this.query.InventoryId, this.query.MemberId);
-    yield this.render('views/inventory/log',{
-        module: context.module,
-        data:   res,
-    });
-};
 
 inventory.out =function*(){
     const context = {

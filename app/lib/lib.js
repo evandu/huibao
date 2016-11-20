@@ -39,11 +39,6 @@ Lib.randomString = function (length) {
 }
 
 
-Lib.FeatureCode = function (UserId) {
-    return `${UserId}@`
-}
-
-
 Lib.paging = function*(values, likeValues, sqlArray, formater) {
     values = _.merge({size: 10, cur: 1}, values);
 
@@ -71,11 +66,13 @@ Lib.paging = function*(values, likeValues, sqlArray, formater) {
     });
 
     const filter = Object.keys(values).map(function (q) {
-        return q + ' = :' + q;
+        const d = q.split(".");
+        return q + ' = :' + (d.length ==1?d[0]:d[1]);
     }).join(' and ');
 
     const likeFilter = Object.keys(likeValues).map(function (q) {
-        return q + ' like :' + q;
+        const d = q.split(".");
+        return q + ' like :' + (d.length ==1?d[0]:d[1]);
     }).join(' and ');
 
     const conArray = []
@@ -90,7 +87,13 @@ Lib.paging = function*(values, likeValues, sqlArray, formater) {
     values['pageStart'] = pageStart
     values['pageSize'] = pageSize
     values = _.merge(values, likeValues)
+    const _values = {}
 
+    _.keys(values).map(key=>{
+        const d = key.split(".");
+        const _key = (d.length ==1?d[0]:d[1])
+        _values[_key] =  values[key];
+    })
     if (conArray.length > 0) {
         sqlArray = _.map(sqlArray, sql=> sql.replace("$filter", `where ${con}`))
     } else {
@@ -102,13 +105,13 @@ Lib.paging = function*(values, likeValues, sqlArray, formater) {
     const [dataList] =  yield global.db.query({
         sql: sqlArray[0] + ' Limit :pageStart, :pageSize',
         namedPlaceholders: true
-    }, values);
+    }, _values);
 
 
-    const [[total]] =  yield global.db.query({sql: sqlArray[1], namedPlaceholders: true}, values);
+    const [[total]] =  yield global.db.query({sql: sqlArray[1], namedPlaceholders: true}, _values);
     let sumAmount = {'sumAmount': 0}
     if (sqlArray.length == 3) {
-        [[sumAmount]] = yield global.db.query({sql: sqlArray[2], namedPlaceholders: true}, values);
+        [[sumAmount]] = yield global.db.query({sql: sqlArray[2], namedPlaceholders: true}, _values);
     }
     return {
         total: total['count'],

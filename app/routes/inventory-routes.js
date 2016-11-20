@@ -13,11 +13,16 @@ router.get('/inventory/list',          inventory.list);
 router.get('/ajaxQuery',               inventory.ajaxQuery);
 router.get('/inventory/ajaxQuery',     inventory.ajaxQuery);
 router.get('/inventory/suggest',       inventory.suggest);
-router.get('/inventory/log',           inventory.log);
 router.get('/inventory/out',           inventory.out);
 router.post('/inventory/confirm',      inventory.processConfirm);
 router.post('/inventory/out',          inventory.processOut);
 
+router.get('/inventory/inAjaxQuery',   inventory.inAjaxQuery);
+router.get('/inventory/in',            inventory.in);
+router.post('/inventory/in',           inventory.processIn);
+
+router.get('/inventory/log/ajaxQuery',   inventory.inventoryLogAjaxQuery);
+router.get('/inventory/log/:id',         inventory.inventoryLog);
 
 
 //router.get('/inventory/add',          inventory.add);
