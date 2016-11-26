@@ -25,13 +25,8 @@ Inventory.logIdIn = function*(ids,User) {
 };
 
 
-Inventory.updateLogStatus = function*(id,User) {
-    yield global.db.query('Update InventoryLog Set Active = 1 Where Active =0 And LogId=? And TargetId=? ', [id,User.UserId]);
-};
-
-
-Inventory.updateLogInIdsStatus = function*(ids,User) {
-    yield global.db.query(`Update InventoryLog Set Active = 2 Where Active =0 And LogId in (${ids.join(',')}) And TargetId=? `, [User.UserId]);
+Inventory.updateLogStatus = function*(id,User,Active) {
+    yield global.db.query('Update InventoryLog Set Active = ?  Where Active =0 And LogId=? And TargetId=? ', [Active,id,User.UserId]);
 };
 
 
@@ -169,7 +164,7 @@ Inventory.memberLog = function*(values) {
 };
 
 Inventory.updateNum = function*(id, Num, User) {
-    yield global.db.query('Update Inventory Set Num = Num + ?  Where InventoryId = ? And  UserId = ?', [Num, id, User.UserId]);
+    yield global.db.query('Update Inventory Set Num = Num + ? Where InventoryId = ? And UserId = ?', [Num, id, User.UserId]);
 }
 
 Inventory.update = function*(id, values, User) {

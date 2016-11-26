@@ -44,32 +44,36 @@ inventory.in = function*() {
     yield this.render('views/inventory/in', context);
 };
 
-inventory.processNotIn= function*() {
-   const values = this.request.body
-   yield InventoryDao.updateLogInIdsStatus(_.values(values), this.passport.user);
-   this.body = {data: "success"}
+inventory.processNotIn = function*() {
+    const values = this.request.body
+    const logs = yield InventoryDao.logIdIn(_.values(values), this.passport.user);
+    for (let i = 0; i < logs.length; i++) {
+        yield InventoryDao.updateNum(logs[i].InventoryId, logs[i].Num, {UserId: logs[i].UserId})
+        yield InventoryDao.updateLogStatus(logs[i].LogId, this.passport.user, "3")
+    }
+    this.body = {data: "success"}
 }
 
 inventory.processIn = function*() {
     const values = this.request.body
     const logs = yield InventoryDao.logIdIn(_.values(values), this.passport.user);
 
-    for(let i=0;i<logs.length;i++){
+    for (let i = 0; i < logs.length; i++) {
         let Inventory = yield InventoryDao.find(logs[i].Name, logs[i].Price, this.passport.user)
 
         if (Inventory) {
             yield InventoryDao.updateNum(Inventory.InventoryId, logs[i].Num, this.passport.user)
-        }else{
+        } else {
             Inventory = {
-                'Name':logs[i].Name,
-                'Price':logs[i].Price,
-                'Num':logs[i].Num,
-                'UserId':this.passport.user.UserId,
-                'Active':1
+                'Name': logs[i].Name,
+                'Price': logs[i].Price,
+                'Num': logs[i].Num,
+                'UserId': this.passport.user.UserId,
+                'Active': 1
             }
             yield InventoryDao.add(Inventory)
         }
-        yield InventoryDao.updateLogStatus(logs[i].LogId, this.passport.user)
+        yield InventoryDao.updateLogStatus(logs[i].LogId, this.passport.user, "3")
     }
     this.body = {data: "success"}
 };
@@ -105,7 +109,6 @@ inventory.memberLog = function*() {
 };
 
 
-
 inventory.inventoryLogAjaxQuery = function*() {
     const values = this.query
     values["a.UserId"] = this.passport.user.UserId
@@ -130,8 +133,6 @@ inventory.inventoryLog = function*() {
     context.Target = this.params.id
     yield this.render('views/inventory/log', context);
 };
-
-
 
 
 inventory.ajaxQuery = function*() {
