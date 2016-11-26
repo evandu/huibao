@@ -1,11 +1,11 @@
 (function ($) {
-    var jdatatables;
-
+    var Instance = {};
     $("#deleteData").click(function () {
+        var jdatatables = Instance['dataTable']
         if (jdatatables) {
             var data = $(".DeleteDatas").filter(":checked");
             if (data.length <= 0) return;
-            if(confirm("确定删除选择数据")){
+            if (confirm("确定删除选择数据")) {
                 var params = {};
                 for (var i = 0; i < data.length; i++) {
                     params['o_' + i] = $(data[i]).val();
@@ -17,11 +17,11 @@
                     data: params,
                     dataType: 'json'
                 }).success(function (items) {
-                    var data =  items.data
-                    if(data &&data.op && data.op.status == false){
-                        alert(data.op.status.msg||"删除数据报错");
+                    var data = items.data
+                    if (data && data.op && data.op.status == false) {
+                        alert(data.op.status.msg || "删除数据报错");
                         $(".tableLoading").hide();
-                    }else{
+                    } else {
                         jdatatables.ajax.reload();
                     }
                 }).fail(function () {
@@ -49,17 +49,17 @@
         }).success(function (items) {
             render(options, items);
             $(".tableLoading").hide();
-            if(options.renderCallback){
+            if (options.renderCallback) {
                 options.renderCallback(items)
             }
         }).fail(function (data) {
             $(".tableLoading").hide();
-            alert(data.msg ||"查询数据报错")
+            alert(data.msg || "查询数据报错")
         })
     }
 
     function dataTable(options, items) {
-        jdatatables = $(options.target).DataTable({
+        Instance['dataTable'] = $(options.target).DataTable({
             "serverSide": true,
             "ajax": function (data, callback) {
                 if (!options.row) {
@@ -123,17 +123,17 @@
 
     $.fn.extend({
         DataTables: function (opts) {
-            if(opts.hiddenCheckbox){
+            if (opts.hiddenCheckbox) {
 
-            }else{
-                if ( (!opts.columnDefs || opts.columnDefs.length == 0)) {
-                    opts.columnDefs =  [{
+            } else {
+                if ((!opts.columnDefs || opts.columnDefs.length == 0)) {
+                    opts.columnDefs = [{
                         "render": function (data, type, row) {
                             return '<input type="checkbox" class="DeleteDatas" value="' + data + '">'
                         },
                         "targets": 0
                     }]
-                }else {
+                } else {
                     opts.columnDefs.push({
                         "render": function (data, type, row) {
                             return '<input type="checkbox" class="DeleteDatas" value="' + data + '">'
@@ -143,12 +143,13 @@
                 }
             }
             renderTable(opts, dataTable)
-            if(!opts.hiddenForm){
+            if (!opts.hiddenForm) {
                 $("form").on("submit", function (event) {
                     event.preventDefault();
-                    jdatatables.ajax.reload();
+                    Instance['dataTable'].ajax.reload();
                 })
             }
+            return Instance;
         }
     })
 })(jQuery)

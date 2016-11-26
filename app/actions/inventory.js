@@ -46,13 +46,7 @@ inventory.in = function*(){
 
 
 inventory.processIn = function*(){
-    const context = {
-        module: {
-            name:    '库存',
-            subName: '入库'
-        }
-    };
-    yield this.render('views/inventory/in', context);
+    this.body = {data: "dd"}
 };
 
 

@@ -19,7 +19,7 @@
                     </thead>
                 </table>
                 <p style="text-align: right;color:red" id="sumAmount">总计:? 元</p>
-               <button type="button" id="inData" class="btn  btn-success"><i class="fa fa-plus "></i> 确定入库</button>
+                <button type="button" id="inData" class="btn  btn-success"><i class="fa fa-plus "></i> 确定入库</button>
             </div>
             <div class='overlay tableLoading'><i class='fa fa-refresh fa-spin'></i></div>
         </div>
@@ -27,10 +27,9 @@
 </div>
 <script>
     $(function () {
-        $.fn.DataTables({
+        var Instance = $.fn.DataTables({
             target: "#data",
             url: "inAjaxQuery",
-            deleteDataUrl: "in",
             renderCallback: function (items) {
                 $("#sumAmount").text("总计:" + items.data.sumAmount + "元")
             },
@@ -47,6 +46,36 @@
                 obj.size = 10;
                 obj.cur = 1
                 return obj;
+            }
+        });
+
+        $("#inData").click(function (e) {
+            var jdatatables = Instance['dataTable']
+            var data = $(".DeleteDatas").filter(":checked");
+            if (data.length <= 0) return;
+            if (confirm("确定入库吗？")) {
+                var params = {};
+                for (var i = 0; i < data.length; i++) {
+                    params['o_' + i] = $(data[i]).val();
+                }
+                $(".tableLoading").show();
+                $.ajax({
+                    type: "POST",
+                    url: 'in',
+                    data: params,
+                    dataType: 'json'
+                }).success(function (items) {
+                    var data = items.data
+                    if (data && data.op && data.op.status == false) {
+                        alert(data.op.status.msg || "入库成功");
+                        $(".tableLoading").hide();
+                    } else {
+                        jdatatables.ajax.reload();
+                    }
+                }).fail(function () {
+                    jdatatables.ajax.reload();
+                    alert("入库成功报错")
+                })
             }
         })
     });
