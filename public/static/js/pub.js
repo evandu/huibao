@@ -17,7 +17,13 @@
                     data: params,
                     dataType: 'json'
                 }).success(function (items) {
-                    jdatatables.ajax.reload();
+                    var data =  items.data
+                    if(data &&data.op && data.op.status == false){
+                        alert(data.op.status.msg||"删除数据报错");
+                        $(".tableLoading").hide();
+                    }else{
+                        jdatatables.ajax.reload();
+                    }
                 }).fail(function () {
                     jdatatables.ajax.reload();
                     alert("删除数据报错")

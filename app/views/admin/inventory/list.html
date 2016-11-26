@@ -22,7 +22,7 @@
                </div>
                <label class="col-sm-2 control-label"></label>
                <div class="form-group  col-sm-4 ">
-                   <button type="submit" class="btn btn-primary"><i class="fa   fa-search "></i> 查询</button>
+                   <button type="submit" class="btn btn-primary"><i class="fa fa-search "></i> 查询</button>
                </div>
            </form>
        </div>
@@ -108,14 +108,6 @@
       }).on('onUnsetSelectValue', function (e) {
           $("#UserName").val('')
           $("#UserName").next('input[type="hidden"]').remove()
-      })
-
-
-      $('table').on('click','.delete', function (){
-           if(confirm("确定删除吗?")){
-              var id = $(this).parent("td").parent("tr").attr("id");
-              window.location.href='{{ctx}}/inventory/'+id+'/delete'
-           }
       })
 
   });

@@ -23,14 +23,11 @@ router.post('/admin/inventory/add',             admin.inventoryProcessAdd);
 router.get('/admin/inventory/out',              admin.inventoryOut);
 router.post('/admin/inventory/out',             admin.processOut);
 router.post('/admin/inventory/confirm',         admin.processConfirm);
-
-router.get('/admin/user/log/ajaxQuery',         admin.userLogAjaxQuery);
-router.get('/admin/user/log/:id',               admin.userLog);
-
+router.post('/admin/inventory/ajaxDelete',      admin.inventoryProcessDelete);
 router.get('/admin/inventory/log/ajaxQuery',    admin.inventoryLogAjaxQuery);
 router.get('/admin/inventory/log/:id',          admin.inventoryLog);
 
-
-
+router.get('/admin/user/log/ajaxQuery',         admin.userLogAjaxQuery);
+router.get('/admin/user/log/:id',               admin.userLog);
 
 module.exports = router.middleware();

@@ -295,6 +295,12 @@ admin.inventoryAjaxQuery = function*() {
     this.body = {data: res}
 };
 
+
+admin.inventoryProcessDelete = function*() {
+    const res = yield InventoryDao.delete(_.values(this.request.body),this.passport.user);
+    this.body = {data: res}
+};
+
 admin.inventoryLog = function*(){
     const context = {
         module: {
