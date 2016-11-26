@@ -60,7 +60,6 @@ inventory.inventoryLogAjaxQuery = function*(){
     const values = this.query
     values["a.UserId"] = this.passport.user.UserId
     values["a.TargetId"] = values['TargetId']
-    values["a.Type"] = '1'
     delete values['TargetId']
     const res = yield InventoryDao.memberLog(values);
     if (res.op) {

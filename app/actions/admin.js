@@ -225,7 +225,6 @@ admin.processOut = function*(){
         });
 
         for( let i=0; i<inventoryLog.length; i++ ){
-            inventoryLog[i]['Type'] = '0'
             yield InventoryDao.addLog(inventoryLog[i]);
         }
 
@@ -255,7 +254,6 @@ admin.userLogAjaxQuery = function*(){
     const values = this.query
     values["a.UserId"] = this.passport.user.UserId
     values["a.TargetId"] = values["TargetId"]
-    values["a.Type"] = 0
     delete values["TargetId"]
 
     const res = yield InventoryDao.log(values);
