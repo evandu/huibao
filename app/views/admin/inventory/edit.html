@@ -8,17 +8,18 @@
            <div class="box-body ">
              <div class="row">
                <div class="col-md-6">
+                <input name="InventoryId" value="{{data.InventoryId}}" type="hidden">
                  <div class="form-group">
                    <label for="name">名称：</label>
-                   <input type="text" class="form-control" id="name"  value= {{data.Name}} name="Name" placeholder="输入名称" required  >
+                   <input type="text" class="form-control" id="name"  value= "{{data.Name}}" name="Name" placeholder="输入名称" required  >
                  </div>
                  <div class="form-group">
                    <label for="num">数量：</label>
-                   <input type="number" class="form-control" id="num"  value= {{data.Num}}  name="Num" placeholder="输入数量" required min="0">
+                   <input type="number" class="form-control" id="num"  value= "{{data.Num}}"  name="Num" placeholder="输入数量" required min="0">
                  </div>
                  <div class="form-group">
                    <label for="price">单价（单位元）：</label>
-                    <input type="number" class="form-control" id="price"  value= {{data.Price}}  name="Price" placeholder="输入单价（单位元）" required min="1">
+                    <input type="number" class="form-control" id="price"  value= "{{data.Price}}"  name="Price" placeholder="输入单价（单位元）" required min="1">
                  </div>
                </div>
              </div>

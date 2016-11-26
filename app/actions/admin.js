@@ -328,3 +328,22 @@ admin.inventoryLogAjaxQuery = function*(){
     this.body = {data: res}
 };
 
+
+
+admin.inventoryEdit = function*() {
+    const inventoryId = this.params.id
+    const res = yield InventoryDao.get(inventoryId,this.passport.user);
+    yield this.render('views/admin/inventory/edit', {
+        data:res,
+        module: {
+            name: '库存',
+            subName: '编辑'
+        }
+    });
+};
+
+
+admin.inventoryProcessEdit = function*() {
+    this.flash =  yield InventoryDao.update(this.params.id, this.request.body, this.passport.user);
+    this.redirect('/admin/inventory/list');
+};

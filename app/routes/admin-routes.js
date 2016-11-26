@@ -17,6 +17,8 @@ router.get('/admin/edit/:id',            admin.edit);
 router.post('/admin/edit/:id',           admin.processEdit);
 
 router.get('/admin/inventory/add',              admin.inventoryAdd);
+router.get('/admin/inventory/edit/:id',         admin.inventoryEdit);
+router.post('/admin/inventory/edit/:id',         admin.inventoryProcessEdit);
 router.get('/admin/inventory/list',             admin.inventoryList);
 router.get('/admin/inventory/ajaxQuery',        admin.inventoryAjaxQuery);
 router.post('/admin/inventory/add',             admin.inventoryProcessAdd);
