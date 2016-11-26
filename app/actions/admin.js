@@ -9,8 +9,6 @@ const InventoryDao    = require('../models/inventory.js');
 
 const admin = module.exports = {};
 
-
-
 admin.userSuggest = function*() {
     this.body = yield UserDao.suggest(this.query.name);
 };
@@ -57,7 +55,6 @@ admin.processAdd = function*() {
     this.redirect('/admin/add');
 };
 
-
 admin.memberAudit = function* () {
     const {MemberId,Active} = this.request.body
     yield MemberDao.audit(MemberId,Active)
@@ -69,12 +66,10 @@ admin.memberAudit = function* () {
     this.redirect('/member/list');
 }
 
-
 admin.processDelete = function*() {
     const res = yield UserDao.delete(_.values(this.request.body));
     this.body = {data: res}
 };
-
 
 admin.edit = function*() {
     const context = {
@@ -103,7 +98,6 @@ admin.processEdit = function*() {
     this.redirect('/admin/list');
 };
 
-
 admin.inventoryAdd =function*(){
     const context = {
         module: {
@@ -130,8 +124,6 @@ admin.inventoryOut =function*(){
     };
     yield this.render('views/admin/inventory/out',context);
 };
-
-
 
 admin.processConfirm =function*(){
     const context = {
@@ -179,8 +171,6 @@ admin.processConfirm =function*(){
     }
     yield self.render('views/admin/inventory/confirm', context);
 };
-
-
 
 admin.processOut = function*(){
     const context = {
@@ -243,7 +233,21 @@ admin.processOut = function*(){
     }
 };
 
-admin.inventoryLogAjaxQuery = function*(){
+
+
+admin.userLog = function*(){
+    const context = {
+        module: {
+            name:    '系统管理',
+            subName: '出库日志'
+        }
+    };
+    context.Target =  this.params.id
+    yield this.render('views/admin/inventory/log', context);
+};
+
+
+admin.userLogAjaxQuery = function*(){
     const values = this.query
     values["a.UserId"] = this.passport.user.UserId
     values["a.TargetId"] = values["TargetId"]
@@ -258,6 +262,39 @@ admin.inventoryLogAjaxQuery = function*(){
 };
 
 
+
+admin.inventoryList =function*(){
+    yield this.render('views/admin/inventory/list',{
+        module: {
+            name:    '系统管理',
+            subName: '库存列表'
+        }
+    });
+};
+
+
+admin.inventoryAjaxQuery = function*() {
+    const query = this.query
+    const{ Name} = query
+    const likeValue = {}
+    if(Name && Name != ''){
+        likeValue['Name'] = "%" +Name + "%"
+    }else{
+        delete query['Name']
+    }
+    delete query['Name']
+    const UserId =  query['UserId'];
+    if(!UserId || UserId == ''){
+        query['UserId'] = this.passport.user.UserId;
+    }
+    const res = yield InventoryDao.list(query, likeValue);
+    if (res.op) {
+        this.status = 500
+        this.body = {msg: res.op.msg}
+    }
+    this.body = {data: res}
+};
+
 admin.inventoryLog = function*(){
     const context = {
         module: {
@@ -268,3 +305,17 @@ admin.inventoryLog = function*(){
     context.Target =  this.params.id
     yield this.render('views/admin/inventory/log', context);
 };
+
+admin.inventoryLogAjaxQuery = function*(){
+    const values = this.query
+    values["a.InventoryId"] = values["TargetId"]
+    delete values["TargetId"]
+
+    const res = yield InventoryDao.log(values);
+    if (res.op) {
+        this.status = 500
+        this.body = {msg: res.op.msg}
+    }
+    this.body = {data: res}
+};
+

@@ -99,17 +99,20 @@
                    <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                     <li {{#compare module.subName '==' '添加公司'}} class="active" {{/compare}} >
-                       <a href="{{ctx}}/admin/add"><i class="fa  fa-user-md"></i>添加公司</a>
-                     </li>
-                     <li  {{#compare module.subName '==' '公司列表'}} class="active"  {{/compare}} >
-                       <a href="{{ctx}}/admin/list"><i class="fa   fa-user-plus"></i>公司列表</a>
-                     </li>
-                      <li {{#compare module.subName '==' '添加库存'}} class="active"  {{/compare}} >
-                         <a href="{{ctx}}/admin/inventory/add"><i class="fa   fa-plus"></i>添加库存</a>
-                      </li>
-                     <li {{#compare module.subName '==' '出库到公司'}} class="active"  {{/compare}} >
-                       <a href="{{ctx}}/admin/inventory/out"><i class="fa   fa-minus"></i>出库到公司</a>
+                    <li {{#compare module.subName '==' '添加公司'}} class="active" {{/compare}} >
+                       <a href="{{ctx}}/admin/add"><i class="fa   fa-university"></i>添加公司</a>
+                    </li>
+                    <li  {{#compare module.subName '==' '公司列表'}} class="active"  {{/compare}} >
+                       <a href="{{ctx}}/admin/list"><i class="fa  fa-sitemap"></i>公司列表</a>
+                    </li>
+                    <li  {{#compare module.subName '==' '库存列表'}} class="active"  {{/compare}} >
+                       <a href="{{ctx}}/admin/inventory/list"><i class="fa fa-tasks"></i>库存列表</a>
+                    </li>
+                    <li {{#compare module.subName '==' '添加库存'}} class="active"  {{/compare}} >
+                         <a href="{{ctx}}/admin/inventory/add"><i class="fa fa-plus"></i>添加库存</a>
+                    </li>
+                    <li {{#compare module.subName '==' '出库到公司'}} class="active"  {{/compare}} >
+                       <a href="{{ctx}}/admin/inventory/out"><i class="fa fa-minus"></i>出库到公司</a>
                     </li>
                 </ul>
               </li>

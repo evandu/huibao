@@ -84,29 +84,18 @@ inventory.inventoryLog = function*(){
 
 
 inventory.ajaxQuery = function*() {
-    const query = this.query
-    const{ Name} = query
+    const{ Name} = this.query
     const likeValue = {}
-
     if(Name && Name != ''){
         likeValue['Name'] = "%" +Name + "%"
-    }else{
-        delete query['Name']
     }
-    delete query['Name']
-
-    const User =  this.passport.user
-    if(User.Role != 'admin'){
-        query['UserId'] = User.UserId;
-    }
-    const res = yield InventoryDao.list(query, likeValue);
+    const res = yield InventoryDao.list({}, likeValue);
     if (res.op) {
         this.status = 500
         this.body = {msg: res.op.msg}
     }
     this.body = {data: res}
 };
-
 
 inventory.out =function*(){
     const context = {
@@ -228,53 +217,3 @@ inventory.processOut = function*(){
         self.redirect('/inventory/list');
     }
 };
-
-
-
-/*
-inventory.add =function*(){
-    const context = {
-        module: {
-            name:    '库存',
-            subName: '入库',
-        },
-    };
-    yield this.render('views/inventory/add',context);
-};
-inventory.edit =function*(){
-    const context = {
-        module: {
-            name:    '库存',
-            subName: '编辑',
-        },
-    };
-    const User = this.passport.user
-    const res = yield InventoryDao.get(this.params.id,User);
-    yield this.render('views/inventory/edit',{
-        module: context.module,
-        data:   res,
-    });
-};
-
-
-inventory.processAdd = function*(){
-    this.request.body['UserId']  = this.passport.user.UserId
-    this.flash = yield InventoryDao.add(this.request.body);
-    this.redirect('/inventory/add');
-};
-
-inventory.processDelete = function*(){
-    const User = this.passport.user
-    const res = yield InventoryDao.delete(_.values(this.request.body), User);
-    if (!res.op.status) {
-        this.status = 500
-    }
-    this.body = {data: res}
-};
-
-inventory.processEdit = function*(){
-    const User = this.passport.user
-    this.flash =  yield InventoryDao.update(this.params.id, this.request.body,User);
-    this.redirect('/inventory/list');
-};
-*/

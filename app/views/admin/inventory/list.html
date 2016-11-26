@@ -8,6 +8,18 @@
                <div class="form-group col-sm-4 ">
                    <input type="text" class="form-control" id="Name" name="Name" placeholder="名称">
                </div>
+               <label for="UserName" class="col-sm-1 control-label">公司: </label>
+               <div class="form-group col-sm-5 ">
+                   <div class="input-group">
+                       <input type="text" class="form-control" id="UserName"  placeholder="公司名称">
+                       <div class="input-group-btn">
+                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                               <span class="caret"></span>
+                           </button>
+                           <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                       </div>
+                   </div>
+               </div>
                <label class="col-sm-2 control-label"></label>
                <div class="form-group  col-sm-4 ">
                    <button type="submit" class="btn btn-primary"><i class="fa   fa-search "></i> 查询</button>
@@ -30,8 +42,7 @@
                </thead>
              </table>
            <p style="  text-align: right;color:red" id="sumAmount">总计:? 元</p>
-           <!--<button type="button" id="deleteData" class="btn  btn-danger"><i class="fa fa-minus "></i>删除选择库存记录-->
-           <!--</button>-->
+          <button type="button" id="deleteData" class="btn  btn-danger"><i class="fa fa-minus "></i>删除选择库存记录</button>
        </div>
        <div class='overlay tableLoading'><i class='fa fa-refresh fa-spin'></i></div>
    </div>
@@ -50,7 +61,7 @@
           columnDefs: [
               {
                   "render": function (data, type, row) {
-                      return  '<a href="{{ctx}}/inventory/log'+data+'">' +
+                      return  '<a href="{{ctx}}/admin/inventory/log/'+data+'">' +
                               '   <button type="button" class="btn btn-success btn-sm">出库日志</button>' +
                               '</a>'
                   },
