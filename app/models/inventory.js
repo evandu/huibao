@@ -19,10 +19,16 @@ Inventory.idIn = function*(ids,User) {
     return result[0];
 };
 
-Inventory.idIn = function*(ids,User) {
-    const result = yield global.db.query(`Select * From Inventory Where UserId = ? And InventoryId in (${ids.join(',')})`, User.UserId);
+Inventory.logIdIn = function*(ids,User) {
+    const result = yield global.db.query(`Select * From InventoryLog Where Active =0 And TargetId=? And LogId in (${ids.join(',')})`, User.UserId);
     return result[0];
 };
+
+
+Inventory.updateLogStatus = function*(id,User) {
+    yield global.db.query('Update InventoryLog Set Active = 1 Where Active =0 And LogId=? And TargetId=? ', [id,User.UserId]);
+};
+
 
 Inventory.get = function*(id,User) {
     let result
@@ -35,6 +41,10 @@ Inventory.get = function*(id,User) {
     return member[0];
 };
 
+Inventory.find = function*(Name,Price,User) {
+    const result = yield global.db.query('Select * From Inventory Where Name =? And Price=? And UserId =? ', [Name,Price,User.UserId] );
+    return result[0][0];
+};
 
 Inventory.delete = function*(ids,User) {
     try {
@@ -153,7 +163,9 @@ Inventory.memberLog = function*(values) {
     }
 };
 
-
+Inventory.updateNum = function*(id, Num, User) {
+    yield global.db.query('Update Inventory Set Num = Num + ?  Where InventoryId = ? And  UserId = ?', [Num, id, User.UserId]);
+}
 
 Inventory.update = function*(id, values, User) {
     try {

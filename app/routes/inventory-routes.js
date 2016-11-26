@@ -21,9 +21,11 @@ router.get('/inventory/inAjaxQuery',   inventory.inAjaxQuery);
 router.get('/inventory/in',            inventory.in);
 router.post('/inventory/in',           inventory.processIn);
 
+router.get('/member/log/ajaxQuery',   inventory.memberLogAjaxQuery);
+router.get('/member/log/:id',         inventory.memberLog);
+
 router.get('/inventory/log/ajaxQuery',   inventory.inventoryLogAjaxQuery);
 router.get('/inventory/log/:id',         inventory.inventoryLog);
-
 
 //router.get('/inventory/add',          inventory.add);
 // router.get('/inventory/:id',        inventory.view);

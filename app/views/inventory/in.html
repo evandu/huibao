@@ -34,7 +34,7 @@
                 $("#sumAmount").text("总计:" + items.data.sumAmount + "元")
             },
             columns: [
-                {"data": "InventoryId"},
+                {"data": "LogId"},
                 {"data": "Name"},
                 {"data": "Num"},
                 {"data": "Price"},
@@ -67,10 +67,11 @@
                 }).success(function (items) {
                     var data = items.data
                     if (data && data.op && data.op.status == false) {
-                        alert(data.op.status.msg || "入库成功");
+                        alert(data.op.status.msg || "入库报错");
                         $(".tableLoading").hide();
                     } else {
                         jdatatables.ajax.reload();
+                        alert("入库成功");
                     }
                 }).fail(function () {
                     jdatatables.ajax.reload();
