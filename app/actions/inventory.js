@@ -44,6 +44,11 @@ inventory.in = function*() {
     yield this.render('views/inventory/in', context);
 };
 
+inventory.processNotIn= function*() {
+   const values = this.request.body
+   yield InventoryDao.updateLogInIdsStatus(_.values(values), this.passport.user);
+   this.body = {data: "success"}
+}
 
 inventory.processIn = function*() {
     const values = this.request.body

@@ -30,6 +30,11 @@ Inventory.updateLogStatus = function*(id,User) {
 };
 
 
+Inventory.updateLogInIdsStatus = function*(ids,User) {
+    yield global.db.query(`Update InventoryLog Set Active = 2 Where Active =0 And LogId in (${ids.join(',')}) And TargetId=? `, [User.UserId]);
+};
+
+
 Inventory.get = function*(id,User) {
     let result
     if(User.Role == 'admin'){

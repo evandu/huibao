@@ -19,7 +19,8 @@
                     </thead>
                 </table>
                 <p style="text-align: right;color:red" id="sumAmount">总计:? 元</p>
-                <button type="button" id="inData" class="btn  btn-success"><i class="fa fa-plus "></i> 确定入库</button>
+                <button type="button" id="inData" class="btn  btn-success"><i class="fa fa-plus "></i> 选中入库</button>
+                <button type="button" id="outData" class="btn  btn-danger"><i class="fa fa-minus"></i> 选中不入库</button>
             </div>
             <div class='overlay tableLoading'><i class='fa fa-refresh fa-spin'></i></div>
         </div>
@@ -46,6 +47,37 @@
                 obj.size = 10;
                 obj.cur = 1
                 return obj;
+            }
+        });
+
+        $("#outData").click(function (e) {
+            var jdatatables = Instance['dataTable']
+            var data = $(".DeleteDatas").filter(":checked");
+            if (data.length <= 0) return;
+            if (confirm("确定不入库吗？")) {
+                var params = {};
+                for (var i = 0; i < data.length; i++) {
+                    params['o_' + i] = $(data[i]).val();
+                }
+                $(".tableLoading").show();
+                $.ajax({
+                    type: "POST",
+                    url: '!in',
+                    data: params,
+                    dataType: 'json'
+                }).success(function (items) {
+                    var data = items.data
+                    if (data && data.op && data.op.status == false) {
+                        alert(data.op.status.msg || "操作失败");
+                        $(".tableLoading").hide();
+                    } else {
+                        jdatatables.ajax.reload();
+                        alert("操作成功");
+                    }
+                }).fail(function () {
+                    jdatatables.ajax.reload();
+                    alert("操作失败")
+                })
             }
         });
 

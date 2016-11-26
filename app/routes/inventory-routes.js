@@ -20,6 +20,7 @@ router.post('/inventory/out',          inventory.processOut);
 router.get('/inventory/inAjaxQuery',   inventory.inAjaxQuery);
 router.get('/inventory/in',            inventory.in);
 router.post('/inventory/in',           inventory.processIn);
+router.post('/inventory/!in',           inventory.processNotIn);
 
 router.get('/member/log/ajaxQuery',   inventory.memberLogAjaxQuery);
 router.get('/member/log/:id',         inventory.memberLog);
