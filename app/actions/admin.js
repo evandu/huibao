@@ -24,10 +24,12 @@ admin.list = function*() {
 };
 
 admin.ajaxQuery = function*() {
-    const values = this.query
-    const {Name} = values
-    delete values["Name"]
-    const res = yield UserDao.list(values, {"Name": "%" + Name + "%"});
+    const {Name} = this.query
+    const likeValues ={}
+    if(Name &&Name != ''){
+        likeValues['Name'] = "%" + Name + "%"
+    }
+    const res = yield UserDao.list({"Role":'sub'}, likeValues);
     if (res.op) {
         this.status = 500
         this.body = {msg: res.op.msg}
@@ -49,6 +51,7 @@ admin.processAdd = function*() {
     const values = this.request.body
     const salt = yield bcrypt.genSalt(10)
     values.Password = yield bcrypt.hash(values.Password, salt);
+    values.Role = 'sub';
     delete values['Amount'];
     yield UserDao.insert(values);
     this.flash = {op: {status: true, msg: '添加成功'}};
