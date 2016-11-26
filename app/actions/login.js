@@ -7,10 +7,10 @@
 'use strict';
 
 const passport = require('koa-passport'); // authentication
+const bcrypt = require('co-bcrypt');    // bcrypt library
+const UserDao = require('../models/user.js');
 
 const handler = module.exports = {};
-
-
 /**
  * GET /login - render login page
  *
@@ -72,5 +72,34 @@ handler.postLogin = function* postLogin(next) {
     }
 };
 
+
+handler.modify = function*() {
+    const context = {
+        module: {
+            name: '帐户管理',
+            subName: '修改密码',
+        }
+    };
+    const res = yield UserDao.get(this.passport.user.UserId);
+    yield this.render('views/modify', {
+        module: context.module,
+        data: res,
+    });
+};
+
+handler.processModify = function*() {
+    const values = {}
+    if (this.request.body.Password && this.request.body.Password != '') {
+        const salt = yield bcrypt.genSalt(10)
+        values['Password'] = yield bcrypt.hash(this.request.body.Password, salt);
+    }
+
+    values['Address'] = this.request.body['Address'];
+    values['Mobile'] =  this.request.body['Mobile'];
+
+    this.flash = yield UserDao.update(this.passport.user.UserId, values);
+    this.flash = {op: {status: true, msg: '账户编辑成功'}};
+    this.redirect('/modify');
+};
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */

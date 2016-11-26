@@ -39,7 +39,7 @@
         <div class="navbar-custom-menu">
            <ul class="nav navbar-nav">
              <li>
-               <a href="{{ctx}}/user/modify"  data-placement="bottom" data-toggle='tooltip' title="修改账户资料"><i class="glyphicon glyphicon-user"></i>
+               <a href="{{ctx}}/modify"  data-placement="bottom" data-toggle='tooltip' title="修改账户资料"><i class="glyphicon glyphicon-user"></i>
                    <span class="hidden-xs">{{@koa.passport.user.Name}} </span>
                </a>
              </li>
@@ -60,6 +60,7 @@
         <ul class="sidebar-menu">
           <li class="header">菜单</li>
           <!-- Optionally, you can add icons to the links -->
+         {{#compare @koa.passport.user.Role '!=' 'admin'}}
             <li {{#compare module.name '==' '库存'}} class="treeview active" {{else}} class="treeview" {{/compare}} >
             <a><i class="fa fa-database"></i>
                 <span>库存</span>
@@ -78,11 +79,7 @@
             </ul>
             </li>
             <li  {{#compare module.name '==' '客户'}} class="treeview active" {{else}} class="treeview" {{/compare}} >
-            <a>
-                <i class="fa fa-users"></i>
-                <span>客户</span>
-                <i class="fa fa-angle-left pull-right"></i>
-            </a>
+            <a><i class="fa fa-users"></i> <span>客户</span><i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
                 <li  {{#compare module.subName '==' '添加客户'}} class="active" {{/compare}}>
                  <a href="{{ctx}}/member/add"><i class="fa fa-user-plus"></i>添加客户</a>
@@ -92,6 +89,7 @@
                 </li>
             </ul>
             </li>
+          {{/compare}}
           {{#compare @koa.passport.user.Role '==' 'admin'}}
               <li {{#compare module.name '==' '系统管理'}} class="treeview active" {{else}} class="treeview" {{/compare}} >
                  <a><i class="fa  fa-gears"></i>
