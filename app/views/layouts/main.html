@@ -103,6 +103,9 @@
                     <li  {{#compare module.subName '==' '公司列表'}} class="active"  {{/compare}} >
                        <a href="{{ctx}}/admin/list"><i class="fa  fa-sitemap"></i>公司列表</a>
                     </li>
+                    <li {{#compare module.subName '==' '客户列表'}} class="active" {{/compare}} >
+                      <a href="{{ctx}}/member/list"><i class="fa   fa-university"></i>客户列表</a>
+                    </li>
                     <li  {{#compare module.subName '==' '库存列表'}} class="active"  {{/compare}} >
                        <a href="{{ctx}}/admin/inventory/list"><i class="fa fa-tasks"></i>库存列表</a>
                     </li>

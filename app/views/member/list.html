@@ -22,6 +22,21 @@
                             <option value="2">审核未通过</option>
                         </select>
                     </div>
+                    {{#compare @koa.passport.user.Role '==' 'admin'}}
+                    <label for="UserName" class="col-sm-2 control-label">选择公司: </label>
+                    <div class="form-group col-sm-4 ">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="UserName"  placeholder="选择公司">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    {{/compare}}
+
                     <label class="col-sm-2 control-label"></label>
                     <div class="form-group  col-sm-4 ">
                         <button type="submit" class="btn btn-primary"><i class="fa   fa-search "></i> 查询</button>
@@ -52,6 +67,27 @@
 </div>
 <script>
     $(function () {
+        {{#compare @koa.passport.user.Role '==' 'admin'}}
+            $("#UserName").bsSuggest({
+                url: "{{ctx}}/admin/userSuggest?name=",
+                showBtn: true,
+                idField: "UserId",
+                keyField: "Name",
+                allowNoKeyword: true,
+                getDataMethod: "url",
+                effectiveFields: ["Name"],
+                processData: function (res){return {value:res}},
+                showHeader: true,
+                effectiveFieldsAlias: {Name: ' 公司名称'}
+            }).on('onSetSelectValue', function (e, data) {
+                $("#UserName").next('input[type="hidden"]').remove()
+                $("#UserName").after('<input type="hidden" name="UserId" value="' + data.id + '"/>')
+            }).on('onUnsetSelectValue', function (e) {
+                $("#UserName").val('')
+                $("#UserName").next('input[type="hidden"]').remove()
+            })
+        {{/compare}}
+
         $.fn.DataTables({
             target: "#data",
             url: "ajaxQuery",
@@ -62,14 +98,16 @@
             columnDefs: [
                  {
                     "render": function (data, type, row) {
-                        var str;
-                        if(row.Active == '已审核'){
-                            str = ""
-                        }else{
-                            str='<a href="{{ctx}}/member/edit/'+data+'">' +
-                                    '   <button type="button" class="btn btn-primary btn-sm">编辑</button>' +
-                                    '</a>'
-                        }
+                        var str = "";
+                        {{#compare @koa.passport.user.Role '!=' 'admin'}}
+                            if(row.Active == '已审核'){
+                                str = ""
+                            }else{
+                                str='<a href="{{ctx}}/member/edit/'+data+'">' +
+                                        '   <button type="button" class="btn btn-primary btn-sm">编辑</button>' +
+                                        '</a>'
+                            }
+                        {{/compare}}
                         return  str + '<a href="{{ctx}}/inventory/log/'+data+'">' +
                                 '   <button type="button" class="btn btn-success btn-sm">出库日志</button>' +
                                 '</a>'

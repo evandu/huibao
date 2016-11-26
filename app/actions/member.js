@@ -31,9 +31,13 @@ member.edit = function*() {
 
 
 member.detail = function*() {
+    let name ='客户';
+    if(this.passport.user.Role == 'admin'){
+        name ='系统管理'
+    }
     const context = {
         module: {
-            name: '客户',
+            name: name,
             subName: '客户详情',
         },
     };
@@ -45,9 +49,13 @@ member.detail = function*() {
 };
 
 member.list = function*() {
+    let name ='客户';
+    if(  this.passport.user.Role == 'admin'){
+       name ='系统管理'
+    }
     yield this.render('views/member/list', {
         module: {
-            name: '客户',
+            name: name,
             subName: '客户列表',
         }
     });
@@ -119,9 +127,6 @@ member.processAdd = function*() {
 
 member.processDelete = function*() {
     const res = yield MemberDao.delete(_.values(this.request.body), this.passport.user);
-    if (!res.op.status) {
-        this.status = 500
-    }
     this.body = {data: res}
 };
 

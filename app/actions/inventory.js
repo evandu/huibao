@@ -60,6 +60,7 @@ inventory.inventoryLogAjaxQuery = function*(){
     const values = this.query
     values["a.UserId"] = this.passport.user.UserId
     values["a.TargetId"] = values['TargetId']
+    values["a.Type"] = '1'
     delete values['TargetId']
     const res = yield InventoryDao.memberLog(values);
     if (res.op) {
@@ -71,9 +72,13 @@ inventory.inventoryLogAjaxQuery = function*(){
 
 
 inventory.inventoryLog = function*(){
+    let name ='库存';
+    if(this.passport.user.Role == 'admin'){
+        name ='系统管理'
+    }
     const context = {
         module: {
-            name:    '库存',
+            name:    name,
             subName: '出库日志'
         }
     };
