@@ -243,7 +243,7 @@ Member.minusAmount = function*(id, User, Amount) {
         return {
             op: {
                 status: true,
-                msg: values.Name + '编辑成功, id=' + id,
+                msg: '编辑成功, id=' + id,
             },
         };
     } catch (e) {
