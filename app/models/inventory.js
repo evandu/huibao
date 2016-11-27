@@ -1,6 +1,6 @@
 'use strict';
 
-const Lib = require('../lib/lib.js');
+const Lib = require('../lib/lib');
 const Moment = require('moment');
 const _ = require('lodash');
 const Inventory = module.exports = {};

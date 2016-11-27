@@ -3,8 +3,8 @@
 
 
 
-const Lib = require('../lib/lib.js');
-const ModelError = require('./modelerror.js');
+const Lib = require('../lib/lib');
+const ModelError = require('./modelerror');
 const _ = require('lodash');
 const Moment = require('moment');
 const User = module.exports = {};

@@ -1,6 +1,6 @@
 'use strict';
 
-const Lib = require('../lib/lib.js');
+const Lib = require('../lib/lib');
 const _ = require('lodash');
 const Moment = require('moment');
 

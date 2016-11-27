@@ -1,11 +1,11 @@
 'use strict';
 
-const Lib = require('../lib/lib.js');
+const Lib = require('../lib/lib');
 const bcrypt = require('co-bcrypt');
 const Moment = require('moment');
 const _ = require('lodash');
 
-const ModelError = require('./modelerror.js');
+const ModelError = require('./modelerror');
 
 const Member = module.exports = {};
 
