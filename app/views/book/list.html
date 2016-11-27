@@ -154,6 +154,7 @@
                 })
             }
         });
+
         $("#UserName").bsSuggest({
             url: "{{ctx}}/admin/userSuggest?name=",
             showBtn: true,
@@ -172,6 +173,7 @@
             $("#UserName").val('')
             $("#UserName").next('input[type="hidden"]').remove()
         })
+
       {{/compare}}
 
 
