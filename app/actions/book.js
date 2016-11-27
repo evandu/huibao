@@ -20,14 +20,12 @@ book.add = function*(){
     yield this.render('views/book/add', context);
 };
 
-
 book.processAdd = function*(){
     this.request.body['UserId']  = this.passport.user.UserId
     this.request.body['Active']  = '0';
     this.flash = yield BookDao.add(this.request.body);
     this.redirect('/book/list');
 };
-
 
 book.list = function*() {
     let name ='订购';
@@ -66,7 +64,6 @@ book.ajaxQuery = function*() {
     this.body = {data: res}
 };
 
-
 book.processDelete = function*() {
     if(this.passport.user.Role != 'admin'){
         this.status = 500
@@ -82,7 +79,7 @@ book.in = function* () {
         this.status = 500
         this.body = {msg: "操作失败"}
     }else{
-        const res = yield BookDao.updateStatus(_.values(this.request.body), "1");
+        const res = yield BookDao.updateStatus(_.flatten(_.map(_.values(this.request.body),o=>o.split(','))), "1");
         this.body = {data: res}
     }
 }
@@ -92,7 +89,7 @@ book.notIn = function* () {
         this.status = 500
         this.body = {msg: "操作失败"}
     }else{
-        const res = yield BookDao.updateStatus(_.values(this.request.body), "2");
+        const res = yield BookDao.updateStatus(_.flatten(_.map(_.values(this.request.body),o=>o.split(','))), "2");
         this.body = {data: res}
     }
 }

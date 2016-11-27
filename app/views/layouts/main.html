@@ -93,10 +93,10 @@
                  <a><i class="fa fa-hand-lizard-o "></i> <span>订购</span><i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
                   <li  {{#compare module.subName '==' '添加订购'}} class="active" {{/compare}}>
-                  <a href="{{ctx}}/book/add"><i class="fa fa-bookmark-o"></i>添加订购</a>
+                     <a href="{{ctx}}/book/add"><i class="fa fa-bookmark-o"></i>添加订购</a>
                   </li>
                   <li  {{#compare module.subName '==' '订购列表'}} class="active" {{/compare}}>
-                  <a href="{{ctx}}/book/list"><i class="fa  fa-navicon"></i>订购列表</a>
+                     <a href="{{ctx}}/book/list"><i class="fa  fa-navicon"></i>订购列表</a>
                   </li>
               </ul>
            </li>
@@ -131,6 +131,9 @@
                        <a href="{{ctx}}/book/list"><i class="fa  fa-navicon"></i>订购列表</a>
                     </li>
 
+                    <li  {{#compare module.subName '==' '预定列表'}} class="active" {{/compare}}>
+                     <a href="{{ctx}}/admin/book/orders"><i class="fa  fa-navicon"></i>预定列表</a>
+                    </li>
                 </ul>
               </li>
         {{/compare}}

@@ -9,6 +9,8 @@ router.get('/admin/list',                admin.list);
 router.get('/admin/ajaxQuery',           admin.ajaxQuery);
 router.get('/admin/userSuggest',         admin.userSuggest);
 
+router.get('/admin/book/orders',         admin.orders);
+
 router.get('/admin/add',                 admin.add);
 router.post('/admin/add',                admin.processAdd);
 router.post('/admin/memberAudit',        admin.memberAudit);

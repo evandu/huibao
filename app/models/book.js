@@ -88,7 +88,7 @@ Book.add = function*(values) {
         return {
             op: {
                 status: true,
-                msg: values.Name + '添加成功, id=' + result[0].insertId,
+                msg: '添加成功, id=' + result[0].insertId,
             },
         };
     } catch (e) {

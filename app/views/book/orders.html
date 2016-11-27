@@ -1,0 +1,94 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">预定列表</h3>
+            </div>
+            <div class='box-body'>
+                <table id="data" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>选择</th>
+                        <th>订购商品</th>
+                        <th>数量</th>
+                        <th>订购时间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#data}}
+                       <tr>
+                           <td><input type="checkbox" class="BookIds" value=" {{BookId}}"></td>
+                           <td> {{InventoryName}}</td>
+                           <td> {{Num}}</td>
+                           <td> {{CreateDate}}</td>
+                       </tr>
+                    {{/data}}
+                    </tbody>
+                </table>
+                <br/>
+                <p style="  text-align: right;color:red" id="sumAmount">总计:{{sumAmount}} 元</p>
+                <button type="button" id="isPlan" class="btn  btn-success"><i class="fa   fa-check "></i > 已订购</button>
+                <button type="button" id="NotPlan" class="btn  btn-info"><i class="fa  fa-close  "></i> 不订购</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $("#isPlan").click(function () {
+            var data = $(".BookIds").filter(":checked");
+            if (data.length <= 0) return;
+            if (confirm("确定已订购了吗？")) {
+                var params = {};
+                for (var i = 0; i < data.length; i++) {
+                    params['o_' + i] = $(data[i]).val();
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '{{ctx}}/book/in',
+                    data: params,
+                    dataType: 'json'
+                }).success(function (items) {
+                    var data1 = items.data
+                    if (data1 && data1.op && data1.op.status == false) {
+                        alert(data1.op.status.msg || "操作报错");
+                        window.location = location.href;
+                    } else {
+                        alert("操作成功");
+                        window.location = location.href;
+                    }
+                }).fail(function () {
+                    alert("操作报错")
+                })
+            }
+        });
+        $("#NotPlan").click(function () {
+            var data = $(".BookIds").filter(":checked");
+            if (data.length <= 0) return;
+            if (confirm("确定不订购了吗？")) {
+                var params = {};
+                for (var i = 0; i < data.length; i++) {
+                    params['o_' + i] = $(data[i]).val();
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '{{ctx}}/book/!in',
+                    data: params,
+                    dataType: 'json'
+                }).success(function (items) {
+                    var data1 = items.data
+                    if (data1 && data1.op && data1.op.status == false) {
+                        alert(data1.op.status.msg || "操作报错");
+                        window.location = location.href;
+                    } else {
+                        alert("操作成功");
+                        window.location = location.href;
+                    }
+                }).fail(function () {
+                    alert("操作报错")
+                    window.location = location.href;
+                })
+            }
+        })
+    })
+</script>
