@@ -7,7 +7,7 @@ const bcrypt = require('co-bcrypt');    // bcrypt library
 const member = module.exports = {};
 
 member.suggest = function*() {
-    this.body = yield MemberDao.suggest(this.query.name);
+    this.body = yield MemberDao.suggest(this.query.name,this.passport.user);
 };
 
 
