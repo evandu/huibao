@@ -114,11 +114,12 @@ member.add = function*() {
 
 member.processAdd = function*() {
     const values = this.request.body.fields
-    const {IDPic, DrivingPic, PolicyPic} = this.request.body.files
+    const {IDPic, DrivingPic, PolicyPic, Remarks} = this.request.body.files
     const path = this.envConfig.upload;
     values['IDPic'] = yield Lib.upload(IDPic, path)
     values['DrivingPic'] = yield Lib.upload(DrivingPic, path)
     values['PolicyPic'] = yield Lib.upload(PolicyPic, path)
+    values['Remarks'] = yield Lib.upload(Remarks, path)
     values['Active'] = '0'
     values['UserId'] = this.passport.user.UserId
     this.flash = yield MemberDao.add(values);
@@ -152,7 +153,7 @@ member.processEdit = function*() {
         }
         this.redirect('/member/list');
     } else{
-        const {IDPic, DrivingPic, PolicyPic} = this.request.body.files
+        const {IDPic, DrivingPic, PolicyPic,Remarks} = this.request.body.files
         if (IDPic) {
             values['IDPic'] = yield Lib.upload(IDPic, this.envConfig.upload)
         } else {
@@ -167,6 +168,11 @@ member.processEdit = function*() {
             values['PolicyPic'] = yield Lib.upload(PolicyPic, this.envConfig.upload)
         } else {
             delete values['PolicyPic'];
+        }
+        if (Remarks) {
+            values['Remarks'] = yield Lib.upload(Remarks, this.envConfig.upload)
+        } else {
+            delete values['Remarks'];
         }
         this.flash = yield MemberDao.update(this.params.id,this.passport.user, values);
         this.redirect('/member/list');

@@ -42,6 +42,16 @@
                                 <img class="img-responsive" src="{{imgServer}}/{{data.PolicyPic}}" alt="Photo"></a>
                             </div>
                         </div>
+
+                        {{#if data.Remarks}}
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">备注：</label>
+                                <div class="col-sm-8"><a href="{{imgServer}}/{{data.Remarks}}">
+                                    <img class="img-responsive" src="{{imgServer}}/{{data.Remarks}}" alt="Photo"></a>
+                                </div>
+                            </div>
+                        {{/if}}
+
                         <div class="form-group">
                             <label class="col-sm-3 control-label">账号资金：</label>
                             <div class="col-sm-8"><h3 style="color: red">{{data.Amount}} 元</h3></div>

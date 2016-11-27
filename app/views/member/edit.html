@@ -17,24 +17,34 @@
                             <input type="text" class="form-control" id="num" value="{{data.Code}}" name="Code"
                                    placeholder="输入车牌" required>
                         </div>
-                        <a href="{{static}}/img/bg.jpg">
-                            <img class="img-responsive" src="{{static}}/img/bg.jpg"  alt="Photo"></a>
+                        <a href="{{imgServer}}/{{data.IDPic}}">
+                            <img class="img-responsive" src="{{imgServer}}/{{data.IDPic}}"  alt="Photo"></a>
                         <div class="form-group">
                             <label for="num">身份证照片：</label>
                             <input class="form-control" type="file" name="IDPic">
                         </div>
-                        <a href="{{static}}/img/bg.jpg">
-                            <img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo"></a>
+                        <a href="{{imgServer}}/{{data.DrivingPic}}">
+                            <img class="img-responsive" src="{{imgServer}}/{{data.DrivingPic}}" alt="Photo"></a>
                         <div class="form-group">
                             <label for="num">行驶证照片：</label>
                             <input class="form-control" type="file" name="DrivingPic">
                         </div>
-                        <a href="{{static}}/img/bg.jpg">
-                            <img class="img-responsive" src="{{static}}/img/bg.jpg" alt="Photo"></a>
+                        <a href="{{imgServer}}/{{data.PolicyPic}}">
+                            <img class="img-responsive" src="{{imgServer}}/{{data.PolicyPic}}" alt="Photo"></a>
                         <div class="form-group">
                             <label for="num">保单照片：</label>
                             <input class="form-control" type="file" name="PolicyPic">
                         </div>
+                        {{#if data.Remarks }}
+                           <a href="{{imgServer}}/{{data.Remarks}}">
+                            <img class="img-responsive" src="{{imgServer}}/{{data.Remarks}}" alt="Photo">
+                           </a>
+                        {{/if}}
+                        <div class="form-group">
+                            <label for="num">备注：</label>
+                            <input class="form-control" type="file" name="Remarks">
+                        </div>
+
                         <div class="form-group">
                              <label for="Amount">账号资金（单位元）：</label>
                              <input id="Amount" class="form-control" name="Amount" type="number" value="{{data.Amount}}" required>
