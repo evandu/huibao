@@ -89,6 +89,17 @@
                 </li>
             </ul>
             </li>
+            <li  {{#compare module.name '==' '采购'}} class="treeview active" {{else}} class="treeview" {{/compare}} >
+                 <a><i class="fa fa-hand-lizard-o "></i> <span>采购</span><i class="fa fa-angle-left pull-right"></i></a>
+              <ul class="treeview-menu">
+                  <li  {{#compare module.subName '==' '添加采购'}} class="active" {{/compare}}>
+                  <a href="{{ctx}}/plan/add"><i class="fa fa-bookmark-o"></i>添加采购</a>
+                  </li>
+                  <li  {{#compare module.subName '==' '采购列表'}} class="active" {{/compare}}>
+                  <a href="{{ctx}}/plan/list"><i class="fa fa-bookmark-o"></i>采购列表</a>
+                  </li>
+              </ul>
+           </li>
           {{/compare}}
           {{#compare @koa.passport.user.Role '==' 'admin'}}
               <li {{#compare module.name '==' '系统管理'}} class="treeview active" {{else}} class="treeview" {{/compare}} >
@@ -115,6 +126,11 @@
                     <li {{#compare module.subName '==' '出库到公司'}} class="active"  {{/compare}} >
                        <a href="{{ctx}}/admin/inventory/out"><i class="fa fa-minus"></i>出库到公司</a>
                     </li>
+
+                    <li  {{#compare module.subName '==' '采购列表'}} class="active" {{/compare}}>
+                       <a href="{{ctx}}/plan/list"><i class="fa fa-bookmark-o"></i>采购列表</a>
+                    </li>
+
                 </ul>
               </li>
         {{/compare}}

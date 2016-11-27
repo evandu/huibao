@@ -276,3 +276,5 @@ inventory.processOut = function*() {
         self.redirect('/inventory/list');
     }
 };
+
+
