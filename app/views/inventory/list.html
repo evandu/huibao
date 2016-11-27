@@ -43,7 +43,7 @@
       $.fn.DataTables({
           target: "#data",
           url: "ajaxQuery",
-          deleteDataUrl: "delete",
+          hiddenCheckbox: true,
           renderCallback:function(items){
               $("#sumAmount").text("总计:" +items.data.sumAmount + "元")
           },
