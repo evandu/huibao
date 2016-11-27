@@ -1,58 +1,59 @@
 
 'use strict';
 
-const PlanDao = require('../models/plan.js');
+const BookDao = require('../models/book.js');
 const _ = require('lodash');
-const plan = module.exports = {};
+const book = module.exports = {};
 
-plan.add = function*(){
+book.add = function*(){
     const context = {
         module: {
-            name: '采购',
-            subName: '添加采购',
+            name: '订购',
+            subName: '添加订购',
         },
     };
-    yield this.render('views/plan/add', context);
+    yield this.render('views/book/add', context);
 };
 
 
-plan.processAdd = function*(){
+book.processAdd = function*(){
     this.request.body['UserId']  = this.passport.user.UserId
     this.request.body['Active']  = '0';
-    this.flash = yield PlanDao.add(this.request.body);
-    this.redirect('/plan/list');
+    this.flash = yield BookDao.add(this.request.body);
+    this.redirect('/book/list');
 };
 
 
-plan.list = function*() {
-    let name ='采购';
+book.list = function*() {
+    let name ='订购';
     if(  this.passport.user.Role == 'admin'){
         name ='系统管理'
     }
-    yield this.render('views/plan/list', {
+    yield this.render('views/book/list', {
         module: {
             name: name,
-            subName: '采购列表',
+            subName: '订购列表',
         }
     });
 };
 
-plan.ajaxQuery = function*() {
+book.ajaxQuery = function*() {
     const query = this.query
     const User = this.passport.user
     const{ Name} = query
     delete query['Name']
 
     const likeValue = {}
+
     if(Name && Name !=''){
-        likeValue['Name'] = "%"+Name+"%";
+        likeValue['b.Name'] = "%"+Name+"%";
     }
 
     if(User.Role != 'admin'){
-        query['UserId']= User.UserId
+        query['b.UserId']= User.UserId
     }
 
-    const res = yield PlanDao.list(query, likeValue);
+    const res = yield BookDao.list(query, likeValue);
     if (res.op) {
         this.status = 500
         this.body = {msg: res.op.msg}
@@ -61,32 +62,32 @@ plan.ajaxQuery = function*() {
 };
 
 
-plan.processDelete = function*() {
+book.processDelete = function*() {
     if(this.passport.user.Role != 'admin'){
         this.status = 500
         this.body = {msg: "删除失败"}
     }else{
-        const res = yield PlanDao.delete(_.values(this.request.body), this.passport.user);
+        const res = yield BookDao.delete(_.values(this.request.body), this.passport.user);
         this.body = {data: res}
     }
 };
 
-plan.in = function* () {
+book.in = function* () {
     if(this.passport.user.Role != 'admin'){
         this.status = 500
         this.body = {msg: "操作失败"}
     }else{
-        const res = yield PlanDao.updateStatus(_.values(this.request.body), "1");
+        const res = yield BookDao.updateStatus(_.values(this.request.body), "1");
         this.body = {data: res}
     }
 }
 
-plan.notIn = function* () {
+book.notIn = function* () {
     if(this.passport.user.Role != 'admin'){
         this.status = 500
         this.body = {msg: "操作失败"}
     }else{
-        const res = yield PlanDao.updateStatus(_.values(this.request.body), "2");
+        const res = yield BookDao.updateStatus(_.values(this.request.body), "2");
         this.body = {data: res}
     }
 }

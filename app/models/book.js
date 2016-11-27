@@ -4,12 +4,12 @@ const Lib = require('../lib/lib');
 const _ = require('lodash');
 const Moment = require('moment');
 
-const Plan = module.exports = {};
+const Book = module.exports = {};
 
 
-Plan.list = function*(values, likeValues) {
-    const QuerySql = 'Select * From Plan $filter Order By CreateDate, LastUpdateDate';
-    const CountSql = 'Select count(*) as count From Plan $filter ';
+Book.list = function*(values, likeValues) {
+    const QuerySql = 'Select b.*,m.Name as MemberName,m.Code as Code From Book b Inner join Member m on m.MemberId= b.MemberId $filter Order By b.CreateDate, b.LastUpdateDate';
+    const CountSql = 'Select count(*) as count From Book b $filter ';
     try {
         return yield Lib.paging(values, likeValues, [QuerySql, CountSql], function (data) {
             return _.map(data, d=> {
@@ -26,7 +26,7 @@ Plan.list = function*(values, likeValues) {
             });
         });
     } catch (e) {
-        Lib.logException('Plan.List', e);
+        Lib.logException('Book.List', e);
         return {
             op: {
                 status: false,
@@ -37,12 +37,12 @@ Plan.list = function*(values, likeValues) {
 };
 
 
-Plan.delete = function*(ids, User) {
+Book.delete = function*(ids, User) {
     try {
         if (User.Role == 'admin') {
-            yield global.db.query(`Delete From Plan Where PlanId in (${ids.join(",")})`);
+            yield global.db.query(`Delete From Book Where BookId in (${ids.join(",")})`);
         } else {
-            yield global.db.query(`Delete From Plan Where UserId = ? And PlanId in (${ids.join(",")})`, User.UserId);
+            yield global.db.query(`Delete From Book Where UserId = ? And BookId in (${ids.join(",")})`, User.UserId);
         }
         return {
             op: {
@@ -61,9 +61,9 @@ Plan.delete = function*(ids, User) {
     }
 };
 
-Plan.updateStatus = function*(ids, Active) {
+Book.updateStatus = function*(ids, Active) {
     try {
-        yield global.db.query(`Update Plan Set Active =? Where PlanId in (${ids.join(",")})`,Active);
+        yield global.db.query(`Update Book Set Active =? Where BookId in (${ids.join(",")})`,Active);
         return {
             op: {
                 status: true,
@@ -71,7 +71,7 @@ Plan.updateStatus = function*(ids, Active) {
             },
         };
     } catch (e) {
-        Lib.logException('Plan.in', e);
+        Lib.logException('Book.in', e);
         return {
             op: {
                 status: false,
@@ -82,9 +82,9 @@ Plan.updateStatus = function*(ids, Active) {
 };
 
 
-Plan.add = function*(values) {
+Book.add = function*(values) {
     try {
-        const result = yield global.db.query('Insert Into Plan Set ?', values);
+        const result = yield global.db.query('Insert Into Book Set ?', values);
         return {
             op: {
                 status: true,
@@ -92,7 +92,7 @@ Plan.add = function*(values) {
             },
         };
     } catch (e) {
-        Lib.logException('Inventory.addPlan', e);
+        Lib.logException('Book.add', e);
         switch (e.code) {
             case 'ER_BAD_NULL_ERROR':
             case 'ER_NO_REFERENCED_ROW_2':

@@ -100,6 +100,8 @@ Lib.paging = function*(values, likeValues, sqlArray, formater) {
         sqlArray = _.map(sqlArray, sql=> sql.replace("$filter", ''))
     }
 
+    console.log(sqlArray)
+
     const [dataList] =  yield global.db.query({
         sql: sqlArray[0] + ' Limit :pageStart, :pageSize',
         namedPlaceholders: true
@@ -111,6 +113,7 @@ Lib.paging = function*(values, likeValues, sqlArray, formater) {
     if (sqlArray.length == 3) {
         [[sumAmount]] = yield global.db.query({sql: sqlArray[2], namedPlaceholders: true}, _values);
     }
+
     return {
         total: total['count'],
         sumAmount: sumAmount['sumAmount'] == null ? 0 : sumAmount['sumAmount'],

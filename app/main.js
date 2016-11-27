@@ -168,7 +168,7 @@ app.use(function* authSecureRoutes(next) {
 app.use(require('./routes/inventory-routes.js'));
 app.use(require('./routes/member-routes.js'));
 app.use(require('./routes/user-routes.js'));
-app.use(require('./routes/plan-routes.js'));
+app.use(require('./routes/book-routes.js'));
 
 app.use(function* authSecureRoutes(next) {
     const User = this.passport.user
