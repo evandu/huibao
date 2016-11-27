@@ -178,8 +178,8 @@ inventory.processConfirm = function*() {
                 _Inventory[InventoryIds[i]] = parseInt(Nums[i]);
             }
         }
-        const inventories = yield InventoryDao.idIn(InventoryIds);
-        const member = yield MemberDao.get(this.request.body.MemberId);
+        const inventories = yield InventoryDao.idIn(InventoryIds, this.passport.user);
+        const member = yield MemberDao.get(this.request.body.MemberId, this.passport.user);
         context.Member = member;
         context.inventories = inventories.map(function (o) {
             if (o.Num < _Inventory[o.InventoryId]) {
@@ -227,8 +227,8 @@ inventory.processOut = function*() {
             }
         }
 
-        let inventories = yield InventoryDao.idIn(InventoryIds);
-        const member = yield MemberDao.get(this.request.body.MemberId);
+        let inventories = yield InventoryDao.idIn(InventoryIds, this.passport.user);
+        const member = yield MemberDao.get(this.request.body.MemberId, this.passport.user);
         let Sum = 0;
         inventories = inventories.map(function (o) {
             if (o.Num < _Inventory[o.InventoryId]) {
@@ -251,24 +251,26 @@ inventory.processOut = function*() {
         //     };
         //     self.redirect('/inventory/list');
         // }
-        for (let i = 0; i < inventories.length; i++) {
-            yield InventoryDao.update(inventories[i].InventoryId, inventories[i]);
-        }
+
+        yield InventoryDao.out(_Inventory, this.passport.user)
+
         const inventoryLog = inventories.map(function (o) {
+            o.Active   = 1;
             o.Num = _Inventory[o.InventoryId];
             o.Operator = self.passport.user.Name;
-            o.MemberId = member.MemberId;
+            o.TargetId = member.MemberId;
+            o.UserId = self.passport.user.UserId;
             delete o.CreateDate;
             delete o.LastUpdateDate;
             return o;
         });
 
         for (let i = 0; i < inventoryLog.length; i++) {
-            yield InventoryDao.addlog(inventoryLog[i]);
+            yield InventoryDao.addLog(inventoryLog[i]);
         }
 
-        member.Amount = member.Amount - Sum;
-        yield MemberDao.update(member.MemberId, member);
+        yield MemberDao.minusAmount(member.MemberId, this.passport.user, Math.abs(Sum));
+
         self.flash = {op: {status: true, msg: '出库成功'}};
         self.redirect('/inventory/list');
     } else {

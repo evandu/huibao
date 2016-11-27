@@ -232,8 +232,6 @@ Inventory.addLog = function *(values) {
 };
 
 
-
-
 Inventory.add = function*(values) {
     try {
         const result = yield global.db.query('Insert Into Inventory Set ?', values);

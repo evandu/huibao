@@ -231,3 +231,40 @@ Member.update = function*(id, User, values) {
         }
     }
 };
+
+
+Member.minusAmount = function*(id, User, Amount) {
+    try {
+        if (User.Role == 'admin') {
+            yield global.db.query('Update Member Set Amount = Amount - ? Where MemberId = ?', [Amount, id]);
+        } else {
+            yield global.db.query('Update Member Set Amount = Amount - ? Where UserId =? And MemberId = ?', [Amount, User.UserId, id]);
+        }
+        return {
+            op: {
+                status: true,
+                msg: values.Name + '编辑成功, id=' + id,
+            },
+        };
+    } catch (e) {
+        Lib.logException('Member.update', e);
+        switch (e.code) {
+            case 'ER_BAD_NULL_ERROR':
+            case 'ER_NO_REFERENCED_ROW_2':
+            case 'ER_NO_DEFAULT_FOR_FIELD':
+                return {
+                    op: {
+                        status: false,
+                        msg: '请检查输入',
+                    },
+                };
+            default:
+                return {
+                    op: {
+                        status: false,
+                        msg: '编辑客户失败',
+                    },
+                };
+        }
+    }
+};
