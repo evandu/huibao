@@ -158,7 +158,7 @@ app.use(require('./routes/login-routes.js'));
 // verify user has authenticated...
 
 app.use(function* authSecureRoutes(next) {
-    if (this.isAuthenticated()) {
+    if (this.isAuthenticated() && this.passport.user.Active == 1) {
         yield next;
     } else {
         this.redirect('/login');

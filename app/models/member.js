@@ -116,10 +116,10 @@ Member.amountLogQuery = function*(values) {
     }
 }
 
-Member.audit =  function* (MemberId,Active) {
+Member.audit =  function* (MemberId,Active,User) {
     yield global.db.query('Update Member Set Active=? Where MemberId = ?', [Active, MemberId]);
     const [[member]] = yield global.db.query('Select * From Member Where MemberId = ?', MemberId)
-    yield global.db.query('Update User Set Amount = Amount + ? Where UserId = ?', [member.Amount, member.UserId]);
+    yield global.db.query('Update User Set Amount = Amount + ? Where UserId in (?,?)', [member.Amount, member.UserId, User.UserId]);
 }
 
 Member.list = function*(values, likeValues) {

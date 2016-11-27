@@ -180,6 +180,10 @@ inventory.processConfirm = function*() {
         }
         const inventories = yield InventoryDao.idIn(InventoryIds, this.passport.user);
         const member = yield MemberDao.get(this.request.body.MemberId, this.passport.user);
+        if(member.Active != 0){
+            self.flash = {op: {status: false, msg: '客户未审核，无法出库'}};
+            self.redirect('/inventory/list');
+        }
         context.Member = member;
         context.inventories = inventories.map(function (o) {
             if (o.Num < _Inventory[o.InventoryId]) {

@@ -187,4 +187,21 @@ User.minusAmount = function*(id, amount) {
 
 
 
+User.plusAmount = function*(id, amount) {
+    try {
+        yield global.db.query('Update User Set Amount = Amount + ? Where UserId = ?', [amount, id]);
+    } catch (e) {
+        switch (e.code) {
+            case 'ER_BAD_NULL_ERROR':
+            case 'ER_DUP_ENTRY':
+                // recognised errors for User.update - just use default MySQL messages for now
+                throw ModelError(403, e.message); // Forbidden
+            default:
+                Lib.logException('User.updateAmount', e);
+                throw ModelError(500, e.message); // Internal Server Error
+        }
+    }
+};
+
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */

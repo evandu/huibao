@@ -60,7 +60,7 @@ admin.processAdd = function*() {
 
 admin.memberAudit = function* () {
     const {MemberId,Active} = this.request.body
-    yield MemberDao.audit(MemberId,Active)
+    yield MemberDao.audit(MemberId,Active, this.passport.user)
     if(Active == "1"){
         this.flash = {op: {status: true, msg: '审核成功，审核通过'}};
     }else {
