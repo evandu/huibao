@@ -379,7 +379,6 @@ admin.orders = function*() {
     } else {
         yield this.render('views/book/orders', {
              data: orders,
-             sumAmount:res.sumAmount,
              module: {
                 name: '系统管理',
                 subName: '预定列表',
