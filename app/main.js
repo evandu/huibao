@@ -63,6 +63,9 @@ app.use(function* handleErrors(next) {
 handlebars.registerHelper('static',function(){
     return '/static';
 });
+handlebars.registerHelper('imgServer',function(){
+    return 'http://112.74.65.220/uploadImg';
+});
 
 
 handlebars.registerHelper('X',function(i,j){
