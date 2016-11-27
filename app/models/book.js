@@ -8,8 +8,8 @@ const Book = module.exports = {};
 
 
 Book.list = function*(values, likeValues) {
-    const QuerySql = 'Select b.*,m.Name as MemberName,m.Code as Code From Book b Inner join Member m on m.MemberId= b.MemberId $filter Order By b.CreateDate, b.LastUpdateDate';
-    const CountSql = 'Select count(*) as count From Book b $filter ';
+    const QuerySql = 'Select b.*, n.Name as InventoryName, m.Name as MemberName,m.Code as Code From Book b Inner join Inventory n Inner join Member m on m.MemberId= b.MemberId and n.InventoryId = b.InventoryId $filter Order By b.CreateDate, b.LastUpdateDate';
+    const CountSql = 'Select count(*) as count From Book b Inner join Inventory n Inner join Member m on m.MemberId= b.MemberId and n.InventoryId = b.InventoryId $filter ';
     try {
         return yield Lib.paging(values, likeValues, [QuerySql, CountSql], function (data) {
             return _.map(data, d=> {

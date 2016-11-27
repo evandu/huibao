@@ -2,8 +2,13 @@
 'use strict';
 
 const BookDao = require('../models/book.js');
+const InventoryDao = require('../models/inventory.js');
 const _ = require('lodash');
 const book = module.exports = {};
+
+book.suggest = function*() {
+    this.body = yield InventoryDao.bookSuggest(this.query.name);
+};
 
 book.add = function*(){
     const context = {

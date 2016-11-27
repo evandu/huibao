@@ -7,6 +7,7 @@ const book = require('../actions/book.js');
 
 router.get('/book/list',           book.list);
 router.get('/book/ajaxQuery',      book.ajaxQuery);
+router.get('/book/suggest',        book.suggest);
 router.get('/book/add',            book.add);
 router.post('/book/add',           book.processAdd);
 router.post('/book/ajaxDelete',    book.processDelete);

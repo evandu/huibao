@@ -9,7 +9,15 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="name">订购商品名称：</label>
-                            <input type="text" class="form-control" id="name" name="Name" placeholder="输入订购商品名称" required>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="name"  placeholder="输入订购商品名称" required>
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="num">订购数量：</label>
@@ -39,6 +47,24 @@
 
 <script>
     $(function () {
+        $("#name").bsSuggest({
+            url: "{{ctx}}/book/suggest?name=",
+            showBtn: true,
+            idField: "InventoryId",
+            keyField: "Name",
+            allowNoKeyword: true,
+            getDataMethod: "url",
+            processData: function (res){return {value:res}},
+            showHeader: true,
+            effectiveFieldsAlias:{ InventoryId:'ID', Name:'物品名称',Price:'单价'}
+        }).on('onSetSelectValue', function (e, data) {
+            $("#name").next('input[type="hidden"]').remove()
+            $("#name").after('<input type="hidden" name="InventoryId" value="'+ data.id+'"/>')
+        }).on('onUnsetSelectValue', function (e) {
+            $("#name").val('')
+            $("#name").next('input[type="hidden"]').remove()
+        })
+
         $("#memberName").bsSuggest({
             url: "{{ctx}}/member/suggest?name=",
             showBtn: true,

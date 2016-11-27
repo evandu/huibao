@@ -14,6 +14,16 @@ Inventory.suggest = function*(name,User) {
     );
 };
 
+Inventory.bookSuggest = function*(name) {
+    const result = yield global.db.query("Select n.* From Inventory n Inner Join User u on n.UserId = u.UserId Where u.Role = 'admin' And n.Name like ? limit 0,10 ", [ '%' + name + '%']);
+    return result[0].map(
+        function (o) {
+            return {InventoryId: o.InventoryId, Name: o.Name, Price: '单价' + o.Price + ' 元'};
+        }
+    );
+};
+
+
 Inventory.idIn = function*(ids,User) {
     const result = yield global.db.query(`Select * From Inventory Where UserId = ? And InventoryId in (${ids.join(',')})`, User.UserId);
     return result[0];
