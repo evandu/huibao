@@ -10,7 +10,7 @@ const ModelError = require('./modelerror');
 const Member = module.exports = {};
 
 Member.suggest = function*(name,User) {
-    const result = yield global.db.query('Select * From Member Where Active =1 And UserId= ? And Name like ? Or Code like ? limit 0, 10', [User.UserId, '%' + name + '%', '%' + name + '%']);
+    const result = yield global.db.query('Select * From Member Where Active =1 And UserId= ? And (Name like ? Or Code like ?) limit 0, 10', [User.UserId, '%' + name + '%', '%' + name + '%']);
     return result[0].map(
         function (o) {
             return {
