@@ -45,7 +45,7 @@ Lib.paging = function*(values, likeValues, sqlArray, formater) {
     values.size = parseInt(values.size);
     values.cur = parseInt(values.cur);
 
-    if (values.size < 0 || values.size > 100) {
+    if (values.size < 0 || values.size > 10000) {
         values.size = 10;
     }
 
