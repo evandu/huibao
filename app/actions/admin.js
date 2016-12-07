@@ -359,10 +359,13 @@ admin.orders = function*() {
     query['b.Active'] = '0';
     const res = yield BookDao.list(query, {});
     const map = _.groupBy(res.data, o=> o.InventoryId);
+    console.log(map)
     const data = _.keys(map)
+    console.log(data)
     const orders = []
-
+    console.log("================")
     for (let i = 0; i < data.length; i++) {
+        console.log(map[data[i]])
         orders.push(
             _.reduce(map[data[i]], (item, sum)=>{
                 if(item.BookId){
@@ -373,7 +376,6 @@ admin.orders = function*() {
             },{})
         )
     }
-    console.log()
     if (res.op ==  false) {
         yield this.render('views/500-internal-server-error', {'message': res.op.msg});
     } else {
