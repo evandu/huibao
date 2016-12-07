@@ -357,15 +357,12 @@ admin.inventoryProcessEdit = function*() {
 admin.orders = function*() {
     const query = this.query
     query['b.Active'] = '0';
+    query['size'] = 10000;
     const res = yield BookDao.list(query, {});
     const map = _.groupBy(res.data, o=> o.InventoryId);
-    console.log(map)
     const data = _.keys(map)
-    console.log(data)
     const orders = []
-    console.log("================")
     for (let i = 0; i < data.length; i++) {
-        console.log(map[data[i]])
         orders.push(
             _.reduce(map[data[i]], (item, sum)=>{
                 if(item.BookId){
