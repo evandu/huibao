@@ -137,7 +137,6 @@ inventory.inventoryLog = function*() {
 
 inventory.ajaxQuery = function*() {
     const {Name, page,size} = this.query
-    console.log(rest)
     const likeValue = {}
     if (Name && Name != '') {
         likeValue['Name'] = "%" + Name + "%"
