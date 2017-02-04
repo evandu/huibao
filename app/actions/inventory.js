@@ -136,13 +136,13 @@ inventory.inventoryLog = function*() {
 
 
 inventory.ajaxQuery = function*() {
-    const {Name, page,size} = this.query
+    const {Name, cur,size} = this.query
     const likeValue = {}
     if (Name && Name != '') {
         likeValue['Name'] = "%" + Name + "%"
     }
 
-    const res = yield InventoryDao.list({'UserId': this.passport.user.UserId, page, size}, likeValue);
+    const res = yield InventoryDao.list({'UserId': this.passport.user.UserId, cur, size}, likeValue);
     if (res.op) {
         this.status = 500
         this.body = {msg: res.op.msg}
